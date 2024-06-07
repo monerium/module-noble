@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package florin.blacklist.v1;
+
+option go_package = "github.com/noble-assets/florin/x/florin/types/blacklist";
+
+message GenesisState {
+  string owner = 1;
+  string pending_owner = 2;
+  repeated string admins = 3;
+  repeated string adversaries = 4;
+}

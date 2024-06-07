@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package florin.blacklist.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/noble-assets/florin/x/florin/types/blacklist";
+
+// Emitted when a validator makes a decision.
+message Decision {
+  // from is the sender address.
+  string from = 1;
+
+  // to is the recipient address.
+  string to = 2;
+
+  // amount is the number of tokens.
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // valid is true if transfer approved, false if rejected.
+  bool valid = 4;
+}
+
+// Emitted when an address is added to the blacklist.
+message Ban {
+  // adversary is the address that was added.
+  string adversary = 1;
+}
+
+// Emitted when an address is removed from the blacklist.
+message Unban {
+  // friend is the address that was removed.
+  string friend = 1;
+}
+
+// Emitted when admin account is added.
+message AdminAccountAdded {
+  // account is the address that was added.
+  string account = 1;
+}
+
+// Emitted when admin account is removed.
+message AdminAccountRemoved {
+  // account is the address that was removed.
+  string account = 1;
+}
+
+// Emitted when an ownership transfer is started.
+message OwnershipTransferStarted {
+  // previous_owner is the address of the previous owner.
+  string previous_owner = 1;
+
+  // new_owner is the address of the new owner.
+  string new_owner = 2;
+}
+
+// Emitted when an ownership transfer is finalized.
+message OwnershipTransferred {
+  // previous_owner is the address of the previous owner.
+  string previous_owner = 1;
+
+  // new_owner is the address of the new owner.
+  string new_owner = 2;
+}

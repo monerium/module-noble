@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package florin.v1;
+
+import "florin/blacklist/v1/genesis.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/noble-assets/florin/x/florin/types";
+
+message GenesisState {
+  // blacklist_state is the genesis state of the blacklist submodule.
+  florin.blacklist.v1.GenesisState blacklist_state = 1 [(gogoproto.nullable) = false];
+}

@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package florin.blacklist.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/noble-assets/florin/x/florin/types/blacklist";
+
+service Msg {
+  rpc AcceptOwnership(MsgAcceptOwnership) returns (MsgAcceptOwnershipResponse);
+  rpc AddAdminAccount(MsgAddAdminAccount) returns (MsgAddAdminAccountResponse);
+  rpc Ban(MsgBan) returns (MsgBanResponse);
+  rpc RemoveAdminAccount(MsgRemoveAdminAccount) returns (MsgRemoveAdminAccountResponse);
+  rpc TransferOwnership(MsgTransferOwnership) returns (MsgTransferOwnershipResponse);
+  rpc Unban(MsgUnban) returns (MsgUnbanResponse);
+}
+
+// MsgAcceptOwnership implements the acceptOwnership (0x79ba5097) method.
+message MsgAcceptOwnership {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+}
+
+// MsgAcceptOwnershipResponse is the response of the AcceptOwnership action.
+message MsgAcceptOwnershipResponse {}
+
+// MsgAddAdminAccount implements the addAdminAccount (0x4fe57e7a) method.
+message MsgAddAdminAccount {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string account = 2;
+}
+
+// MsgAddAdminAccountResponse is the response of the AddAminAccount action.
+message MsgAddAdminAccountResponse {}
+
+// MsgBan implements the ban (0x97c3ccd8) method.
+message MsgBan {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string adversary = 2;
+}
+
+// MsgBanResponse is the response of the Ban action.
+message MsgBanResponse {}
+
+// MsgRemoveAdminAccount implements the removeAdminAccount (0x67a89a72) method.
+message MsgRemoveAdminAccount {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string account = 2;
+}
+
+// MsgRemoveAdminAccountResponse is the response of the RemoveAdminAccount action.
+message MsgRemoveAdminAccountResponse {}
+
+// MsgTransferOwnership implements the transferOwnership (0xf2fde38b) method.
+message MsgTransferOwnership {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string new_owner = 2;
+}
+
+// MsgTransferOwnershipResponse is the response of the TransferOwnership action.
+message MsgTransferOwnershipResponse {}
+
+// MsgUnban implements the unban (0xb9f14557) method.
+message MsgUnban {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string friend = 2;
+}
+
+// MsgUnbanResponse is the response of the Unban action.
+message MsgUnbanResponse {}
