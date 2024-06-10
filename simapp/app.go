@@ -152,16 +152,16 @@ func NewSimApp(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, permissions,
 	)
 
+	app.FlorinKeeper = florinkeeper.NewKeeper(
+		keys[florintypes.ModuleName], "aeure", app.AccountKeeper, nil,
+	)
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
-	)
+	).WithSendCoinsRestriction(app.FlorinKeeper.SendRestrictionFn)
+	app.FlorinKeeper.SetBankKeeper(app.BankKeeper)
 
 	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
-	)
-
-	app.FlorinKeeper = florinkeeper.NewKeeper(
-		keys[florintypes.ModuleName], "aeure",
 	)
 
 	app.mm = module.NewManager(

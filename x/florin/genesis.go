@@ -16,6 +16,20 @@ func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genesis types.GenesisState) 
 	for _, adversary := range genesis.BlacklistState.Adversaries {
 		k.SetAdversary(ctx, adversary)
 	}
+
+	k.SetOwner(ctx, genesis.Owner)
+	k.SetPendingOwner(ctx, genesis.PendingOwner)
+	for _, system := range genesis.Systems {
+		k.SetSystem(ctx, system)
+	}
+	for _, admin := range genesis.Admins {
+		k.SetAdmin(ctx, admin)
+	}
+	for address, rawAllowance := range genesis.MintAllowances {
+		allowance, _ := sdk.NewIntFromString(rawAllowance)
+		k.SetMintAllowance(ctx, address, allowance)
+	}
+	k.SetMaxMintAllowance(ctx, genesis.MaxMintAllowance)
 }
 
 func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
@@ -25,5 +39,9 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 			PendingOwner: k.GetBlacklistPendingOwner(ctx),
 			// TODO: Admins and adversaries
 		},
+		Owner:        k.GetOwner(ctx),
+		PendingOwner: k.GetPendingOwner(ctx),
+		// TODO: Systems, admins and mint allowances.
+		MaxMintAllowance: k.GetMaxMintAllowance(ctx),
 	}
 }

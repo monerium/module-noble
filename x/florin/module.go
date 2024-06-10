@@ -102,6 +102,8 @@ func (AppModule) QuerierRoute() string { return types.ModuleName }
 func (AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier { return nil }
 
 func (m AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(m.keeper))
+
 	blacklist.RegisterMsgServer(cfg.MsgServer(), keeper.NewBlacklistMsgServer(m.keeper))
 }
 

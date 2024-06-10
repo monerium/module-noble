@@ -11,6 +11,10 @@ import (
 )
 
 func FlorinKeeper() (*keeper.Keeper, sdk.Context) {
+	return FlorinWithKeepers(AccountKeeper{}, BankKeeper{})
+}
+
+func FlorinWithKeepers(account types.AccountKeeper, bank BankKeeper) (*keeper.Keeper, sdk.Context) {
 	key := storetypes.NewKVStoreKey(types.ModuleName)
 	tkey := storetypes.NewTransientStoreKey("transient_florin")
 
@@ -18,7 +22,12 @@ func FlorinKeeper() (*keeper.Keeper, sdk.Context) {
 	types.RegisterInterfaces(reg)
 	_ = codec.NewProtoCodec(reg)
 
-	return keeper.NewKeeper(key, "aeure"), testutil.DefaultContext(key, tkey)
+	k := keeper.NewKeeper(key, "aeure", account, bank)
+
+	bank = bank.WithSendCoinsRestriction(k.SendRestrictionFn)
+	k.SetBankKeeper(bank)
+
+	return k, testutil.DefaultContext(key, tkey)
 }
 
 //

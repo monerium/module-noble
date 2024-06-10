@@ -10,4 +10,22 @@ option go_package = "github.com/noble-assets/florin/x/florin/types";
 message GenesisState {
   // blacklist_state is the genesis state of the blacklist submodule.
   florin.blacklist.v1.GenesisState blacklist_state = 1 [(gogoproto.nullable) = false];
+
+  // owner is the address that can control this module.
+  string owner = 2;
+  // pending_owner is the address of the new owner during an ownership transfer.
+  string pending_owner = 3;
+
+  // systems is the list of addresses that can act as the system.
+  repeated string systems = 4;
+  // admins is the list of addresses that can act as the admin.
+  repeated string admins = 5;
+
+  // mint_allowances is the mapping between system address and mint allowance.
+  map<string, string> mint_allowances = 6;
+  // max_mint_allowance is the maximum allowed mint allowance.
+  string max_mint_allowance = 7 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }

@@ -5,24 +5,36 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/noble-assets/florin/x/florin/types"
 	"github.com/noble-assets/florin/x/florin/types/blacklist"
 )
 
 type Keeper struct {
 	storeKey storetypes.StoreKey
+	Denom    string
 
-	Denom string
+	accountKeeper types.AccountKeeper
+	bankKeeper    types.BankKeeper
 }
 
 func NewKeeper(
 	storeKey storetypes.StoreKey,
 	denom string,
+	accountKeeper types.AccountKeeper,
+	bankKeeper types.BankKeeper,
 ) *Keeper {
 	return &Keeper{
 		storeKey: storeKey,
+		Denom:    denom,
 
-		Denom: denom,
+		accountKeeper: accountKeeper,
+		bankKeeper:    bankKeeper,
 	}
+}
+
+// SetBankKeeper overwrites the bank keeper used in this module.
+func (k *Keeper) SetBankKeeper(bankKeeper types.BankKeeper) {
+	k.bankKeeper = bankKeeper
 }
 
 // SendRestrictionFn executes necessary checks against all EURe transfers.

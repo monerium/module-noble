@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+package florin.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/noble-assets/florin/x/florin/types";
+
+service Msg {
+  rpc AcceptOwnership(MsgAcceptOwnership) returns (MsgAcceptOwnershipResponse);
+  rpc AddAdminAccount(MsgAddAdminAccount) returns (MsgAddAdminAccountResponse);
+  rpc AddSystemAccount(MsgAddSystemAccount) returns (MsgAddSystemAccountResponse);
+  rpc Burn(MsgBurn) returns (MsgBurnResponse);
+  rpc Mint(MsgMint) returns (MsgMintResponse);
+  // TODO: Is recover (0x6eb4c609) needed?
+  rpc RemoveAdminAccount(MsgRemoveAdminAccount) returns (MsgRemoveAdminAccountResponse);
+  rpc RemoveSystemAccount(MsgRemoveSystemAccount) returns (MsgRemoveSystemAccountResponse);
+  rpc SetMaxMintAllowance(MsgSetMaxMintAllowance) returns (MsgSetMaxMintAllowanceResponse);
+  rpc SetMintAllowance(MsgSetMintAllowance) returns (MsgSetMintAllowanceResponse);
+  rpc TransferOwnership(MsgTransferOwnership) returns (MsgTransferOwnershipResponse);
+}
+
+// MsgAcceptOwnership implements the acceptOwnership (0x79ba5097) method.
+message MsgAcceptOwnership {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+}
+
+// MsgAcceptOwnershipResponse is the response of the AcceptOwnership action.
+message MsgAcceptOwnershipResponse {}
+
+// MsgAddAdminAccount implements the addAdminAccount (0x4fe57e7a) method.
+message MsgAddAdminAccount {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string account = 2;
+}
+
+// MsgAddAdminAccountResponse is the response of the AddAminAccount action.
+message MsgAddAdminAccountResponse {}
+
+// MsgAddSystemAccount implements the addSystemAccount (0xa84c56d0) method.
+message MsgAddSystemAccount {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string account = 2;
+}
+
+// MsgAddSystemAccountResponse is the response of the AddSystemAccount action.
+message MsgAddSystemAccountResponse {}
+
+// MsgBurn implements the burn (0x8d1247ba) method.
+message MsgBurn {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string from = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  bytes signature = 4;
+}
+
+// MsgBurnResponse is the response of the Burn action.
+message MsgBurnResponse {}
+
+// MsgMint implements the mint (0x40c10f19) method.
+message MsgMint {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string to = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgMintResponse is the response of the Mint action.
+message MsgMintResponse {}
+
+// MsgRemoveAdminAccount implements the removeAdminAccount (0x67a89a72) method.
+message MsgRemoveAdminAccount {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string account = 2;
+}
+
+// MsgRemoveAdminAccountResponse is the response of the RemoveAdminAccount action.
+message MsgRemoveAdminAccountResponse {}
+
+// MsgRemoveSystemAccount implements the removeSystemAccount (0xebbc3d46) method.
+message MsgRemoveSystemAccount {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string account = 2;
+}
+
+// MsgRemoveSystemAccountResponse is the response of the RemoveSystemAccount action.
+message MsgRemoveSystemAccountResponse {}
+
+// MsgSetMaxMintAllowance implements the setMaxMintAllowance (0xfd2319c4) method.
+message MsgSetMaxMintAllowance {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgSetMaxMintAllowanceResponse is the response of the SetMaxMintAllowance action.
+message MsgSetMaxMintAllowanceResponse {}
+
+// MsgSetMintAllowance implements the setMintAllowance (0xf27c5f6e) method.
+message MsgSetMintAllowance {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string account = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgSetMintAllowanceResponse is the response of the SetMintAllowance action.
+message MsgSetMintAllowanceResponse {}
+
+// MsgTransferOwnership implements the transferOwnership (0xf2fde38b) method.
+message MsgTransferOwnership {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string new_owner = 2;
+}
+
+// MsgTransferOwnershipResponse is the response of the TransferOwnership action.
+message MsgTransferOwnershipResponse {}

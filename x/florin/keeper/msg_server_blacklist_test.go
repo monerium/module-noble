@@ -45,7 +45,7 @@ func TestBlacklistAcceptOwnership(t *testing.T) {
 	require.Equal(t, "florin.blacklist.v1.OwnershipTransferred", events[0].Type)
 }
 
-func TestAddAdminAccount(t *testing.T) {
+func TestBlacklistAddAdminAccount(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
 	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewBlacklistMsgServer(k)
@@ -114,7 +114,7 @@ func TestBan(t *testing.T) {
 	require.Equal(t, "florin.blacklist.v1.Ban", events[0].Type)
 }
 
-func TestRemoveAdminAccount(t *testing.T) {
+func TestBlacklistRemoveAdminAccount(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
 	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewBlacklistMsgServer(k)

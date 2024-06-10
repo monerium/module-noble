@@ -5,6 +5,7 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	blacklist "github.com/noble-assets/florin/x/florin/types/blacklist"
@@ -27,6 +28,18 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type GenesisState struct {
 	// blacklist_state is the genesis state of the blacklist submodule.
 	BlacklistState blacklist.GenesisState `protobuf:"bytes,1,opt,name=blacklist_state,json=blacklistState,proto3" json:"blacklist_state"`
+	// owner is the address that can control this module.
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// pending_owner is the address of the new owner during an ownership transfer.
+	PendingOwner string `protobuf:"bytes,3,opt,name=pending_owner,json=pendingOwner,proto3" json:"pending_owner,omitempty"`
+	// systems is the list of addresses that can act as the system.
+	Systems []string `protobuf:"bytes,4,rep,name=systems,proto3" json:"systems,omitempty"`
+	// admins is the list of addresses that can act as the admin.
+	Admins []string `protobuf:"bytes,5,rep,name=admins,proto3" json:"admins,omitempty"`
+	// mint_allowances is the mapping between system address and mint allowance.
+	MintAllowances map[string]string `protobuf:"bytes,6,rep,name=mint_allowances,json=mintAllowances,proto3" json:"mint_allowances,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// max_mint_allowance is the maximum allowed mint allowance.
+	MaxMintAllowance github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,7,opt,name=max_mint_allowance,json=maxMintAllowance,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"max_mint_allowance"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -69,27 +82,76 @@ func (m *GenesisState) GetBlacklistState() blacklist.GenesisState {
 	return blacklist.GenesisState{}
 }
 
+func (m *GenesisState) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *GenesisState) GetPendingOwner() string {
+	if m != nil {
+		return m.PendingOwner
+	}
+	return ""
+}
+
+func (m *GenesisState) GetSystems() []string {
+	if m != nil {
+		return m.Systems
+	}
+	return nil
+}
+
+func (m *GenesisState) GetAdmins() []string {
+	if m != nil {
+		return m.Admins
+	}
+	return nil
+}
+
+func (m *GenesisState) GetMintAllowances() map[string]string {
+	if m != nil {
+		return m.MintAllowances
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "florin.v1.GenesisState")
+	proto.RegisterMapType((map[string]string)(nil), "florin.v1.GenesisState.MintAllowancesEntry")
 }
 
 func init() { proto.RegisterFile("florin/v1/genesis.proto", fileDescriptor_db6733df958f1e20) }
 
 var fileDescriptor_db6733df958f1e20 = []byte{
-	// 204 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4f, 0xcb, 0xc9, 0x2f,
-	0xca, 0xcc, 0xd3, 0x2f, 0x33, 0xd4, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6, 0x2b, 0x28,
-	0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x84, 0x48, 0xe8, 0x95, 0x19, 0x4a, 0x29, 0x42, 0xd5, 0x24, 0xe5,
-	0x24, 0x26, 0x67, 0xe7, 0x64, 0x16, 0x97, 0x60, 0xa8, 0x96, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07,
-	0x33, 0xf5, 0x41, 0x2c, 0x88, 0xa8, 0x52, 0x02, 0x17, 0x8f, 0x3b, 0x44, 0x59, 0x70, 0x49, 0x62,
-	0x49, 0xaa, 0x50, 0x00, 0x17, 0x3f, 0xdc, 0x8c, 0xf8, 0x62, 0x90, 0x90, 0x04, 0xa3, 0x02, 0xa3,
-	0x06, 0xb7, 0x91, 0xa2, 0x1e, 0xd4, 0x36, 0xb8, 0xb4, 0x5e, 0x99, 0xa1, 0x1e, 0xb2, 0x5e, 0x27,
-	0x96, 0x13, 0xf7, 0xe4, 0x19, 0x82, 0xf8, 0xe0, 0x0a, 0x20, 0xa2, 0xee, 0x27, 0x1e, 0xc9, 0x31,
-	0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb,
-	0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5, 0x9b, 0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c,
-	0x9f, 0xab, 0x9f, 0x97, 0x9f, 0x94, 0x93, 0xaa, 0x9b, 0x58, 0x5c, 0x9c, 0x5a, 0x52, 0xac, 0x0f,
-	0xf5, 0x4c, 0x05, 0x8c, 0x51, 0x52, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0x76, 0xb1, 0x31, 0x20,
-	0x00, 0x00, 0xff, 0xff, 0x2c, 0xa7, 0x06, 0xd3, 0x10, 0x01, 0x00, 0x00,
+	// 407 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x52, 0x4d, 0x6b, 0xd4, 0x40,
+	0x18, 0x4e, 0x9a, 0x76, 0x4b, 0xa6, 0xb5, 0x2d, 0x63, 0xd1, 0xb0, 0x87, 0x34, 0x55, 0x90, 0x80,
+	0xec, 0x84, 0xad, 0x17, 0xf1, 0xd6, 0x05, 0x29, 0x1e, 0x44, 0x89, 0x9e, 0x44, 0x08, 0x93, 0xec,
+	0x18, 0x87, 0xcd, 0xcc, 0x2c, 0x79, 0xa7, 0xe9, 0xe6, 0x5f, 0xf8, 0xa3, 0x3c, 0xf4, 0xd8, 0xa3,
+	0x78, 0x28, 0xb2, 0xfb, 0x47, 0x24, 0x93, 0x6c, 0x68, 0xd0, 0x53, 0xde, 0xe7, 0x23, 0xef, 0x3c,
+	0xf3, 0x30, 0xe8, 0xe9, 0xb7, 0x42, 0x95, 0x5c, 0x46, 0xd5, 0x34, 0xca, 0x99, 0x64, 0xc0, 0x81,
+	0x2c, 0x4b, 0xa5, 0x15, 0x76, 0x5b, 0x81, 0x54, 0xd3, 0xf1, 0x79, 0xe7, 0x49, 0x0b, 0x9a, 0x2d,
+	0x0a, 0x0e, 0xfa, 0x1f, 0xf7, 0xf8, 0x34, 0x57, 0xb9, 0x32, 0x63, 0xd4, 0x4c, 0x2d, 0xfb, 0xec,
+	0xa7, 0x83, 0x0e, 0xaf, 0x5a, 0xdf, 0x27, 0x4d, 0x35, 0xc3, 0x1f, 0xd1, 0x71, 0xbf, 0x24, 0x81,
+	0x86, 0xf2, 0xec, 0xc0, 0x0e, 0x0f, 0x2e, 0xce, 0x49, 0x77, 0x5c, 0x2f, 0x93, 0x6a, 0x4a, 0x1e,
+	0xfe, 0x3b, 0xdb, 0xbd, 0xbd, 0x3f, 0xb3, 0xe2, 0xa3, 0xde, 0xd0, 0x6e, 0x3c, 0x45, 0x7b, 0xea,
+	0x46, 0xb2, 0xd2, 0xdb, 0x09, 0xec, 0xd0, 0x8d, 0x5b, 0x80, 0x9f, 0xa3, 0x47, 0x4b, 0x26, 0xe7,
+	0x5c, 0xe6, 0x49, 0xab, 0x3a, 0x46, 0x3d, 0xec, 0xc8, 0x0f, 0xc6, 0xe4, 0xa1, 0x7d, 0xa8, 0x41,
+	0x33, 0x01, 0xde, 0x6e, 0xe0, 0x84, 0x6e, 0xbc, 0x85, 0xf8, 0x09, 0x1a, 0xd1, 0xb9, 0xe0, 0x12,
+	0xbc, 0x3d, 0x23, 0x74, 0x08, 0x7f, 0x46, 0xc7, 0x82, 0x4b, 0x9d, 0xd0, 0xa2, 0x50, 0x37, 0x54,
+	0x66, 0x0c, 0xbc, 0x51, 0xe0, 0x84, 0x07, 0x17, 0x2f, 0x49, 0xdf, 0xd6, 0x20, 0x34, 0x79, 0xcf,
+	0xa5, 0xbe, 0xec, 0xdd, 0x6f, 0xa5, 0x2e, 0xeb, 0xf8, 0x48, 0x0c, 0x48, 0xfc, 0x15, 0x61, 0x41,
+	0x57, 0xc9, 0x70, 0xb3, 0xb7, 0xdf, 0x24, 0x9e, 0x91, 0xe6, 0xd2, 0xbf, 0xef, 0xcf, 0x5e, 0xe4,
+	0x5c, 0x7f, 0xbf, 0x4e, 0x49, 0xa6, 0x44, 0x94, 0x29, 0x10, 0x0a, 0xba, 0xcf, 0x04, 0xe6, 0x8b,
+	0x48, 0xd7, 0x4b, 0x06, 0xe4, 0x9d, 0xd4, 0xf1, 0x89, 0xa0, 0xab, 0xc1, 0x99, 0xe3, 0x4b, 0xf4,
+	0xf8, 0x3f, 0x21, 0xf0, 0x09, 0x72, 0x16, 0xac, 0x36, 0xed, 0xbb, 0x71, 0x33, 0x36, 0x4d, 0x56,
+	0xb4, 0xb8, 0x66, 0xdb, 0x26, 0x0d, 0x78, 0xb3, 0xf3, 0xda, 0x9e, 0x5d, 0xdd, 0xae, 0x7d, 0xfb,
+	0x6e, 0xed, 0xdb, 0x7f, 0xd6, 0xbe, 0xfd, 0x63, 0xe3, 0x5b, 0x77, 0x1b, 0xdf, 0xfa, 0xb5, 0xf1,
+	0xad, 0x2f, 0x93, 0x07, 0xb1, 0xa4, 0x4a, 0x0b, 0x36, 0xa1, 0x00, 0x4c, 0x43, 0xd4, 0xbd, 0x98,
+	0xd5, 0x76, 0x30, 0x09, 0xd3, 0x91, 0x79, 0x16, 0xaf, 0xfe, 0x06, 0x00, 0x00, 0xff, 0xff, 0x27,
+	0x88, 0x40, 0x37, 0x75, 0x02, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -112,6 +174,67 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.MaxMintAllowance.Size()
+		i -= size
+		if _, err := m.MaxMintAllowance.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x3a
+	if len(m.MintAllowances) > 0 {
+		for k := range m.MintAllowances {
+			v := m.MintAllowances[k]
+			baseI := i
+			i -= len(v)
+			copy(dAtA[i:], v)
+			i = encodeVarintGenesis(dAtA, i, uint64(len(v)))
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintGenesis(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintGenesis(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if len(m.Admins) > 0 {
+		for iNdEx := len(m.Admins) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Admins[iNdEx])
+			copy(dAtA[i:], m.Admins[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Admins[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.Systems) > 0 {
+		for iNdEx := len(m.Systems) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Systems[iNdEx])
+			copy(dAtA[i:], m.Systems[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Systems[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.PendingOwner) > 0 {
+		i -= len(m.PendingOwner)
+		copy(dAtA[i:], m.PendingOwner)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.PendingOwner)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
 	{
 		size, err := m.BlacklistState.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -143,6 +266,36 @@ func (m *GenesisState) Size() (n int) {
 	var l int
 	_ = l
 	l = m.BlacklistState.Size()
+	n += 1 + l + sovGenesis(uint64(l))
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.PendingOwner)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.Systems) > 0 {
+		for _, s := range m.Systems {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.Admins) > 0 {
+		for _, s := range m.Admins {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.MintAllowances) > 0 {
+		for k, v := range m.MintAllowances {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovGenesis(uint64(len(k))) + 1 + len(v) + sovGenesis(uint64(len(v)))
+			n += mapEntrySize + 1 + sovGenesis(uint64(mapEntrySize))
+		}
+	}
+	l = m.MaxMintAllowance.Size()
 	n += 1 + l + sovGenesis(uint64(l))
 	return n
 }
@@ -212,6 +365,295 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.BlacklistState.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PendingOwner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PendingOwner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Systems", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Systems = append(m.Systems, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Admins", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Admins = append(m.Admins, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MintAllowances", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MintAllowances == nil {
+				m.MintAllowances = make(map[string]string)
+			}
+			var mapkey string
+			var mapvalue string
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowGenesis
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowGenesis
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthGenesis
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthGenesis
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var stringLenmapvalue uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowGenesis
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapvalue |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapvalue := int(stringLenmapvalue)
+					if intStringLenmapvalue < 0 {
+						return ErrInvalidLengthGenesis
+					}
+					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+					if postStringIndexmapvalue < 0 {
+						return ErrInvalidLengthGenesis
+					}
+					if postStringIndexmapvalue > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+					iNdEx = postStringIndexmapvalue
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipGenesis(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLengthGenesis
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.MintAllowances[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxMintAllowance", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaxMintAllowance.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

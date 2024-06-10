@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package florin.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/noble-assets/florin/x/florin/types";
+
+// Emitted when allowance is set.
+message MintAllowance {
+  // account is the address whose allowance was set.
+  string account = 1;
+
+  // amount is the allowance that was set.
+  string amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// Emitted when max allowance is set.
+message MaxMintAllowance {
+  // amount is the max allowance that was set.
+  string amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// Emitted when system account is added.
+message SystemAccountAdded {
+  // account is the address that was added.
+  string account = 1;
+}
+
+// Emitted when system account is removed.
+message SystemAccountRemoved {
+  // account is the address that was removed.
+  string account = 1;
+}
+
+// Emitted when admin account is added.
+message AdminAccountAdded {
+  // account is the address that was added.
+  string account = 1;
+}
+
+// Emitted when admin account is removed.
+message AdminAccountRemoved {
+  // account is the address that was removed.
+  string account = 1;
+}
+
+// Emitted when an ownership transfer is started.
+message OwnershipTransferStarted {
+  // previous_owner is the address of the previous owner.
+  string previous_owner = 1;
+
+  // new_owner is the address of the new owner.
+  string new_owner = 2;
+}
+
+// Emitted when an ownership transfer is finalized.
+message OwnershipTransferred {
+  // previous_owner is the address of the previous owner.
+  string previous_owner = 1;
+
+  // new_owner is the address of the new owner.
+  string new_owner = 2;
+}
