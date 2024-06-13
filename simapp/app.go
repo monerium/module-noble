@@ -66,6 +66,7 @@ var (
 		authtypes.FeeCollectorName:     nil,
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
+		florintypes.ModuleName:         {authtypes.Burner, authtypes.Minter},
 	}
 )
 
