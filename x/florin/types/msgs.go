@@ -154,6 +154,39 @@ func (*MsgMint) Type() string { return "florin/Mint" }
 
 //
 
+var _ legacytx.LegacyMsg = &MsgRecover{}
+
+func (msg *MsgRecover) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Signer); err != nil {
+		return fmt.Errorf("invalid signer address (%s): %w", msg.Signer, err)
+	}
+
+	if _, err := sdk.AccAddressFromBech32(msg.From); err != nil {
+		return fmt.Errorf("invalid from address (%s): %w", msg.From, err)
+	}
+
+	if _, err := sdk.AccAddressFromBech32(msg.To); err != nil {
+		return fmt.Errorf("invalid to address (%s): %w", msg.To, err)
+	}
+
+	return nil
+}
+
+func (msg *MsgRecover) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(msg.Signer)
+	return []sdk.AccAddress{signer}
+}
+
+func (msg *MsgRecover) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
+func (*MsgRecover) Route() string { return ModuleName }
+
+func (*MsgRecover) Type() string { return "florin/Recover" }
+
+//
+
 var _ legacytx.LegacyMsg = &MsgRemoveAdminAccount{}
 
 func (msg *MsgRemoveAdminAccount) ValidateBasic() error {

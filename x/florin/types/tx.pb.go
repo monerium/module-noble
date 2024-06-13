@@ -411,6 +411,84 @@ func (m *MsgMintResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgMintResponse proto.InternalMessageInfo
 
+// MsgRecover implements the recover (0x6eb4c609) method.
+type MsgRecover struct {
+	Signer    string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
+	From      string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To        string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Signature []byte `protobuf:"bytes,4,opt,name=signature,proto3" json:"signature,omitempty"`
+}
+
+func (m *MsgRecover) Reset()         { *m = MsgRecover{} }
+func (m *MsgRecover) String() string { return proto.CompactTextString(m) }
+func (*MsgRecover) ProtoMessage()    {}
+func (*MsgRecover) Descriptor() ([]byte, []int) {
+	return fileDescriptor_de2a06c2ec80785c, []int{10}
+}
+func (m *MsgRecover) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRecover) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRecover.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRecover) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRecover.Merge(m, src)
+}
+func (m *MsgRecover) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRecover) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRecover.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRecover proto.InternalMessageInfo
+
+// MsgRecoverResponse is the response of the Recover action.
+type MsgRecoverResponse struct {
+}
+
+func (m *MsgRecoverResponse) Reset()         { *m = MsgRecoverResponse{} }
+func (m *MsgRecoverResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRecoverResponse) ProtoMessage()    {}
+func (*MsgRecoverResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_de2a06c2ec80785c, []int{11}
+}
+func (m *MsgRecoverResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRecoverResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRecoverResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRecoverResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRecoverResponse.Merge(m, src)
+}
+func (m *MsgRecoverResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRecoverResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRecoverResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRecoverResponse proto.InternalMessageInfo
+
 // MsgRemoveAdminAccount implements the removeAdminAccount (0x67a89a72) method.
 type MsgRemoveAdminAccount struct {
 	Signer  string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
@@ -421,7 +499,7 @@ func (m *MsgRemoveAdminAccount) Reset()         { *m = MsgRemoveAdminAccount{} }
 func (m *MsgRemoveAdminAccount) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveAdminAccount) ProtoMessage()    {}
 func (*MsgRemoveAdminAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{10}
+	return fileDescriptor_de2a06c2ec80785c, []int{12}
 }
 func (m *MsgRemoveAdminAccount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -458,7 +536,7 @@ func (m *MsgRemoveAdminAccountResponse) Reset()         { *m = MsgRemoveAdminAcc
 func (m *MsgRemoveAdminAccountResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveAdminAccountResponse) ProtoMessage()    {}
 func (*MsgRemoveAdminAccountResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{11}
+	return fileDescriptor_de2a06c2ec80785c, []int{13}
 }
 func (m *MsgRemoveAdminAccountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -497,7 +575,7 @@ func (m *MsgRemoveSystemAccount) Reset()         { *m = MsgRemoveSystemAccount{}
 func (m *MsgRemoveSystemAccount) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveSystemAccount) ProtoMessage()    {}
 func (*MsgRemoveSystemAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{12}
+	return fileDescriptor_de2a06c2ec80785c, []int{14}
 }
 func (m *MsgRemoveSystemAccount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -534,7 +612,7 @@ func (m *MsgRemoveSystemAccountResponse) Reset()         { *m = MsgRemoveSystemA
 func (m *MsgRemoveSystemAccountResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveSystemAccountResponse) ProtoMessage()    {}
 func (*MsgRemoveSystemAccountResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{13}
+	return fileDescriptor_de2a06c2ec80785c, []int{15}
 }
 func (m *MsgRemoveSystemAccountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -573,7 +651,7 @@ func (m *MsgSetMaxMintAllowance) Reset()         { *m = MsgSetMaxMintAllowance{}
 func (m *MsgSetMaxMintAllowance) String() string { return proto.CompactTextString(m) }
 func (*MsgSetMaxMintAllowance) ProtoMessage()    {}
 func (*MsgSetMaxMintAllowance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{14}
+	return fileDescriptor_de2a06c2ec80785c, []int{16}
 }
 func (m *MsgSetMaxMintAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -610,7 +688,7 @@ func (m *MsgSetMaxMintAllowanceResponse) Reset()         { *m = MsgSetMaxMintAll
 func (m *MsgSetMaxMintAllowanceResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSetMaxMintAllowanceResponse) ProtoMessage()    {}
 func (*MsgSetMaxMintAllowanceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{15}
+	return fileDescriptor_de2a06c2ec80785c, []int{17}
 }
 func (m *MsgSetMaxMintAllowanceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -650,7 +728,7 @@ func (m *MsgSetMintAllowance) Reset()         { *m = MsgSetMintAllowance{} }
 func (m *MsgSetMintAllowance) String() string { return proto.CompactTextString(m) }
 func (*MsgSetMintAllowance) ProtoMessage()    {}
 func (*MsgSetMintAllowance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{16}
+	return fileDescriptor_de2a06c2ec80785c, []int{18}
 }
 func (m *MsgSetMintAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -687,7 +765,7 @@ func (m *MsgSetMintAllowanceResponse) Reset()         { *m = MsgSetMintAllowance
 func (m *MsgSetMintAllowanceResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSetMintAllowanceResponse) ProtoMessage()    {}
 func (*MsgSetMintAllowanceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{17}
+	return fileDescriptor_de2a06c2ec80785c, []int{19}
 }
 func (m *MsgSetMintAllowanceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -726,7 +804,7 @@ func (m *MsgTransferOwnership) Reset()         { *m = MsgTransferOwnership{} }
 func (m *MsgTransferOwnership) String() string { return proto.CompactTextString(m) }
 func (*MsgTransferOwnership) ProtoMessage()    {}
 func (*MsgTransferOwnership) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{18}
+	return fileDescriptor_de2a06c2ec80785c, []int{20}
 }
 func (m *MsgTransferOwnership) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -763,7 +841,7 @@ func (m *MsgTransferOwnershipResponse) Reset()         { *m = MsgTransferOwnersh
 func (m *MsgTransferOwnershipResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgTransferOwnershipResponse) ProtoMessage()    {}
 func (*MsgTransferOwnershipResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{19}
+	return fileDescriptor_de2a06c2ec80785c, []int{21}
 }
 func (m *MsgTransferOwnershipResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -803,6 +881,8 @@ func init() {
 	proto.RegisterType((*MsgBurnResponse)(nil), "florin.v1.MsgBurnResponse")
 	proto.RegisterType((*MsgMint)(nil), "florin.v1.MsgMint")
 	proto.RegisterType((*MsgMintResponse)(nil), "florin.v1.MsgMintResponse")
+	proto.RegisterType((*MsgRecover)(nil), "florin.v1.MsgRecover")
+	proto.RegisterType((*MsgRecoverResponse)(nil), "florin.v1.MsgRecoverResponse")
 	proto.RegisterType((*MsgRemoveAdminAccount)(nil), "florin.v1.MsgRemoveAdminAccount")
 	proto.RegisterType((*MsgRemoveAdminAccountResponse)(nil), "florin.v1.MsgRemoveAdminAccountResponse")
 	proto.RegisterType((*MsgRemoveSystemAccount)(nil), "florin.v1.MsgRemoveSystemAccount")
@@ -818,50 +898,52 @@ func init() {
 func init() { proto.RegisterFile("florin/v1/tx.proto", fileDescriptor_de2a06c2ec80785c) }
 
 var fileDescriptor_de2a06c2ec80785c = []byte{
-	// 673 bytes of a gzipped FileDescriptorProto
+	// 715 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0x3f, 0x6f, 0xd3, 0x4e,
-	0x18, 0x8e, 0xd3, 0x2a, 0x6d, 0x5e, 0xfd, 0xf4, 0x2b, 0xbd, 0x96, 0x2a, 0x72, 0x5b, 0x27, 0x54,
-	0xa2, 0x94, 0xa1, 0xb6, 0x0a, 0x52, 0x07, 0xb6, 0x74, 0x00, 0x31, 0x58, 0x40, 0x5a, 0x84, 0x54,
-	0x09, 0x81, 0xeb, 0x5c, 0x5d, 0x8b, 0xf8, 0x2e, 0xf2, 0x5d, 0x9a, 0x76, 0x85, 0x85, 0x91, 0x95,
-	0xad, 0x0b, 0xdf, 0xa5, 0x63, 0x47, 0xc4, 0x50, 0xa1, 0x66, 0x41, 0x7c, 0x0a, 0xe4, 0xb3, 0x73,
-	0xb5, 0x7d, 0x4e, 0xc2, 0x10, 0xa6, 0xd8, 0xef, 0xfb, 0xbc, 0xcf, 0xf3, 0xe4, 0xfe, 0x3c, 0x32,
-	0xa0, 0xe3, 0x0e, 0x0d, 0x7d, 0x62, 0x9d, 0xee, 0x58, 0xfc, 0xcc, 0xec, 0x86, 0x94, 0x53, 0x54,
-	0x8d, 0x6b, 0xe6, 0xe9, 0x8e, 0xbe, 0xec, 0x51, 0x8f, 0x8a, 0xaa, 0x15, 0x3d, 0xc5, 0x80, 0x8d,
-	0x5d, 0x40, 0x36, 0xf3, 0x9a, 0xae, 0x8b, 0xbb, 0xfc, 0x45, 0x9f, 0xe0, 0x90, 0x9d, 0xf8, 0x5d,
-	0xb4, 0x02, 0x15, 0xe6, 0x7b, 0x04, 0x87, 0x35, 0xad, 0xa1, 0x6d, 0x55, 0x5b, 0xc9, 0xdb, 0x93,
-	0xf9, 0xcf, 0x17, 0xf5, 0xd2, 0xaf, 0x8b, 0x7a, 0x69, 0x63, 0x0d, 0x74, 0x75, 0xae, 0x85, 0x59,
-	0x97, 0x12, 0x86, 0x37, 0x5e, 0xc6, 0xac, 0xed, 0x76, 0xb3, 0x1d, 0xf8, 0xa4, 0xe9, 0xba, 0xb4,
-	0x47, 0xf8, 0x28, 0x56, 0x54, 0x83, 0x39, 0x27, 0x86, 0xd4, 0xca, 0xa2, 0x31, 0x7c, 0x55, 0xf5,
-	0xb2, 0x8c, 0x52, 0xef, 0x15, 0x2c, 0xc5, 0xdd, 0xfd, 0x73, 0xc6, 0x71, 0x30, 0x0d, 0xc1, 0x75,
-	0x58, 0x2d, 0xa0, 0x94, 0x8a, 0xdf, 0x34, 0x98, 0xb3, 0x99, 0xb7, 0xd7, 0x0b, 0xc9, 0x48, 0x19,
-	0x04, 0xb3, 0xc7, 0x21, 0x0d, 0x12, 0x0d, 0xf1, 0x8c, 0x9e, 0x42, 0xc5, 0x09, 0x84, 0xf2, 0x4c,
-	0x54, 0xdd, 0x33, 0x2f, 0xaf, 0xeb, 0xa5, 0x1f, 0xd7, 0xf5, 0x4d, 0xcf, 0xe7, 0x27, 0xbd, 0x23,
-	0xd3, 0xa5, 0x81, 0xe5, 0x52, 0x16, 0x50, 0x96, 0xfc, 0x6c, 0xb3, 0xf6, 0x07, 0x8b, 0x9f, 0x77,
-	0x31, 0x33, 0x9f, 0x13, 0xde, 0x4a, 0xa6, 0xd1, 0x1a, 0x54, 0x23, 0x15, 0x87, 0xf7, 0x42, 0x5c,
-	0x9b, 0x6d, 0x68, 0x5b, 0xff, 0xb5, 0x6e, 0x0b, 0xa9, 0xbf, 0xb1, 0x08, 0x0b, 0x89, 0x4d, 0x69,
-	0xfd, 0x53, 0x6c, 0xdd, 0xf6, 0xc7, 0xac, 0xd0, 0xff, 0x50, 0xe6, 0x34, 0x31, 0x5e, 0xe6, 0x74,
-	0x5a, 0xb6, 0x15, 0x63, 0x91, 0x09, 0x69, 0x6c, 0x1f, 0xee, 0xda, 0xcc, 0x6b, 0xe1, 0x80, 0x9e,
-	0xe2, 0xa9, 0x1d, 0x9c, 0x3a, 0xac, 0x17, 0x92, 0x4a, 0xd5, 0x03, 0x58, 0x91, 0x80, 0xe9, 0x1d,
-	0x9f, 0x06, 0x18, 0xc5, 0xac, 0x52, 0xf7, 0xa3, 0x26, 0x84, 0xf7, 0x31, 0xb7, 0x9d, 0xb3, 0x68,
-	0x1d, 0x9a, 0x9d, 0x0e, 0xed, 0x3b, 0xc4, 0xc5, 0x23, 0x85, 0x6f, 0x77, 0xa1, 0x3c, 0xa5, 0x5d,
-	0x88, 0x6d, 0x16, 0x78, 0x90, 0x36, 0xbf, 0x6a, 0xe2, 0x6e, 0x45, 0x90, 0xbf, 0xf2, 0x38, 0x72,
-	0x71, 0xfe, 0xc1, 0x19, 0x8a, 0xef, 0x68, 0xde, 0x9a, 0xb4, 0xfe, 0x1a, 0x96, 0x6d, 0xe6, 0x1d,
-	0x84, 0x0e, 0x61, 0xc7, 0x38, 0x9c, 0x98, 0x6e, 0x68, 0x15, 0xaa, 0x04, 0xf7, 0xdf, 0xd1, 0x08,
-	0x98, 0x98, 0x9f, 0x27, 0xb8, 0x2f, 0x06, 0x53, 0xaa, 0x06, 0xac, 0x15, 0xd1, 0x0e, 0x65, 0x1f,
-	0xfd, 0xae, 0xc0, 0x8c, 0xcd, 0x3c, 0xf4, 0x06, 0x16, 0xf2, 0xb9, 0xba, 0x6e, 0xca, 0x3c, 0x36,
-	0xd5, 0xf8, 0xd4, 0xef, 0x8f, 0x6d, 0x0f, 0x05, 0x04, 0x71, 0x2e, 0x5a, 0xf3, 0xc4, 0xd9, 0xb6,
-	0x42, 0x5c, 0x1c, 0xa3, 0xe8, 0x10, 0xee, 0x28, 0x19, 0x6a, 0x28, 0xa3, 0x99, 0xbe, 0xbe, 0x39,
-	0xbe, 0x2f, 0xb9, 0x77, 0x61, 0x56, 0x84, 0x25, 0xca, 0xe2, 0xa3, 0x9a, 0xae, 0xab, 0xb5, 0xf4,
-	0x9c, 0x48, 0xaa, 0xdc, 0x5c, 0x54, 0xcb, 0xcf, 0xa5, 0xc3, 0x04, 0xbd, 0x07, 0x54, 0x90, 0x24,
-	0x8d, 0xec, 0x84, 0x8a, 0xd0, 0xb7, 0x26, 0x21, 0xa4, 0x82, 0x0b, 0x4b, 0x45, 0xa9, 0x71, 0xaf,
-	0x88, 0x20, 0xbb, 0x66, 0x0f, 0x27, 0x42, 0xd2, 0x22, 0x45, 0x09, 0x91, 0x13, 0x29, 0x80, 0xe4,
-	0x45, 0xc6, 0xdc, 0xf1, 0x68, 0xdf, 0x95, 0xfb, 0x6d, 0xa8, 0xe3, 0x19, 0xfa, 0xcd, 0xf1, 0x7d,
-	0xc9, 0xfd, 0x16, 0x16, 0xd5, 0x1b, 0x58, 0xcf, 0x0e, 0x2b, 0x00, 0xfd, 0xc1, 0x04, 0xc0, 0x90,
-	0x7e, 0xef, 0xd9, 0xe5, 0x8d, 0xa1, 0x5d, 0xdd, 0x18, 0xda, 0xcf, 0x1b, 0x43, 0xfb, 0x32, 0x30,
-	0x4a, 0x57, 0x03, 0xa3, 0xf4, 0x7d, 0x60, 0x94, 0x0e, 0xb7, 0x53, 0xb1, 0x42, 0xe8, 0x51, 0x07,
-	0x6f, 0x3b, 0x8c, 0x61, 0xce, 0xac, 0xe4, 0x33, 0xe9, 0x6c, 0xf8, 0x20, 0x12, 0xe6, 0xa8, 0x22,
-	0xbe, 0x87, 0x1e, 0xff, 0x09, 0x00, 0x00, 0xff, 0xff, 0xec, 0x04, 0xd8, 0xc0, 0x46, 0x09, 0x00,
-	0x00,
+	0x18, 0x8e, 0xd3, 0xaa, 0x69, 0x5e, 0xfd, 0xf4, 0x2b, 0xbd, 0xfe, 0x51, 0xe4, 0x36, 0x4e, 0xa8,
+	0x44, 0x29, 0x43, 0x1d, 0x15, 0xa4, 0x0e, 0x2c, 0x28, 0x1d, 0x40, 0x0c, 0x16, 0x90, 0x16, 0x21,
+	0x55, 0x42, 0xe0, 0x3a, 0x57, 0x37, 0x22, 0xbe, 0x8b, 0x7c, 0x97, 0xa4, 0x5d, 0x61, 0x61, 0x64,
+	0x65, 0xeb, 0xc2, 0xc4, 0x17, 0xe9, 0xd8, 0x11, 0x31, 0x54, 0xa8, 0x59, 0xf8, 0x18, 0xc8, 0x67,
+	0xe7, 0xea, 0x3f, 0x97, 0xa4, 0x48, 0x61, 0x8a, 0xfd, 0xbe, 0xcf, 0xfb, 0x3c, 0x4f, 0x2e, 0xaf,
+	0x9f, 0x18, 0xd0, 0x71, 0x9b, 0xfa, 0x2d, 0x52, 0xeb, 0xed, 0xd4, 0xf8, 0xa9, 0xd9, 0xf1, 0x29,
+	0xa7, 0xa8, 0x18, 0xd6, 0xcc, 0xde, 0x8e, 0xbe, 0xec, 0x52, 0x97, 0x8a, 0x6a, 0x2d, 0xb8, 0x0a,
+	0x01, 0x1b, 0xbb, 0x80, 0x2c, 0xe6, 0xd6, 0x1d, 0x07, 0x77, 0xf8, 0x8b, 0x3e, 0xc1, 0x3e, 0x3b,
+	0x69, 0x75, 0xd0, 0x2a, 0xcc, 0xb1, 0x96, 0x4b, 0xb0, 0x5f, 0xd2, 0xaa, 0xda, 0x56, 0xb1, 0x11,
+	0xdd, 0x3d, 0x9e, 0xff, 0x7c, 0x5e, 0xc9, 0xfd, 0x3e, 0xaf, 0xe4, 0x36, 0xd6, 0x41, 0xcf, 0xce,
+	0x35, 0x30, 0xeb, 0x50, 0xc2, 0xf0, 0xc6, 0xcb, 0x90, 0xb5, 0xd9, 0xac, 0x37, 0xbd, 0x16, 0xa9,
+	0x3b, 0x0e, 0xed, 0x12, 0x3e, 0x8a, 0x15, 0x95, 0xa0, 0x60, 0x87, 0x90, 0x52, 0x5e, 0x34, 0x86,
+	0xb7, 0x59, 0xbd, 0x24, 0xa3, 0xd4, 0x7b, 0x05, 0x4b, 0x61, 0x77, 0xff, 0x8c, 0x71, 0xec, 0x4d,
+	0x43, 0xb0, 0x0c, 0x6b, 0x0a, 0x4a, 0xa9, 0xf8, 0x4d, 0x83, 0x82, 0xc5, 0xdc, 0xbd, 0xae, 0x4f,
+	0x46, 0xca, 0x20, 0x98, 0x3d, 0xf6, 0xa9, 0x17, 0x69, 0x88, 0x6b, 0xf4, 0x14, 0xe6, 0x6c, 0x4f,
+	0x28, 0xcf, 0x04, 0xd5, 0x3d, 0xf3, 0xe2, 0xaa, 0x92, 0xfb, 0x79, 0x55, 0xd9, 0x74, 0x5b, 0xfc,
+	0xa4, 0x7b, 0x64, 0x3a, 0xd4, 0xab, 0x39, 0x94, 0x79, 0x94, 0x45, 0x1f, 0xdb, 0xac, 0xf9, 0xa1,
+	0xc6, 0xcf, 0x3a, 0x98, 0x99, 0xcf, 0x09, 0x6f, 0x44, 0xd3, 0x68, 0x1d, 0x8a, 0x81, 0x8a, 0xcd,
+	0xbb, 0x3e, 0x2e, 0xcd, 0x56, 0xb5, 0xad, 0xff, 0x1a, 0x37, 0x85, 0xd8, 0xd7, 0x58, 0x84, 0x85,
+	0xc8, 0xa6, 0xb4, 0xfe, 0x29, 0xb4, 0x6e, 0xb5, 0xc6, 0x9c, 0xd0, 0xff, 0x90, 0xe7, 0x34, 0x32,
+	0x9e, 0xe7, 0x74, 0x5a, 0xb6, 0x33, 0xc6, 0x02, 0x13, 0xd2, 0x58, 0x07, 0xc0, 0x62, 0x6e, 0x03,
+	0x3b, 0xb4, 0x87, 0xfd, 0xbf, 0x3a, 0xd5, 0xd0, 0xee, 0x8c, 0xb4, 0x7b, 0xdb, 0xd3, 0x59, 0x16,
+	0x7b, 0x1a, 0x29, 0x4a, 0x1f, 0xfb, 0xb0, 0x22, 0xaa, 0x1e, 0xed, 0xe1, 0xa9, 0x2d, 0x70, 0x05,
+	0xca, 0x4a, 0x52, 0xa9, 0x7a, 0x00, 0xab, 0x12, 0x30, 0xbd, 0x35, 0xae, 0x82, 0xa1, 0x66, 0x95,
+	0xba, 0x1f, 0x35, 0x21, 0xbc, 0x8f, 0xb9, 0x65, 0x9f, 0x06, 0xbf, 0x47, 0xbd, 0xdd, 0xa6, 0x7d,
+	0x9b, 0x38, 0x78, 0xa4, 0xf0, 0xcd, 0x36, 0xe4, 0xa7, 0xb4, 0x0d, 0xa1, 0x4d, 0x85, 0x07, 0x69,
+	0xf3, 0xab, 0x26, 0x9e, 0xf1, 0x00, 0x72, 0x2b, 0x8f, 0x23, 0x0f, 0xe7, 0x1f, 0xec, 0x72, 0x98,
+	0x15, 0x69, 0x6b, 0xd2, 0xfa, 0x6b, 0x58, 0xb6, 0x98, 0x7b, 0xe0, 0xdb, 0x84, 0x1d, 0x63, 0x7f,
+	0x62, 0xca, 0xa2, 0x35, 0x28, 0x12, 0xdc, 0x7f, 0x47, 0x03, 0x60, 0x64, 0x7e, 0x9e, 0xe0, 0xbe,
+	0x18, 0x8c, 0xa9, 0x1a, 0xb0, 0xae, 0xa2, 0x1d, 0xca, 0x3e, 0xfc, 0x5e, 0x80, 0x19, 0x8b, 0xb9,
+	0xe8, 0x0d, 0x2c, 0xa4, 0xf3, 0xbd, 0x6c, 0xca, 0xff, 0x05, 0x33, 0x1b, 0xe3, 0xfa, 0xbd, 0xb1,
+	0xed, 0xa1, 0x80, 0x20, 0x4e, 0x45, 0x7c, 0x9a, 0x38, 0xd9, 0xce, 0x10, 0xab, 0xe3, 0x1c, 0x1d,
+	0xc2, 0x9d, 0x4c, 0x96, 0x1b, 0x99, 0xd1, 0x44, 0x5f, 0xdf, 0x1c, 0xdf, 0x97, 0xdc, 0xbb, 0x30,
+	0x2b, 0x42, 0x1b, 0x25, 0xf1, 0x41, 0x4d, 0xd7, 0xb3, 0xb5, 0xf8, 0x9c, 0x48, 0xcc, 0xd4, 0x5c,
+	0x50, 0x4b, 0xcf, 0xc5, 0x43, 0x0d, 0x3d, 0x81, 0xc2, 0x30, 0xd1, 0x56, 0x92, 0xb0, 0xa8, 0xac,
+	0x97, 0x95, 0x65, 0x49, 0xf0, 0x1e, 0x90, 0x22, 0x8a, 0xaa, 0xe9, 0xa1, 0x34, 0x42, 0xdf, 0x9a,
+	0x84, 0x90, 0x0a, 0x0e, 0x2c, 0xa9, 0x62, 0xe7, 0xae, 0x8a, 0x20, 0x79, 0xe8, 0x0f, 0x26, 0x42,
+	0xe2, 0x22, 0xaa, 0x88, 0x49, 0x89, 0x28, 0x20, 0x69, 0x91, 0x31, 0x21, 0x11, 0x2c, 0x4e, 0x26,
+	0x20, 0x8c, 0xec, 0x78, 0x82, 0x7e, 0x73, 0x7c, 0x5f, 0x72, 0xbf, 0x85, 0xc5, 0xec, 0x23, 0x5c,
+	0x49, 0x0e, 0x67, 0x00, 0xfa, 0xfd, 0x09, 0x80, 0x21, 0xfd, 0xde, 0xb3, 0x8b, 0x6b, 0x43, 0xbb,
+	0xbc, 0x36, 0xb4, 0x5f, 0xd7, 0x86, 0xf6, 0x65, 0x60, 0xe4, 0x2e, 0x07, 0x46, 0xee, 0xc7, 0xc0,
+	0xc8, 0x1d, 0x6e, 0xc7, 0x72, 0x89, 0xd0, 0xa3, 0x36, 0xde, 0xb6, 0x19, 0xc3, 0x9c, 0xd5, 0xa2,
+	0xf7, 0xbd, 0xd3, 0xe1, 0x85, 0x88, 0xa8, 0xa3, 0x39, 0xf1, 0x62, 0xf7, 0xe8, 0x4f, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0x7e, 0xa5, 0xc6, 0x29, 0x0f, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -881,7 +963,7 @@ type MsgClient interface {
 	AddSystemAccount(ctx context.Context, in *MsgAddSystemAccount, opts ...grpc.CallOption) (*MsgAddSystemAccountResponse, error)
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error)
 	Mint(ctx context.Context, in *MsgMint, opts ...grpc.CallOption) (*MsgMintResponse, error)
-	// TODO: Is recover (0x6eb4c609) needed?
+	Recover(ctx context.Context, in *MsgRecover, opts ...grpc.CallOption) (*MsgRecoverResponse, error)
 	RemoveAdminAccount(ctx context.Context, in *MsgRemoveAdminAccount, opts ...grpc.CallOption) (*MsgRemoveAdminAccountResponse, error)
 	RemoveSystemAccount(ctx context.Context, in *MsgRemoveSystemAccount, opts ...grpc.CallOption) (*MsgRemoveSystemAccountResponse, error)
 	SetMaxMintAllowance(ctx context.Context, in *MsgSetMaxMintAllowance, opts ...grpc.CallOption) (*MsgSetMaxMintAllowanceResponse, error)
@@ -942,6 +1024,15 @@ func (c *msgClient) Mint(ctx context.Context, in *MsgMint, opts ...grpc.CallOpti
 	return out, nil
 }
 
+func (c *msgClient) Recover(ctx context.Context, in *MsgRecover, opts ...grpc.CallOption) (*MsgRecoverResponse, error) {
+	out := new(MsgRecoverResponse)
+	err := c.cc.Invoke(ctx, "/florin.v1.Msg/Recover", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) RemoveAdminAccount(ctx context.Context, in *MsgRemoveAdminAccount, opts ...grpc.CallOption) (*MsgRemoveAdminAccountResponse, error) {
 	out := new(MsgRemoveAdminAccountResponse)
 	err := c.cc.Invoke(ctx, "/florin.v1.Msg/RemoveAdminAccount", in, out, opts...)
@@ -994,7 +1085,7 @@ type MsgServer interface {
 	AddSystemAccount(context.Context, *MsgAddSystemAccount) (*MsgAddSystemAccountResponse, error)
 	Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error)
 	Mint(context.Context, *MsgMint) (*MsgMintResponse, error)
-	// TODO: Is recover (0x6eb4c609) needed?
+	Recover(context.Context, *MsgRecover) (*MsgRecoverResponse, error)
 	RemoveAdminAccount(context.Context, *MsgRemoveAdminAccount) (*MsgRemoveAdminAccountResponse, error)
 	RemoveSystemAccount(context.Context, *MsgRemoveSystemAccount) (*MsgRemoveSystemAccountResponse, error)
 	SetMaxMintAllowance(context.Context, *MsgSetMaxMintAllowance) (*MsgSetMaxMintAllowanceResponse, error)
@@ -1020,6 +1111,9 @@ func (*UnimplementedMsgServer) Burn(ctx context.Context, req *MsgBurn) (*MsgBurn
 }
 func (*UnimplementedMsgServer) Mint(ctx context.Context, req *MsgMint) (*MsgMintResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Mint not implemented")
+}
+func (*UnimplementedMsgServer) Recover(ctx context.Context, req *MsgRecover) (*MsgRecoverResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Recover not implemented")
 }
 func (*UnimplementedMsgServer) RemoveAdminAccount(ctx context.Context, req *MsgRemoveAdminAccount) (*MsgRemoveAdminAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveAdminAccount not implemented")
@@ -1127,6 +1221,24 @@ func _Msg_Mint_Handler(srv interface{}, ctx context.Context, dec func(interface{
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Mint(ctx, req.(*MsgMint))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_Recover_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRecover)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).Recover(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/florin.v1.Msg/Recover",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).Recover(ctx, req.(*MsgRecover))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1244,6 +1356,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Mint",
 			Handler:    _Msg_Mint_Handler,
+		},
+		{
+			MethodName: "Recover",
+			Handler:    _Msg_Recover_Handler,
 		},
 		{
 			MethodName: "RemoveAdminAccount",
@@ -1583,6 +1699,80 @@ func (m *MsgMintResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgMintResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRecover) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRecover) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRecover) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Signature) > 0 {
+		i -= len(m.Signature)
+		copy(dAtA[i:], m.Signature)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Signature)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.To) > 0 {
+		i -= len(m.To)
+		copy(dAtA[i:], m.To)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.To)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.From) > 0 {
+		i -= len(m.From)
+		copy(dAtA[i:], m.From)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.From)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Signer) > 0 {
+		i -= len(m.Signer)
+		copy(dAtA[i:], m.Signer)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRecoverResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRecoverResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRecoverResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2040,6 +2230,40 @@ func (m *MsgMint) Size() (n int) {
 }
 
 func (m *MsgMintResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRecover) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Signer)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.From)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.To)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Signature)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRecoverResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3051,6 +3275,236 @@ func (m *MsgMintResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgMintResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRecover) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRecover: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRecover: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signer = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.From = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.To = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signature = append(m.Signature[:0], dAtA[iNdEx:postIndex]...)
+			if m.Signature == nil {
+				m.Signature = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRecoverResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRecoverResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRecoverResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

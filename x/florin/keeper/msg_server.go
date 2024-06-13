@@ -134,6 +134,44 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 	})
 }
 
+func (k msgServer) Recover(goCtx context.Context, msg *types.MsgRecover) (*types.MsgRecoverResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	if !k.IsSystem(ctx, msg.Signer) {
+		return nil, types.ErrInvalidSystem
+	}
+
+	from := sdk.MustAccAddressFromBech32(msg.From)
+	account := k.accountKeeper.GetAccount(ctx, from)
+	if account == nil || account.GetPubKey() == nil {
+		return nil, types.ErrNoPubKey
+	}
+
+	if !adr36.VerifySignature(
+		account.GetPubKey(),
+		[]byte("I hereby declare that I am the address owner."),
+		msg.Signature,
+	) {
+		return nil, types.ErrInvalidSignature
+	}
+
+	balance := k.bankKeeper.GetBalance(ctx, from, k.Denom)
+	if balance.IsZero() {
+		return &types.MsgRecoverResponse{}, nil
+	}
+
+	to := sdk.MustAccAddressFromBech32(msg.To)
+	err := k.bankKeeper.SendCoins(ctx, from, to, sdk.NewCoins(balance))
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to transfer from user to user")
+	}
+
+	return &types.MsgRecoverResponse{}, ctx.EventManager().EmitTypedEvent(&types.Recovered{
+		From:   msg.From,
+		To:     msg.To,
+		Amount: balance.Amount,
+	})
+}
+
 func (k msgServer) RemoveAdminAccount(goCtx context.Context, msg *types.MsgRemoveAdminAccount) (*types.MsgRemoveAdminAccountResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_, err := k.EnsureOwner(ctx, msg.Signer)

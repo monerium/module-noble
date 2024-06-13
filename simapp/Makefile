@@ -16,10 +16,11 @@ ldflags := $(LDFLAGS)
 ldflags += -X github.com/cosmos/cosmos-sdk/version.Name=simapp \
 	-X github.com/cosmos/cosmos-sdk/version.AppName=simd \
 	-X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
-	-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT)
+	-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+	-X github.com/cosmos/cosmos-sdk/version.BuildTags='ledger'
 ldflags := $(strip $(ldflags))
 
-BUILD_FLAGS := -ldflags '$(ldflags)'
+BUILD_FLAGS := -ldflags '$(ldflags)' -tags 'ledger'
 
 build:
 	@go build -mod=readonly $(BUILD_FLAGS) -o $(PWD)/build/ ./...

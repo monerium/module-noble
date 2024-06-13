@@ -1,6 +1,7 @@
 package florin
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/noble-assets/florin/x/florin/client/cli"
 	"github.com/noble-assets/florin/x/florin/keeper"
 	"github.com/noble-assets/florin/x/florin/types"
 	"github.com/noble-assets/florin/x/florin/types/blacklist"
@@ -59,11 +61,23 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingCo
 
 func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
-func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {}
+func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 
-func (AppModuleBasic) GetTxCmd() *cobra.Command { return nil }
+	if err := blacklist.RegisterQueryHandlerClient(context.Background(), mux, blacklist.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
+}
 
-func (AppModuleBasic) GetQueryCmd() *cobra.Command { return nil }
+func (AppModuleBasic) GetTxCmd() *cobra.Command {
+	return cli.GetTxCmd()
+}
+
+func (AppModuleBasic) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
 
 //
 
@@ -103,8 +117,10 @@ func (AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier { return
 
 func (m AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(m.keeper))
+	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(m.keeper))
 
 	blacklist.RegisterMsgServer(cfg.MsgServer(), keeper.NewBlacklistMsgServer(m.keeper))
+	blacklist.RegisterQueryServer(cfg.QueryServer(), keeper.NewBlacklistQueryServer(m.keeper))
 }
 
 func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }

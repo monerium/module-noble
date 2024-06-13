@@ -29,6 +29,10 @@ func (k BankKeeper) BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins)
 	return nil
 }
 
+func (k BankKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin {
+	return sdk.NewCoin(denom, k.Balances[addr.String()].AmountOf(denom))
+}
+
 func (k BankKeeper) MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error {
 	address := authtypes.NewModuleAddress(moduleName).String()
 	k.Balances[address] = k.Balances[address].Add(amt...)

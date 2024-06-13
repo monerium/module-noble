@@ -68,3 +68,18 @@ message OwnershipTransferred {
   // new_owner is the address of the new owner.
   string new_owner = 2;
 }
+
+// Emitted when the module owner recovers tokens.
+message Recovered {
+  // from is the address that tokens were recovered from.
+  string from = 1;
+
+  // to is the address the recovered tokens were sent to.
+  string to = 2;
+
+  // amount is the amount of recovered tokens.
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}

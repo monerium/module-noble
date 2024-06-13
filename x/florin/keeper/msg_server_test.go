@@ -285,6 +285,113 @@ func TestMint(t *testing.T) {
 	require.Equal(t, "florin.v1.MintAllowance", events[1].Type)
 }
 
+func TestRecover(t *testing.T) {
+	// The below signature was generated using Keplr's signArbitrary function.
+	//
+	// share bubble good swarm sustain leaf burst build spirit inflict undo shadow antique warm soft praise foam slab laptop hint giggle also book treat
+	//
+	// {
+	//     "pub_key": {
+	//         "type": "tendermint/PubKeySecp256k1",
+	//         "value": "AlE8CxHR19ID5lxrVtTxSgJFlK3T+eYtyDM/vBA3Fowr"
+	//     },
+	//     "signature": "qe5dDxdOgY8B2LjMqnK5/5iRIFOCwdTu0G5ZQ66bHzVgP15V2Fb+fzOH0wPAUC5GUQ23M1cSvysulzKIbXY/4Q=="
+	// }
+	bz, _ := base64.StdEncoding.DecodeString("AlE8CxHR19ID5lxrVtTxSgJFlK3T+eYtyDM/vBA3Fowr")
+	pubkey, _ := codectypes.NewAnyWithValue(&secp256k1.PubKey{Key: bz})
+
+	account := mocks.AccountKeeper{
+		Accounts: make(map[string]authtypes.AccountI),
+	}
+	bank := mocks.BankKeeper{
+		Balances:    make(map[string]sdk.Coins),
+		Restriction: mocks.NoOpSendRestrictionFn,
+	}
+	k, ctx := mocks.FlorinWithKeepers(account, bank)
+	goCtx := sdk.WrapSDKContext(ctx)
+	server := keeper.NewMsgServer(k)
+
+	// ARRANGE: Set system in state.
+	system := utils.TestAccount()
+	k.SetSystem(ctx, system.Address)
+
+	// ACT: Attempt to recover with invalid signer.
+	_, err := server.Recover(goCtx, &types.MsgRecover{
+		Signer: utils.TestAccount().Address,
+	})
+	// ASSERT: The action should've failed due to invalid signer.
+	require.ErrorIs(t, err, types.ErrInvalidSystem)
+
+	// ACT: Attempt to recover with no account in state.
+	_, err = server.Recover(goCtx, &types.MsgRecover{
+		Signer: system.Address,
+		From:   "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+	})
+	// ASSERT: The action should've failed due to no account.
+	require.ErrorIs(t, err, types.ErrNoPubKey)
+
+	// ARRANGE: Set account in state, without pubkey.
+	account.Accounts["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"] = &authtypes.BaseAccount{}
+
+	// ACT: Attempt to recover with no pubkey in state.
+	_, err = server.Recover(goCtx, &types.MsgRecover{
+		Signer: system.Address,
+		From:   "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+	})
+	// ASSERT: The action should've failed due to no pubkey.
+	require.ErrorIs(t, err, types.ErrNoPubKey)
+
+	// ARRANGE: Set pubkey in state.
+	account.Accounts["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"] = &authtypes.BaseAccount{
+		Address:       "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+		PubKey:        pubkey,
+		AccountNumber: 0,
+		Sequence:      0,
+	}
+
+	// ACT: Attempt to recover with invalid signature.
+	signature, _ := base64.StdEncoding.DecodeString("QBrRfIqjdBvXx9zaBcuiE9P5SVesxFO/He3deyx2OE0NoSNqwmSb7b5iP2UhZRI1duiOeho3+NETUkCBv14zjQ==")
+	_, err = server.Recover(goCtx, &types.MsgRecover{
+		Signer:    system.Address,
+		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+		Signature: signature,
+	})
+	// ASSERT: The action should've failed due to invalid signature.
+	require.ErrorIs(t, err, types.ErrInvalidSignature)
+
+	// ARRANGE: Generate a recipient address.
+	recipient := utils.TestAccount()
+
+	// ACT: Attempt to recover with no balance.
+	signature, _ = base64.StdEncoding.DecodeString("qe5dDxdOgY8B2LjMqnK5/5iRIFOCwdTu0G5ZQ66bHzVgP15V2Fb+fzOH0wPAUC5GUQ23M1cSvysulzKIbXY/4Q==")
+	_, err = server.Recover(goCtx, &types.MsgRecover{
+		Signer:    system.Address,
+		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+		To:        recipient.Address,
+		Signature: signature,
+	})
+	// ASSERT: The action should've succeeded.
+	require.NoError(t, err)
+
+	// ARRANGE: Give user 1 $EURe.
+	bank.Balances["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"] = sdk.NewCoins(sdk.NewCoin(k.Denom, One))
+
+	// ACT: Attempt to recover.
+	_, err = server.Recover(goCtx, &types.MsgRecover{
+		Signer:    system.Address,
+		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+		To:        recipient.Address,
+		Signature: signature,
+	})
+	// ASSERT: The action should've succeeded.
+	require.NoError(t, err)
+	require.True(t, bank.Balances["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"].IsZero())
+	require.Equal(t, One, bank.Balances[recipient.Address].AmountOf(k.Denom))
+	events := ctx.EventManager().Events()
+	require.Len(t, events, 2)
+	require.Equal(t, "florin.v1.Recovered", events[1].Type)
+}
+
 func TestRemoveAdminAccount(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
 	goCtx := sdk.WrapSDKContext(ctx)

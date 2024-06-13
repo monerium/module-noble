@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package florin.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/noble-assets/florin/x/florin/types";
+
+service Query {
+  rpc Owner(QueryOwner) returns (QueryOwnerResponse) {
+    option (google.api.http).get = "/florin/v1/owner";
+  }
+
+  rpc MaxMintAllowance(QueryMaxMintAllowance) returns (QueryMaxMintAllowanceResponse) {
+    option (google.api.http).get = "/florin/v1/max_mint_allowance";
+  }
+
+  // TODO: Add additional queries.
+}
+
+//
+
+message QueryOwner {}
+
+message QueryOwnerResponse {
+  string owner = 1;
+  string pending_owner = 2;
+}
+
+message QueryMaxMintAllowance {}
+
+message QueryMaxMintAllowanceResponse {
+  string max_mint_allowance = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}

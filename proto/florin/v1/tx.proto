@@ -12,7 +12,7 @@ service Msg {
   rpc AddSystemAccount(MsgAddSystemAccount) returns (MsgAddSystemAccountResponse);
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
   rpc Mint(MsgMint) returns (MsgMintResponse);
-  // TODO: Is recover (0x6eb4c609) needed?
+  rpc Recover(MsgRecover) returns (MsgRecoverResponse);
   rpc RemoveAdminAccount(MsgRemoveAdminAccount) returns (MsgRemoveAdminAccountResponse);
   rpc RemoveSystemAccount(MsgRemoveSystemAccount) returns (MsgRemoveSystemAccountResponse);
   rpc SetMaxMintAllowance(MsgSetMaxMintAllowance) returns (MsgSetMaxMintAllowanceResponse);
@@ -87,6 +87,20 @@ message MsgMint {
 
 // MsgMintResponse is the response of the Mint action.
 message MsgMintResponse {}
+
+// MsgRecover implements the recover (0x6eb4c609) method.
+message MsgRecover {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string from = 2;
+  string to = 3;
+  bytes signature = 4;
+}
+
+// MsgRecoverResponse is the response of the Recover action.
+message MsgRecoverResponse {}
 
 // MsgRemoveAdminAccount implements the removeAdminAccount (0x67a89a72) method.
 message MsgRemoveAdminAccount {
