@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	MaxMintAllowance, _ = sdk.NewIntFromString("50000000000000000000000000000000")
+	MaxMintAllowance, _ = sdk.NewIntFromString("3000000000000000000000000")
 	One, _              = sdk.NewIntFromString("1000000000000000000")
 )
 

@@ -8,8 +8,11 @@ import (
 )
 
 func DefaultGenesisState() *GenesisState {
+	maxMintAllowance, _ := sdk.NewIntFromString("3000000000000000000000000")
+
 	return &GenesisState{
-		BlacklistState: blacklist.DefaultGenesisState(),
+		BlacklistState:   blacklist.DefaultGenesisState(),
+		MaxMintAllowance: maxMintAllowance,
 	}
 }
 

@@ -103,7 +103,9 @@ func (msg *MsgBurn) ValidateBasic() error {
 		return fmt.Errorf("invalid from address (%s): %w", msg.From, err)
 	}
 
-	// TODO: Validate amount?
+	if !msg.Amount.IsPositive() {
+		return fmt.Errorf("amount must be positive (%s)", msg.Amount)
+	}
 
 	return nil
 }
@@ -134,7 +136,9 @@ func (msg *MsgMint) ValidateBasic() error {
 		return fmt.Errorf("invalid to address (%s): %w", msg.To, err)
 	}
 
-	// TODO: Validate amount?
+	if !msg.Amount.IsPositive() {
+		return fmt.Errorf("amount must be positive (%s)", msg.Amount)
+	}
 
 	return nil
 }
@@ -252,7 +256,9 @@ func (msg *MsgSetMaxMintAllowance) ValidateBasic() error {
 		return fmt.Errorf("invalid signer address (%s): %w", msg.Signer, err)
 	}
 
-	// TODO: Validate amount?
+	if !msg.Amount.IsPositive() {
+		return fmt.Errorf("amount must be positive (%s)", msg.Amount)
+	}
 
 	return nil
 }

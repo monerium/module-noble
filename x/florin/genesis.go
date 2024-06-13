@@ -37,11 +37,14 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 		BlacklistState: blacklist.GenesisState{
 			Owner:        k.GetBlacklistOwner(ctx),
 			PendingOwner: k.GetBlacklistPendingOwner(ctx),
-			// TODO: Admins and adversaries
+			Admins:       k.GetBlacklistAdmins(ctx),
+			Adversaries:  k.GetAdversaries(ctx),
 		},
-		Owner:        k.GetOwner(ctx),
-		PendingOwner: k.GetPendingOwner(ctx),
-		// TODO: Systems, admins and mint allowances.
+		Owner:            k.GetOwner(ctx),
+		PendingOwner:     k.GetPendingOwner(ctx),
+		Systems:          k.GetSystems(ctx),
+		Admins:           k.GetAdmins(ctx),
+		MintAllowances:   k.GetMintAllowances(ctx),
 		MaxMintAllowance: k.GetMaxMintAllowance(ctx),
 	}
 }

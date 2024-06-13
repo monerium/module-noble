@@ -12,11 +12,20 @@ service Query {
     option (google.api.http).get = "/florin/v1/owner";
   }
 
+  rpc Systems(QuerySystems) returns (QuerySystemsResponse) {
+    option (google.api.http).get = "/florin/v1/systems";
+  }
+
+  rpc Admins(QueryAdmins) returns (QueryAdminsResponse) {
+    option (google.api.http).get = "/florin/v1/admins";
+  }
+
   rpc MaxMintAllowance(QueryMaxMintAllowance) returns (QueryMaxMintAllowanceResponse) {
     option (google.api.http).get = "/florin/v1/max_mint_allowance";
   }
-
-  // TODO: Add additional queries.
+  rpc MintAllowance(QueryMintAllowance) returns (QueryMintAllowanceResponse) {
+    option (google.api.http).get = "/florin/v1/mint_allowance/{account}";
+  }
 }
 
 //
@@ -28,10 +37,33 @@ message QueryOwnerResponse {
   string pending_owner = 2;
 }
 
+message QuerySystems {}
+
+message QuerySystemsResponse {
+  repeated string systems = 1;
+}
+
+message QueryAdmins {}
+
+message QueryAdminsResponse {
+  repeated string admins = 1;
+}
+
 message QueryMaxMintAllowance {}
 
 message QueryMaxMintAllowanceResponse {
   string max_mint_allowance = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryMintAllowance {
+  string account = 1;
+}
+
+message QueryMintAllowanceResponse {
+  string allowance = 1 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];

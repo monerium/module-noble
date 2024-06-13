@@ -19,6 +19,8 @@ func GetBlacklistQueryCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(QueryBlacklistOwner())
+	cmd.AddCommand(QueryBlacklistAdmins())
+	cmd.AddCommand(QueryAdversaries())
 
 	return cmd
 }
@@ -33,6 +35,52 @@ func QueryBlacklistOwner() *cobra.Command {
 			queryClient := blacklist.NewQueryClient(clientCtx)
 
 			res, err := queryClient.Owner(context.Background(), &blacklist.QueryOwner{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func QueryBlacklistAdmins() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "admins",
+		Short: "Query the submodule's admin accounts",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := blacklist.NewQueryClient(clientCtx)
+
+			res, err := queryClient.Admins(context.Background(), &blacklist.QueryAdmins{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func QueryAdversaries() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "adversaries",
+		Short: "Query the banned adversary accounts",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := blacklist.NewQueryClient(clientCtx)
+
+			res, err := queryClient.Adversaries(context.Background(), &blacklist.QueryAdversaries{})
 			if err != nil {
 				return err
 			}

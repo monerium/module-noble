@@ -11,7 +11,13 @@ service Query {
     option (google.api.http).get = "/florin/blacklist/v1/owner";
   }
 
-  // TODO: Add additional queries.
+  rpc Admins(QueryAdmins) returns (QueryAdminsResponse) {
+    option (google.api.http).get = "/florin/blacklist/v1/admins";
+  }
+
+  rpc Adversaries(QueryAdversaries) returns (QueryAdversariesResponse) {
+    option (google.api.http).get = "/florin/blacklist/v1/adversaries";
+  }
 }
 
 //
@@ -21,4 +27,16 @@ message QueryOwner {}
 message QueryOwnerResponse {
   string owner = 1;
   string pending_owner = 2;
+}
+
+message QueryAdmins {}
+
+message QueryAdminsResponse {
+  repeated string admins = 1;
+}
+
+message QueryAdversaries {}
+
+message QueryAdversariesResponse {
+  repeated string adversaries = 1;
 }

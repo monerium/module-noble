@@ -31,6 +31,30 @@ func (k queryServer) Owner(goCtx context.Context, req *types.QueryOwner) (*types
 	}, nil
 }
 
+func (k queryServer) Systems(goCtx context.Context, req *types.QuerySystems) (*types.QuerySystemsResponse, error) {
+	if req == nil {
+		return nil, errors.ErrInvalidRequest
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	return &types.QuerySystemsResponse{
+		Systems: k.GetSystems(ctx),
+	}, nil
+}
+
+func (k queryServer) Admins(goCtx context.Context, req *types.QueryAdmins) (*types.QueryAdminsResponse, error) {
+	if req == nil {
+		return nil, errors.ErrInvalidRequest
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	return &types.QueryAdminsResponse{
+		Admins: k.GetAdmins(ctx),
+	}, nil
+}
+
 func (k queryServer) MaxMintAllowance(goCtx context.Context, req *types.QueryMaxMintAllowance) (*types.QueryMaxMintAllowanceResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
@@ -40,5 +64,17 @@ func (k queryServer) MaxMintAllowance(goCtx context.Context, req *types.QueryMax
 
 	return &types.QueryMaxMintAllowanceResponse{
 		MaxMintAllowance: k.GetMaxMintAllowance(ctx),
+	}, nil
+}
+
+func (k queryServer) MintAllowance(goCtx context.Context, req *types.QueryMintAllowance) (*types.QueryMintAllowanceResponse, error) {
+	if req == nil {
+		return nil, errors.ErrInvalidRequest
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	return &types.QueryMintAllowanceResponse{
+		Allowance: k.GetMintAllowance(ctx, req.Account),
 	}, nil
 }
