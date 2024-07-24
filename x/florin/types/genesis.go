@@ -2,17 +2,19 @@ package types
 
 import (
 	"fmt"
+	"slices"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/noble-assets/florin/x/florin/types/blacklist"
 )
 
 func DefaultGenesisState() *GenesisState {
-	maxMintAllowance, _ := sdk.NewIntFromString("3000000000000000000000000")
-
 	return &GenesisState{
-		BlacklistState:   blacklist.DefaultGenesisState(),
-		MaxMintAllowance: maxMintAllowance,
+		BlacklistState: blacklist.DefaultGenesisState(),
+		AllowedDenoms:  []string{"ueure"},
+		MaxMintAllowances: map[string]string{
+			"ueure": "3000000000000", // 3,000,000 EURe
+		},
 	}
 }
 
@@ -21,37 +23,69 @@ func (gs *GenesisState) Validate() error {
 		return err
 	}
 
-	if gs.Owner != "" {
-		if _, err := sdk.AccAddressFromBech32(gs.Owner); err != nil {
-			return fmt.Errorf("invalid blacklist owner address (%s): %s", gs.Owner, err)
+	if gs.Authority != "" {
+		if _, err := sdk.AccAddressFromBech32(gs.Authority); err != nil {
+			return fmt.Errorf("invalid authority address (%s): %s", gs.Authority, err)
 		}
 	}
 
-	if gs.PendingOwner != "" {
-		if _, err := sdk.AccAddressFromBech32(gs.PendingOwner); err != nil {
-			return fmt.Errorf("invalid pending blacklist owner address (%s): %s", gs.PendingOwner, err)
+	for denom, owner := range gs.Owners {
+		if !slices.Contains(gs.AllowedDenoms, denom) {
+			return fmt.Errorf("found an owner (%s) for a not allowed denom %s", owner, denom)
+		}
+
+		if _, err := sdk.AccAddressFromBech32(owner); err != nil {
+			return fmt.Errorf("invalid owner address (%s) for denom %s: %s", owner, denom, err)
+		}
+	}
+
+	for denom, pendingOwner := range gs.PendingOwners {
+		if !slices.Contains(gs.AllowedDenoms, denom) {
+			return fmt.Errorf("found a pending owner (%s) for a not allowed denom %s", pendingOwner, denom)
+		}
+
+		if _, err := sdk.AccAddressFromBech32(pendingOwner); err != nil {
+			return fmt.Errorf("invalid pending owner address (%s) for denom %s: %s", pendingOwner, denom, err)
 		}
 	}
 
 	for _, system := range gs.Systems {
-		if _, err := sdk.AccAddressFromBech32(system); err != nil {
-			return fmt.Errorf("invalid system address (%s): %s", system, err)
+		if !slices.Contains(gs.AllowedDenoms, system.Denom) {
+			return fmt.Errorf("found a system account (%s) for a not allowed denom %s", system.Address, system.Denom)
+		}
+
+		if _, err := sdk.AccAddressFromBech32(system.Address); err != nil {
+			return fmt.Errorf("invalid system address (%s) for denom %s: %s", system.Address, system.Denom, err)
 		}
 	}
 
 	for _, admin := range gs.Admins {
-		if _, err := sdk.AccAddressFromBech32(admin); err != nil {
-			return fmt.Errorf("invalid admin address (%s): %s", admin, err)
+		if !slices.Contains(gs.AllowedDenoms, admin.Denom) {
+			return fmt.Errorf("found an admin account (%s) for a not allowed denom %s", admin.Address, admin.Denom)
+		}
+
+		if _, err := sdk.AccAddressFromBech32(admin.Address); err != nil {
+			return fmt.Errorf("invalid admin address (%s) for denom %s: %s", admin.Address, admin.Denom, err)
 		}
 	}
 
-	for address, allowance := range gs.MintAllowances {
-		if _, err := sdk.AccAddressFromBech32(address); err != nil {
-			return fmt.Errorf("invalid address (%s): %s", address, err)
+	for _, entry := range gs.MintAllowances {
+		if !slices.Contains(gs.AllowedDenoms, entry.Denom) {
+			return fmt.Errorf("found a minter allowance (%s) for a not allowed denom %s", entry.Address, entry.Denom)
 		}
 
-		if _, ok := sdk.NewIntFromString(allowance); !ok {
-			return fmt.Errorf("invalid mint allowance (%s)", allowance)
+		if _, err := sdk.AccAddressFromBech32(entry.Address); err != nil {
+			return fmt.Errorf("invalid minter address (%s) for denom %s: %s", entry.Address, entry.Denom, err)
+		}
+	}
+
+	for denom, maxAllowance := range gs.MaxMintAllowances {
+		if !slices.Contains(gs.AllowedDenoms, denom) {
+			return fmt.Errorf("found a max mint allowance (%s) for a not allowed denom %s", maxAllowance, denom)
+		}
+
+		if _, ok := sdk.NewIntFromString(maxAllowance); !ok {
+			return fmt.Errorf("invalid max mint allowance (%s) for denom %s", maxAllowance, denom)
 		}
 	}
 

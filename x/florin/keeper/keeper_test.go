@@ -12,7 +12,7 @@ import (
 func TestSendRestriction(t *testing.T) {
 	keeper, ctx := mocks.FlorinKeeper()
 	sender, recipient := utils.TestAccount(), utils.TestAccount()
-	ONE := sdk.NewCoin(keeper.Denom, sdk.NewInt(1_000_000_000_000_000_000))
+	ONE := sdk.NewCoin("ueure", sdk.NewInt(1_000_000_000_000_000_000))
 
 	// ACT: Attempt transfer with non $EURe coin.
 	ctx = ctx.WithEventManager(sdk.NewEventManager())

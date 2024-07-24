@@ -11,20 +11,36 @@ message GenesisState {
   // blacklist_state is the genesis state of the blacklist submodule.
   florin.blacklist.v1.GenesisState blacklist_state = 1 [(gogoproto.nullable) = false];
 
-  // owner is the address that can control this module.
-  string owner = 2;
-  // pending_owner is the address of the new owner during an ownership transfer.
-  string pending_owner = 3;
+  // authority is the address that controls allowed denoms of this module.
+  string authority = 2;
+  // allowed_denoms is a unique list of denoms that this module is allowed to burn / mint / etc.
+  repeated string allowed_denoms = 3;
+
+  // owners is a mapping between denoms and owner addresses for those tokens.
+  map<string, string> owners = 4;
+  // pending_owners is the mapping between denoms and pending owner addresses.
+  map<string, string> pending_owners = 5;
 
   // systems is the list of addresses that can act as the system.
-  repeated string systems = 4;
+  repeated Account systems = 6 [(gogoproto.nullable) = false];
   // admins is the list of addresses that can act as the admin.
-  repeated string admins = 5;
+  repeated Account admins = 7 [(gogoproto.nullable) = false];
 
-  // mint_allowances is the mapping between system address and mint allowance.
-  map<string, string> mint_allowances = 6;
-  // max_mint_allowance is the maximum allowed mint allowance.
-  string max_mint_allowance = 7 [
+  // mint_allowances is a list of system accounts and their mint allowances.
+  repeated Allowance mint_allowances = 8 [(gogoproto.nullable) = false];
+  // max_mint_allowances is a mapping between denoms and max mint allowances.
+  map<string, string> max_mint_allowances = 9;
+}
+
+message Account {
+  string denom = 1;
+  string address = 2;
+}
+
+message Allowance {
+  string denom = 1;
+  string address = 2;
+  string allowance = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];

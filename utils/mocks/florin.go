@@ -6,6 +6,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/noble-assets/florin/x/florin"
 	"github.com/noble-assets/florin/x/florin/keeper"
 	"github.com/noble-assets/florin/x/florin/types"
 )
@@ -22,12 +23,16 @@ func FlorinWithKeepers(account types.AccountKeeper, bank BankKeeper) (*keeper.Ke
 	types.RegisterInterfaces(reg)
 	_ = codec.NewProtoCodec(reg)
 
-	k := keeper.NewKeeper(key, "aeure", account, bank)
+	k := keeper.NewKeeper(key, account, bank)
 
 	bank = bank.WithSendCoinsRestriction(k.SendRestrictionFn)
 	k.SetBankKeeper(bank)
 
-	return k, testutil.DefaultContext(key, tkey)
+	ctx := testutil.DefaultContext(key, tkey)
+	florin.InitGenesis(ctx, k, *types.DefaultGenesisState())
+	ctx.KVStore(key).Delete(types.MaxMintAllowanceKey("ueure"))
+
+	return k, ctx
 }
 
 //

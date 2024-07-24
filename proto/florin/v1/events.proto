@@ -6,13 +6,25 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/noble-assets/florin/x/florin/types";
 
+// Emitted when a denom is allowed.
+message DenomAllowed {
+  // denom is the denom that was allowed.
+  string denom = 1;
+
+  // owner is the address of the initial owner.
+  string owner = 2;
+}
+
 // Emitted when allowance is set.
 message MintAllowance {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // account is the address whose allowance was set.
-  string account = 1;
+  string account = 2;
 
   // amount is the allowance that was set.
-  string amount = 2 [
+  string amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -20,8 +32,11 @@ message MintAllowance {
 
 // Emitted when max allowance is set.
 message MaxMintAllowance {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // amount is the max allowance that was set.
-  string amount = 1 [
+  string amount = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -29,56 +44,77 @@ message MaxMintAllowance {
 
 // Emitted when system account is added.
 message SystemAccountAdded {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // account is the address that was added.
-  string account = 1;
+  string account = 2;
 }
 
 // Emitted when system account is removed.
 message SystemAccountRemoved {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // account is the address that was removed.
-  string account = 1;
+  string account = 2;
 }
 
 // Emitted when admin account is added.
 message AdminAccountAdded {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // account is the address that was added.
-  string account = 1;
+  string account = 2;
 }
 
 // Emitted when admin account is removed.
 message AdminAccountRemoved {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // account is the address that was removed.
-  string account = 1;
+  string account = 2;
 }
 
 // Emitted when an ownership transfer is started.
 message OwnershipTransferStarted {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // previous_owner is the address of the previous owner.
-  string previous_owner = 1;
+  string previous_owner = 2;
 
   // new_owner is the address of the new owner.
-  string new_owner = 2;
+  string new_owner = 3;
 }
 
 // Emitted when an ownership transfer is finalized.
 message OwnershipTransferred {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // previous_owner is the address of the previous owner.
-  string previous_owner = 1;
+  string previous_owner = 2;
 
   // new_owner is the address of the new owner.
-  string new_owner = 2;
+  string new_owner = 3;
 }
 
 // Emitted when the module owner recovers tokens.
 message Recovered {
+  // denom is the denom that was affected.
+  string denom = 1;
+
   // from is the address that tokens were recovered from.
-  string from = 1;
+  string from = 2;
 
   // to is the address the recovered tokens were sent to.
-  string to = 2;
+  string to = 3;
 
   // amount is the amount of recovered tokens.
-  string amount = 3 [
+  string amount = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];

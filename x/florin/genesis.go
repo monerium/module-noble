@@ -17,19 +17,29 @@ func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genesis types.GenesisState) 
 		k.SetAdversary(ctx, adversary)
 	}
 
-	k.SetOwner(ctx, genesis.Owner)
-	k.SetPendingOwner(ctx, genesis.PendingOwner)
+	k.SetAuthority(ctx, genesis.Authority)
+	for _, denom := range genesis.AllowedDenoms {
+		k.SetAllowedDenom(ctx, denom)
+	}
+	for denom, owner := range genesis.Owners {
+		k.SetOwner(ctx, denom, owner)
+	}
+	for denom, pendingOwner := range genesis.PendingOwners {
+		k.SetPendingOwner(ctx, denom, pendingOwner)
+	}
 	for _, system := range genesis.Systems {
-		k.SetSystem(ctx, system)
+		k.SetSystem(ctx, system.Denom, system.Address)
 	}
 	for _, admin := range genesis.Admins {
-		k.SetAdmin(ctx, admin)
+		k.SetAdmin(ctx, admin.Denom, admin.Address)
 	}
-	for address, rawAllowance := range genesis.MintAllowances {
-		allowance, _ := sdk.NewIntFromString(rawAllowance)
-		k.SetMintAllowance(ctx, address, allowance)
+	for _, item := range genesis.MintAllowances {
+		k.SetMintAllowance(ctx, item.Denom, item.Address, item.Allowance)
 	}
-	k.SetMaxMintAllowance(ctx, genesis.MaxMintAllowance)
+	for denom, rawMaxAllowance := range genesis.MaxMintAllowances {
+		maxAllowance, _ := sdk.NewIntFromString(rawMaxAllowance)
+		k.SetMaxMintAllowance(ctx, denom, maxAllowance)
+	}
 }
 
 func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
@@ -40,11 +50,13 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 			Admins:       k.GetBlacklistAdmins(ctx),
 			Adversaries:  k.GetAdversaries(ctx),
 		},
-		Owner:            k.GetOwner(ctx),
-		PendingOwner:     k.GetPendingOwner(ctx),
-		Systems:          k.GetSystems(ctx),
-		Admins:           k.GetAdmins(ctx),
-		MintAllowances:   k.GetMintAllowances(ctx),
-		MaxMintAllowance: k.GetMaxMintAllowance(ctx),
+		Authority:         k.GetAuthority(ctx),
+		AllowedDenoms:     k.GetAllowedDenoms(ctx),
+		Owners:            k.GetOwners(ctx),
+		PendingOwners:     k.GetPendingOwners(ctx),
+		Systems:           k.GetSystems(ctx),
+		Admins:            k.GetAdmins(ctx),
+		MintAllowances:    k.GetMintAllowances(ctx),
+		MaxMintAllowances: k.GetMaxMintAllowances(ctx),
 	}
 }

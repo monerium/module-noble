@@ -6,6 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/gogo/protobuf/proto"
 	"github.com/noble-assets/florin/x/florin/types"
 	"github.com/spf13/cobra"
 )
@@ -21,25 +22,58 @@ func GetQueryCmd() *cobra.Command {
 
 	cmd.AddCommand(GetBlacklistQueryCmd())
 
-	cmd.AddCommand(QueryOwner())
+	cmd.AddCommand(QueryAllowedDenoms())
+	cmd.AddCommand(QueryOwners())
 	cmd.AddCommand(QuerySystems())
 	cmd.AddCommand(QueryAdmins())
-	cmd.AddCommand(QueryMaxMintAllowance())
+	cmd.AddCommand(QueryMaxMintAllowances())
+	cmd.AddCommand(QueryMintAllowances())
 	cmd.AddCommand(QueryMintAllowance())
 
 	return cmd
 }
 
-func QueryOwner() *cobra.Command {
+func QueryAllowedDenoms() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "owner",
-		Short: "Query the module's owner",
+		Use:   "allowed-denoms",
+		Short: "Query the allowed denoms of this module",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Owner(context.Background(), &types.QueryOwner{})
+			res, err := queryClient.AllowedDenoms(context.Background(), &types.QueryAllowedDenoms{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func QueryOwners() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "owner (denom)",
+		Short: "Query the owner of a specific or all denoms",
+		Args:  cobra.MaximumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			var res proto.Message
+			var err error
+
+			if len(args) == 1 {
+				res, err = queryClient.Owner(context.Background(), &types.QueryOwner{Denom: args[0]})
+			} else {
+				res, err = queryClient.Owners(context.Background(), &types.QueryOwners{})
+			}
+
 			if err != nil {
 				return err
 			}
@@ -55,14 +89,22 @@ func QueryOwner() *cobra.Command {
 
 func QuerySystems() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "systems",
-		Short: "Query the module's system accounts",
-		Args:  cobra.NoArgs,
+		Use:   "systems (denom)",
+		Short: "Query the system accounts of a specific or all denoms",
+		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Systems(context.Background(), &types.QuerySystems{})
+			var res proto.Message
+			var err error
+
+			if len(args) == 1 {
+				res, err = queryClient.SystemsByDenom(context.Background(), &types.QuerySystemsByDenom{Denom: args[0]})
+			} else {
+				res, err = queryClient.Systems(context.Background(), &types.QuerySystems{})
+			}
+
 			if err != nil {
 				return err
 			}
@@ -78,14 +120,22 @@ func QuerySystems() *cobra.Command {
 
 func QueryAdmins() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "admins",
-		Short: "Query the module's admin accounts",
-		Args:  cobra.NoArgs,
+		Use:   "admins (denom)",
+		Short: "Query the admin accounts of a specific or all denoms",
+		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Admins(context.Background(), &types.QueryAdmins{})
+			var res proto.Message
+			var err error
+
+			if len(args) == 1 {
+				res, err = queryClient.AdminsByDenom(context.Background(), &types.QueryAdminsByDenom{Denom: args[0]})
+			} else {
+				res, err = queryClient.Admins(context.Background(), &types.QueryAdmins{})
+			}
+
 			if err != nil {
 				return err
 			}
@@ -99,16 +149,49 @@ func QueryAdmins() *cobra.Command {
 	return cmd
 }
 
-func QueryMaxMintAllowance() *cobra.Command {
+func QueryMaxMintAllowances() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "max-mint-allowance",
-		Short: "Query the max mint allowance",
-		Args:  cobra.NoArgs,
+		Use:   "max-mint-allowance (denom)",
+		Short: "Query the max mint allowance of a specific or all denoms",
+		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.MaxMintAllowance(context.Background(), &types.QueryMaxMintAllowance{})
+			var res proto.Message
+			var err error
+
+			if len(args) == 1 {
+				res, err = queryClient.MaxMintAllowance(context.Background(), &types.QueryMaxMintAllowance{Denom: args[0]})
+			} else {
+				res, err = queryClient.MaxMintAllowances(context.Background(), &types.QueryMaxMintAllowances{})
+			}
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func QueryMintAllowances() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mint-allowances [denom]",
+		Short: "Query the mint allowances of a specific denom",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.MintAllowances(context.Background(), &types.QueryMintAllowances{
+				Denom: args[0],
+			})
 			if err != nil {
 				return err
 			}
@@ -124,15 +207,16 @@ func QueryMaxMintAllowance() *cobra.Command {
 
 func QueryMintAllowance() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-allowance [account]",
-		Short: "Query the mint allowance of a specific account",
-		Args:  cobra.ExactArgs(1),
+		Use:   "mint-allowance [denom] [account]",
+		Short: "Query the mint allowance of a specific system account",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
 			res, err := queryClient.MintAllowance(context.Background(), &types.QueryMintAllowance{
-				Account: args[0],
+				Denom:   args[0],
+				Account: args[1],
 			})
 			if err != nil {
 				return err

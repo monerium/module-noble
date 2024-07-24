@@ -10,6 +10,7 @@ service Msg {
   rpc AcceptOwnership(MsgAcceptOwnership) returns (MsgAcceptOwnershipResponse);
   rpc AddAdminAccount(MsgAddAdminAccount) returns (MsgAddAdminAccountResponse);
   rpc AddSystemAccount(MsgAddSystemAccount) returns (MsgAddSystemAccountResponse);
+  rpc AllowDenom(MsgAllowDenom) returns (MsgAllowDenomResponse);
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
   rpc Mint(MsgMint) returns (MsgMintResponse);
   rpc Recover(MsgRecover) returns (MsgRecoverResponse);
@@ -25,7 +26,8 @@ message MsgAcceptOwnership {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
+  string denom = 1;
+  string signer = 2;
 }
 
 // MsgAcceptOwnershipResponse is the response of the AcceptOwnership action.
@@ -36,8 +38,9 @@ message MsgAddAdminAccount {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string account = 2;
+  string denom = 1;
+  string signer = 2;
+  string account = 3;
 }
 
 // MsgAddAdminAccountResponse is the response of the AddAminAccount action.
@@ -48,25 +51,40 @@ message MsgAddSystemAccount {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string account = 2;
+  string denom = 1;
+  string signer = 2;
+  string account = 3;
 }
 
 // MsgAddSystemAccountResponse is the response of the AddSystemAccount action.
 message MsgAddSystemAccountResponse {}
+
+// MsgAllowDenom is the request of the AllowDenom action.
+message MsgAllowDenom {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string signer = 1;
+  string denom = 2;
+  string owner = 3;
+}
+
+// MsgAllowDenomResponse is the response of the AllowDenom action.
+message MsgAllowDenomResponse {}
 
 // MsgBurn implements the burn (0x8d1247ba) method.
 message MsgBurn {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string from = 2;
-  string amount = 3 [
+  string denom = 1;
+  string signer = 2;
+  string from = 3;
+  string amount = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  bytes signature = 4;
+  bytes signature = 5;
 }
 
 // MsgBurnResponse is the response of the Burn action.
@@ -77,9 +95,10 @@ message MsgMint {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string to = 2;
-  string amount = 3 [
+  string denom = 1;
+  string signer = 2;
+  string to = 3;
+  string amount = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -93,10 +112,11 @@ message MsgRecover {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string from = 2;
-  string to = 3;
-  bytes signature = 4;
+  string denom = 1;
+  string signer = 2;
+  string from = 3;
+  string to = 4;
+  bytes signature = 5;
 }
 
 // MsgRecoverResponse is the response of the Recover action.
@@ -107,8 +127,9 @@ message MsgRemoveAdminAccount {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string account = 2;
+  string denom = 1;
+  string signer = 2;
+  string account = 3;
 }
 
 // MsgRemoveAdminAccountResponse is the response of the RemoveAdminAccount action.
@@ -119,8 +140,9 @@ message MsgRemoveSystemAccount {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string account = 2;
+  string denom = 1;
+  string signer = 2;
+  string account = 3;
 }
 
 // MsgRemoveSystemAccountResponse is the response of the RemoveSystemAccount action.
@@ -131,8 +153,9 @@ message MsgSetMaxMintAllowance {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string amount = 2 [
+  string denom = 1;
+  string signer = 2;
+  string amount = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -146,9 +169,10 @@ message MsgSetMintAllowance {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string account = 2;
-  string amount = 3 [
+  string denom = 1;
+  string signer = 2;
+  string account = 3;
+  string amount = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
@@ -162,8 +186,9 @@ message MsgTransferOwnership {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string new_owner = 2;
+  string denom = 1;
+  string signer = 2;
+  string new_owner = 3;
 }
 
 // MsgTransferOwnershipResponse is the response of the TransferOwnership action.

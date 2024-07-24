@@ -26,6 +26,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(TxAcceptOwnership())
 	cmd.AddCommand(TxAddAdminAccount())
 	cmd.AddCommand(TxAddSystemAccount())
+	cmd.AddCommand(TxAllowDenom())
 	cmd.AddCommand(TxBurn())
 	cmd.AddCommand(TxMint())
 	cmd.AddCommand(TxRemoveAdminAccount())
@@ -39,10 +40,10 @@ func GetTxCmd() *cobra.Command {
 
 func TxAcceptOwnership() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "accept-ownership",
-		Short: "Accept ownership of module",
-		Long:  "Accept ownership of module, assuming there is an pending ownership transfer",
-		Args:  cobra.NoArgs,
+		Use:   "accept-ownership [denom]",
+		Short: "Accept ownership of a specific denom",
+		Long:  "Accept ownership of a specific denom, assuming there is an pending ownership transfer",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -50,6 +51,7 @@ func TxAcceptOwnership() *cobra.Command {
 			}
 
 			msg := &types.MsgAcceptOwnership{
+				Denom:  args[0],
 				Signer: clientCtx.GetFromAddress().String(),
 			}
 
@@ -64,9 +66,9 @@ func TxAcceptOwnership() *cobra.Command {
 
 func TxAddAdminAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-admin-account [account]",
-		Short: "Adds an admin account to the module",
-		Args:  cobra.ExactArgs(1),
+		Use:   "add-admin-account [denom] [account]",
+		Short: "Add an admin account for a specific denom",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -74,8 +76,9 @@ func TxAddAdminAccount() *cobra.Command {
 			}
 
 			msg := &types.MsgAddAdminAccount{
+				Denom:   args[0],
 				Signer:  clientCtx.GetFromAddress().String(),
-				Account: args[0],
+				Account: args[1],
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -89,9 +92,9 @@ func TxAddAdminAccount() *cobra.Command {
 
 func TxAddSystemAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-system-account [account]",
-		Short: "Adds a system account to the module",
-		Args:  cobra.ExactArgs(1),
+		Use:   "add-system-account [denom] [account]",
+		Short: "Add a system account for a specific denom",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -99,8 +102,35 @@ func TxAddSystemAccount() *cobra.Command {
 			}
 
 			msg := &types.MsgAddSystemAccount{
+				Denom:   args[0],
 				Signer:  clientCtx.GetFromAddress().String(),
-				Account: args[0],
+				Account: args[1],
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func TxAllowDenom() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "allow-denom [denom] [owner]",
+		Short: "Allow a new denom with an initial owner",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgAllowDenom{
+				Signer: clientCtx.GetFromAddress().String(),
+				Denom:  args[0],
+				Owner:  args[1],
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -114,23 +144,24 @@ func TxAddSystemAccount() *cobra.Command {
 
 func TxBurn() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [from] [amount]",
-		Short: "Transaction that burns tokens",
-		Args:  cobra.ExactArgs(2),
+		Use:   "burn [denom] [from] [amount]",
+		Short: "Transaction that burns a specific denom",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[1])
+			amount, ok := sdk.NewIntFromString(args[2])
 			if !ok {
 				return errors.New("invalid amount")
 			}
 
 			msg := &types.MsgBurn{
+				Denom:  args[0],
 				Signer: clientCtx.GetFromAddress().String(),
-				From:   args[0],
+				From:   args[1],
 				Amount: amount,
 			}
 
@@ -145,23 +176,24 @@ func TxBurn() *cobra.Command {
 
 func TxMint() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [to] [amount]",
-		Short: "Transaction that mints tokens",
-		Args:  cobra.ExactArgs(2),
+		Use:   "mint [denom] [to] [amount]",
+		Short: "Transaction that mints a specific denom",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[1])
+			amount, ok := sdk.NewIntFromString(args[2])
 			if !ok {
 				return errors.New("invalid amount")
 			}
 
 			msg := &types.MsgMint{
+				Denom:  args[0],
 				Signer: clientCtx.GetFromAddress().String(),
-				To:     args[0],
+				To:     args[1],
 				Amount: amount,
 			}
 
@@ -176,9 +208,9 @@ func TxMint() *cobra.Command {
 
 func TxRemoveAdminAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-admin-account [account]",
-		Short: "Removes an admin account from the module",
-		Args:  cobra.ExactArgs(1),
+		Use:   "remove-admin-account [denom] [account]",
+		Short: "Remove an admin account for a specific denom",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -186,8 +218,9 @@ func TxRemoveAdminAccount() *cobra.Command {
 			}
 
 			msg := &types.MsgRemoveAdminAccount{
+				Denom:   args[0],
 				Signer:  clientCtx.GetFromAddress().String(),
-				Account: args[0],
+				Account: args[1],
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -201,9 +234,9 @@ func TxRemoveAdminAccount() *cobra.Command {
 
 func TxRemoveSystemAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-system-account [account]",
-		Short: "Removes a system account from the module",
-		Args:  cobra.ExactArgs(1),
+		Use:   "remove-system-account [denom] [account]",
+		Short: "Remove a system account for a specific denom",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -211,8 +244,9 @@ func TxRemoveSystemAccount() *cobra.Command {
 			}
 
 			msg := &types.MsgRemoveSystemAccount{
+				Denom:   args[0],
 				Signer:  clientCtx.GetFromAddress().String(),
-				Account: args[0],
+				Account: args[1],
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -226,21 +260,22 @@ func TxRemoveSystemAccount() *cobra.Command {
 
 func TxSetMaxMintAllowance() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-max-mint-allowance [amount]",
-		Short: "Sets the max mint allowance a minter can have",
-		Args:  cobra.ExactArgs(1),
+		Use:   "set-max-mint-allowance [denom] [amount]",
+		Short: "Set the max mint allowance for a specific denom",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[0])
+			amount, ok := sdk.NewIntFromString(args[1])
 			if !ok {
 				return errors.New("invalid amount")
 			}
 
 			msg := &types.MsgSetMaxMintAllowance{
+				Denom:  args[0],
 				Signer: clientCtx.GetFromAddress().String(),
 				Amount: amount,
 			}
@@ -256,23 +291,24 @@ func TxSetMaxMintAllowance() *cobra.Command {
 
 func TxSetMintAllowance() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-mint-allowance [account] [amount]",
-		Short: "Sets the mint allowance of a minter",
-		Args:  cobra.ExactArgs(2),
+		Use:   "set-mint-allowance [denom] [account] [amount]",
+		Short: "Set the mint allowance of a system account for a specific denom",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[1])
+			amount, ok := sdk.NewIntFromString(args[2])
 			if !ok {
 				return errors.New("invalid amount")
 			}
 
 			msg := &types.MsgSetMintAllowance{
+				Denom:   args[0],
 				Signer:  clientCtx.GetFromAddress().String(),
-				Account: args[0],
+				Account: args[1],
 				Amount:  amount,
 			}
 
@@ -287,9 +323,9 @@ func TxSetMintAllowance() *cobra.Command {
 
 func TxTransferOwnership() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-ownership [new-owner]",
-		Short: "Transfer ownership of module",
-		Args:  cobra.ExactArgs(1),
+		Use:   "transfer-ownership [denom] [new-owner]",
+		Short: "Transfer ownership of a specific denom",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -297,8 +333,9 @@ func TxTransferOwnership() *cobra.Command {
 			}
 
 			msg := &types.MsgTransferOwnership{
+				Denom:    args[0],
 				Signer:   clientCtx.GetFromAddress().String(),
-				NewOwner: args[0],
+				NewOwner: args[1],
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

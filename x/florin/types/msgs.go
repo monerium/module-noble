@@ -92,6 +92,35 @@ func (*MsgAddSystemAccount) Type() string { return "florin/AddSystemAccount" }
 
 //
 
+var _ legacytx.LegacyMsg = &MsgAllowDenom{}
+
+func (msg *MsgAllowDenom) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Signer); err != nil {
+		return fmt.Errorf("invalid signer address (%s): %w", msg.Signer, err)
+	}
+
+	if _, err := sdk.AccAddressFromBech32(msg.Owner); err != nil {
+		return fmt.Errorf("invalid owner address (%s): %w", msg.Owner, err)
+	}
+
+	return nil
+}
+
+func (msg *MsgAllowDenom) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(msg.Signer)
+	return []sdk.AccAddress{signer}
+}
+
+func (msg *MsgAllowDenom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
+func (*MsgAllowDenom) Route() string { return ModuleName }
+
+func (*MsgAllowDenom) Type() string { return "florin/AllowDenom" }
+
+//
+
 var _ legacytx.LegacyMsg = &MsgBurn{}
 
 func (msg *MsgBurn) ValidateBasic() error {

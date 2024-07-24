@@ -24,19 +24,76 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// Emitted when a denom is allowed.
+type DenomAllowed struct {
+	// denom is the denom that was allowed.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	// owner is the address of the initial owner.
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *DenomAllowed) Reset()         { *m = DenomAllowed{} }
+func (m *DenomAllowed) String() string { return proto.CompactTextString(m) }
+func (*DenomAllowed) ProtoMessage()    {}
+func (*DenomAllowed) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a1ad0cea20c415b2, []int{0}
+}
+func (m *DenomAllowed) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DenomAllowed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DenomAllowed.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DenomAllowed) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DenomAllowed.Merge(m, src)
+}
+func (m *DenomAllowed) XXX_Size() int {
+	return m.Size()
+}
+func (m *DenomAllowed) XXX_DiscardUnknown() {
+	xxx_messageInfo_DenomAllowed.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DenomAllowed proto.InternalMessageInfo
+
+func (m *DenomAllowed) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *DenomAllowed) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
 // Emitted when allowance is set.
 type MintAllowance struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// account is the address whose allowance was set.
-	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
 	// amount is the allowance that was set.
-	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 }
 
 func (m *MintAllowance) Reset()         { *m = MintAllowance{} }
 func (m *MintAllowance) String() string { return proto.CompactTextString(m) }
 func (*MintAllowance) ProtoMessage()    {}
 func (*MintAllowance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{0}
+	return fileDescriptor_a1ad0cea20c415b2, []int{1}
 }
 func (m *MintAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -65,6 +122,13 @@ func (m *MintAllowance) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MintAllowance proto.InternalMessageInfo
 
+func (m *MintAllowance) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func (m *MintAllowance) GetAccount() string {
 	if m != nil {
 		return m.Account
@@ -74,15 +138,17 @@ func (m *MintAllowance) GetAccount() string {
 
 // Emitted when max allowance is set.
 type MaxMintAllowance struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// amount is the max allowance that was set.
-	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 }
 
 func (m *MaxMintAllowance) Reset()         { *m = MaxMintAllowance{} }
 func (m *MaxMintAllowance) String() string { return proto.CompactTextString(m) }
 func (*MaxMintAllowance) ProtoMessage()    {}
 func (*MaxMintAllowance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{1}
+	return fileDescriptor_a1ad0cea20c415b2, []int{2}
 }
 func (m *MaxMintAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -111,17 +177,26 @@ func (m *MaxMintAllowance) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MaxMintAllowance proto.InternalMessageInfo
 
+func (m *MaxMintAllowance) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 // Emitted when system account is added.
 type SystemAccountAdded struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// account is the address that was added.
-	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (m *SystemAccountAdded) Reset()         { *m = SystemAccountAdded{} }
 func (m *SystemAccountAdded) String() string { return proto.CompactTextString(m) }
 func (*SystemAccountAdded) ProtoMessage()    {}
 func (*SystemAccountAdded) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{2}
+	return fileDescriptor_a1ad0cea20c415b2, []int{3}
 }
 func (m *SystemAccountAdded) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -150,6 +225,13 @@ func (m *SystemAccountAdded) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SystemAccountAdded proto.InternalMessageInfo
 
+func (m *SystemAccountAdded) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func (m *SystemAccountAdded) GetAccount() string {
 	if m != nil {
 		return m.Account
@@ -159,15 +241,17 @@ func (m *SystemAccountAdded) GetAccount() string {
 
 // Emitted when system account is removed.
 type SystemAccountRemoved struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// account is the address that was removed.
-	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (m *SystemAccountRemoved) Reset()         { *m = SystemAccountRemoved{} }
 func (m *SystemAccountRemoved) String() string { return proto.CompactTextString(m) }
 func (*SystemAccountRemoved) ProtoMessage()    {}
 func (*SystemAccountRemoved) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{3}
+	return fileDescriptor_a1ad0cea20c415b2, []int{4}
 }
 func (m *SystemAccountRemoved) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -196,6 +280,13 @@ func (m *SystemAccountRemoved) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SystemAccountRemoved proto.InternalMessageInfo
 
+func (m *SystemAccountRemoved) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func (m *SystemAccountRemoved) GetAccount() string {
 	if m != nil {
 		return m.Account
@@ -205,15 +296,17 @@ func (m *SystemAccountRemoved) GetAccount() string {
 
 // Emitted when admin account is added.
 type AdminAccountAdded struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// account is the address that was added.
-	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (m *AdminAccountAdded) Reset()         { *m = AdminAccountAdded{} }
 func (m *AdminAccountAdded) String() string { return proto.CompactTextString(m) }
 func (*AdminAccountAdded) ProtoMessage()    {}
 func (*AdminAccountAdded) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{4}
+	return fileDescriptor_a1ad0cea20c415b2, []int{5}
 }
 func (m *AdminAccountAdded) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -242,6 +335,13 @@ func (m *AdminAccountAdded) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AdminAccountAdded proto.InternalMessageInfo
 
+func (m *AdminAccountAdded) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func (m *AdminAccountAdded) GetAccount() string {
 	if m != nil {
 		return m.Account
@@ -251,15 +351,17 @@ func (m *AdminAccountAdded) GetAccount() string {
 
 // Emitted when admin account is removed.
 type AdminAccountRemoved struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// account is the address that was removed.
-	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (m *AdminAccountRemoved) Reset()         { *m = AdminAccountRemoved{} }
 func (m *AdminAccountRemoved) String() string { return proto.CompactTextString(m) }
 func (*AdminAccountRemoved) ProtoMessage()    {}
 func (*AdminAccountRemoved) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{5}
+	return fileDescriptor_a1ad0cea20c415b2, []int{6}
 }
 func (m *AdminAccountRemoved) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -288,6 +390,13 @@ func (m *AdminAccountRemoved) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AdminAccountRemoved proto.InternalMessageInfo
 
+func (m *AdminAccountRemoved) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func (m *AdminAccountRemoved) GetAccount() string {
 	if m != nil {
 		return m.Account
@@ -297,17 +406,19 @@ func (m *AdminAccountRemoved) GetAccount() string {
 
 // Emitted when an ownership transfer is started.
 type OwnershipTransferStarted struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// previous_owner is the address of the previous owner.
-	PreviousOwner string `protobuf:"bytes,1,opt,name=previous_owner,json=previousOwner,proto3" json:"previous_owner,omitempty"`
+	PreviousOwner string `protobuf:"bytes,2,opt,name=previous_owner,json=previousOwner,proto3" json:"previous_owner,omitempty"`
 	// new_owner is the address of the new owner.
-	NewOwner string `protobuf:"bytes,2,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
+	NewOwner string `protobuf:"bytes,3,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
 }
 
 func (m *OwnershipTransferStarted) Reset()         { *m = OwnershipTransferStarted{} }
 func (m *OwnershipTransferStarted) String() string { return proto.CompactTextString(m) }
 func (*OwnershipTransferStarted) ProtoMessage()    {}
 func (*OwnershipTransferStarted) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{6}
+	return fileDescriptor_a1ad0cea20c415b2, []int{7}
 }
 func (m *OwnershipTransferStarted) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -336,6 +447,13 @@ func (m *OwnershipTransferStarted) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_OwnershipTransferStarted proto.InternalMessageInfo
 
+func (m *OwnershipTransferStarted) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func (m *OwnershipTransferStarted) GetPreviousOwner() string {
 	if m != nil {
 		return m.PreviousOwner
@@ -352,17 +470,19 @@ func (m *OwnershipTransferStarted) GetNewOwner() string {
 
 // Emitted when an ownership transfer is finalized.
 type OwnershipTransferred struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// previous_owner is the address of the previous owner.
-	PreviousOwner string `protobuf:"bytes,1,opt,name=previous_owner,json=previousOwner,proto3" json:"previous_owner,omitempty"`
+	PreviousOwner string `protobuf:"bytes,2,opt,name=previous_owner,json=previousOwner,proto3" json:"previous_owner,omitempty"`
 	// new_owner is the address of the new owner.
-	NewOwner string `protobuf:"bytes,2,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
+	NewOwner string `protobuf:"bytes,3,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
 }
 
 func (m *OwnershipTransferred) Reset()         { *m = OwnershipTransferred{} }
 func (m *OwnershipTransferred) String() string { return proto.CompactTextString(m) }
 func (*OwnershipTransferred) ProtoMessage()    {}
 func (*OwnershipTransferred) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{7}
+	return fileDescriptor_a1ad0cea20c415b2, []int{8}
 }
 func (m *OwnershipTransferred) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -391,6 +511,13 @@ func (m *OwnershipTransferred) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_OwnershipTransferred proto.InternalMessageInfo
 
+func (m *OwnershipTransferred) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func (m *OwnershipTransferred) GetPreviousOwner() string {
 	if m != nil {
 		return m.PreviousOwner
@@ -407,19 +534,21 @@ func (m *OwnershipTransferred) GetNewOwner() string {
 
 // Emitted when the module owner recovers tokens.
 type Recovered struct {
+	// denom is the denom that was affected.
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	// from is the address that tokens were recovered from.
-	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
 	// to is the address the recovered tokens were sent to.
-	To string `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
 	// amount is the amount of recovered tokens.
-	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 }
 
 func (m *Recovered) Reset()         { *m = Recovered{} }
 func (m *Recovered) String() string { return proto.CompactTextString(m) }
 func (*Recovered) ProtoMessage()    {}
 func (*Recovered) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a1ad0cea20c415b2, []int{8}
+	return fileDescriptor_a1ad0cea20c415b2, []int{9}
 }
 func (m *Recovered) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -448,6 +577,13 @@ func (m *Recovered) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Recovered proto.InternalMessageInfo
 
+func (m *Recovered) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func (m *Recovered) GetFrom() string {
 	if m != nil {
 		return m.From
@@ -463,6 +599,7 @@ func (m *Recovered) GetTo() string {
 }
 
 func init() {
+	proto.RegisterType((*DenomAllowed)(nil), "florin.v1.DenomAllowed")
 	proto.RegisterType((*MintAllowance)(nil), "florin.v1.MintAllowance")
 	proto.RegisterType((*MaxMintAllowance)(nil), "florin.v1.MaxMintAllowance")
 	proto.RegisterType((*SystemAccountAdded)(nil), "florin.v1.SystemAccountAdded")
@@ -477,32 +614,71 @@ func init() {
 func init() { proto.RegisterFile("florin/v1/events.proto", fileDescriptor_a1ad0cea20c415b2) }
 
 var fileDescriptor_a1ad0cea20c415b2 = []byte{
-	// 387 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x93, 0xcf, 0xea, 0xd3, 0x40,
-	0x10, 0xc7, 0x93, 0x2a, 0x3f, 0xcd, 0x40, 0x8b, 0xae, 0x45, 0x8a, 0x42, 0x2a, 0x01, 0xc5, 0x4b,
-	0x12, 0x8b, 0x4f, 0x90, 0x1e, 0x14, 0x0f, 0x45, 0x48, 0x3d, 0xf5, 0xa0, 0xa4, 0xc9, 0xb4, 0x0d,
-	0x26, 0x3b, 0x71, 0x77, 0x9b, 0xb4, 0x6f, 0xe1, 0x63, 0xf5, 0xd8, 0xa3, 0x78, 0x28, 0xd2, 0xbe,
-	0x88, 0x64, 0x9b, 0x62, 0x8b, 0xf8, 0x07, 0xfa, 0x3b, 0xed, 0xec, 0xcc, 0xf7, 0xfb, 0x99, 0x5d,
-	0x86, 0x81, 0xc7, 0xb3, 0x8c, 0x44, 0xca, 0xfd, 0x72, 0xe0, 0x63, 0x89, 0x5c, 0x49, 0xaf, 0x10,
-	0xa4, 0x88, 0x59, 0xc7, 0xbc, 0x57, 0x0e, 0x9e, 0x74, 0xe7, 0x34, 0x27, 0x9d, 0xf5, 0xeb, 0xe8,
-	0x28, 0x70, 0xbe, 0x40, 0x7b, 0x94, 0x72, 0x15, 0x64, 0x19, 0x55, 0x11, 0x8f, 0x91, 0xf5, 0xe0,
-	0x5e, 0x14, 0xc7, 0xb4, 0xe4, 0xaa, 0x67, 0x3e, 0x33, 0x5f, 0x5a, 0xe1, 0xe9, 0xca, 0xde, 0xc0,
-	0x4d, 0x94, 0xeb, 0x42, 0xab, 0x2e, 0x0c, 0xbd, 0xcd, 0xae, 0x6f, 0x7c, 0xdf, 0xf5, 0x5f, 0xcc,
-	0x53, 0xb5, 0x58, 0x4e, 0xbd, 0x98, 0x72, 0x3f, 0x26, 0x99, 0x93, 0x6c, 0x0e, 0x57, 0x26, 0x9f,
-	0x7d, 0xb5, 0x2e, 0x50, 0x7a, 0xef, 0xb8, 0x0a, 0x1b, 0xb7, 0x33, 0x81, 0x07, 0xa3, 0x68, 0x75,
-	0xd9, 0xf5, 0x17, 0xdb, 0xbc, 0x8a, 0xed, 0x01, 0x1b, 0xaf, 0xa5, 0xc2, 0x3c, 0x38, 0x3e, 0x3a,
-	0x48, 0x12, 0x4c, 0xfe, 0xfc, 0x27, 0xe7, 0x15, 0x74, 0x2f, 0xf4, 0x21, 0xe6, 0x54, 0xfe, 0xd5,
-	0xe1, 0xc2, 0xc3, 0x20, 0xc9, 0x53, 0xfe, 0x9f, 0x0d, 0x7c, 0x78, 0x74, 0x2e, 0xff, 0x37, 0xff,
-	0x23, 0xf4, 0xde, 0x57, 0x1c, 0x85, 0x5c, 0xa4, 0xc5, 0x07, 0x11, 0x71, 0x39, 0x43, 0x31, 0x56,
-	0x91, 0x50, 0x98, 0xb0, 0xe7, 0xd0, 0x29, 0x04, 0x96, 0x29, 0x2d, 0xe5, 0x27, 0xaa, 0x45, 0x8d,
-	0xb9, 0x7d, 0xca, 0x6a, 0x27, 0x7b, 0x0a, 0x16, 0xc7, 0xaa, 0x51, 0xe8, 0x59, 0x85, 0xf7, 0x39,
-	0x56, 0xba, 0xe8, 0x4c, 0xa0, 0xfb, 0x1b, 0x5f, 0xdc, 0x12, 0xbb, 0x02, 0x2b, 0xc4, 0x98, 0x4a,
-	0xac, 0x81, 0x0c, 0xee, 0xce, 0x04, 0xe5, 0x0d, 0x46, 0xc7, 0xac, 0x03, 0x2d, 0x45, 0x8d, 0xad,
-	0xa5, 0xe8, 0x6c, 0xec, 0x77, 0xae, 0x19, 0xfb, 0xf0, 0xed, 0x66, 0x6f, 0x9b, 0xdb, 0xbd, 0x6d,
-	0xfe, 0xd8, 0xdb, 0xe6, 0xd7, 0x83, 0x6d, 0x6c, 0x0f, 0xb6, 0xf1, 0xed, 0x60, 0x1b, 0x13, 0xf7,
-	0x8c, 0xc4, 0x69, 0x9a, 0xa1, 0x1b, 0x49, 0x89, 0x4a, 0xfa, 0xcd, 0xc2, 0xac, 0x4e, 0x81, 0x86,
-	0x4e, 0x6f, 0xf4, 0x56, 0xbc, 0xfe, 0x19, 0x00, 0x00, 0xff, 0xff, 0x05, 0x04, 0x06, 0x9f, 0x50,
-	0x03, 0x00, 0x00,
+	// 426 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x94, 0xcf, 0x6b, 0xd4, 0x40,
+	0x14, 0xc7, 0x93, 0x58, 0xab, 0x79, 0xd8, 0xa2, 0x31, 0x48, 0x50, 0x48, 0x25, 0xa0, 0x78, 0xd9,
+	0x84, 0xe2, 0xcd, 0x5b, 0x6a, 0xad, 0x78, 0x28, 0x42, 0xea, 0xc9, 0x8b, 0x64, 0x93, 0xb7, 0xdb,
+	0x60, 0x66, 0x5e, 0x98, 0x99, 0x4d, 0xda, 0xbf, 0xc0, 0x93, 0xe0, 0x9f, 0xd5, 0x63, 0x8f, 0xe2,
+	0xa1, 0xc8, 0xee, 0x3f, 0x22, 0x99, 0x64, 0x31, 0x22, 0x01, 0xd9, 0xc5, 0x53, 0xde, 0x8f, 0x79,
+	0x9f, 0xef, 0x9b, 0xf0, 0x65, 0xe0, 0xd1, 0xac, 0x24, 0x51, 0xf0, 0xa8, 0x3e, 0x8c, 0xb0, 0x46,
+	0xae, 0x64, 0x58, 0x09, 0x52, 0xe4, 0xd8, 0x5d, 0x3d, 0xac, 0x0f, 0x1f, 0xbb, 0x73, 0x9a, 0x93,
+	0xae, 0x46, 0x6d, 0xd4, 0x1d, 0x08, 0x5e, 0xc1, 0xbd, 0x63, 0xe4, 0xc4, 0xe2, 0xb2, 0xa4, 0x06,
+	0x73, 0xc7, 0x85, 0xdb, 0x79, 0x9b, 0x7b, 0xe6, 0x53, 0xf3, 0x85, 0x9d, 0x74, 0x49, 0x5b, 0xa5,
+	0x86, 0xa3, 0xf0, 0xac, 0xae, 0xaa, 0x93, 0xe0, 0x8b, 0x09, 0x7b, 0xa7, 0x05, 0x57, 0x7a, 0x36,
+	0xe5, 0x19, 0x8e, 0x4c, 0x7b, 0x70, 0x27, 0xcd, 0x32, 0x5a, 0x70, 0xd5, 0xcf, 0xaf, 0x53, 0xe7,
+	0x04, 0x76, 0x53, 0xa6, 0x1b, 0xb7, 0xda, 0xc6, 0x51, 0x78, 0x75, 0x73, 0x60, 0xfc, 0xb8, 0x39,
+	0x78, 0x3e, 0x2f, 0xd4, 0xf9, 0x62, 0x1a, 0x66, 0xc4, 0xa2, 0x8c, 0x24, 0x23, 0xd9, 0x7f, 0x26,
+	0x32, 0xff, 0x1c, 0xa9, 0xcb, 0x0a, 0x65, 0xf8, 0x8e, 0xab, 0xa4, 0x9f, 0x0e, 0x2a, 0xb8, 0x7f,
+	0x9a, 0x5e, 0xfc, 0xcb, 0x2e, 0xbf, 0x15, 0xad, 0xad, 0x14, 0x8f, 0xc1, 0x39, 0xbb, 0x94, 0x0a,
+	0x59, 0xdc, 0x5d, 0x25, 0xce, 0xf3, 0xd1, 0xbf, 0x37, 0x7a, 0xff, 0xe0, 0x04, 0xdc, 0x3f, 0x28,
+	0x09, 0x32, 0xaa, 0x37, 0xe0, 0xbc, 0x86, 0x07, 0x71, 0xce, 0x0a, 0xbe, 0xd5, 0x32, 0x6f, 0xe0,
+	0xe1, 0x10, 0xb2, 0xe9, 0x2e, 0x0a, 0xbc, 0xf7, 0xad, 0x3d, 0xe4, 0x79, 0x51, 0x7d, 0x10, 0x29,
+	0x97, 0x33, 0x14, 0x67, 0x2a, 0x15, 0x6a, 0x94, 0xf5, 0x0c, 0xf6, 0x2b, 0x81, 0x75, 0x41, 0x0b,
+	0xf9, 0x69, 0x68, 0xb3, 0xbd, 0x75, 0x55, 0xf3, 0x9c, 0x27, 0x60, 0x73, 0x6c, 0xfa, 0x13, 0xda,
+	0x2f, 0xc9, 0x5d, 0x8e, 0x8d, 0x6e, 0x06, 0x15, 0xb8, 0x7f, 0xa9, 0x8a, 0xff, 0xaa, 0xf8, 0xd5,
+	0x04, 0x3b, 0xc1, 0x8c, 0x6a, 0x1c, 0xd7, 0x71, 0x60, 0x67, 0x26, 0x88, 0xf5, 0x74, 0x1d, 0x3b,
+	0xfb, 0x60, 0x29, 0xea, 0x69, 0x96, 0xa2, 0x81, 0x23, 0x77, 0xb6, 0x71, 0xe4, 0xd1, 0xdb, 0xab,
+	0xa5, 0x6f, 0x5e, 0x2f, 0x7d, 0xf3, 0xe7, 0xd2, 0x37, 0xbf, 0xad, 0x7c, 0xe3, 0x7a, 0xe5, 0x1b,
+	0xdf, 0x57, 0xbe, 0xf1, 0x71, 0x32, 0x20, 0x71, 0x9a, 0x96, 0x38, 0x49, 0xa5, 0x44, 0x25, 0xa3,
+	0xfe, 0xd1, 0xb8, 0x58, 0x07, 0x1a, 0x3a, 0xdd, 0xd5, 0x2f, 0xc3, 0xcb, 0x5f, 0x01, 0x00, 0x00,
+	0xff, 0xff, 0xbb, 0xaa, 0x04, 0xe3, 0x54, 0x04, 0x00, 0x00,
+}
+
+func (m *DenomAllowed) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DenomAllowed) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DenomAllowed) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *MintAllowance) Marshal() (dAtA []byte, err error) {
@@ -534,11 +710,18 @@ func (m *MintAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintEvents(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x12
+	dAtA[i] = 0x1a
 	if len(m.Account) > 0 {
 		i -= len(m.Account)
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.Account)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -574,7 +757,14 @@ func (m *MaxMintAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintEvents(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0xa
+	dAtA[i] = 0x12
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -602,6 +792,13 @@ func (m *SystemAccountAdded) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Account)
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.Account)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -633,6 +830,13 @@ func (m *SystemAccountRemoved) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.Account)))
 		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
+		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
@@ -662,6 +866,13 @@ func (m *AdminAccountAdded) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Account)
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.Account)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -693,6 +904,13 @@ func (m *AdminAccountRemoved) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.Account)))
 		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
+		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
@@ -723,12 +941,19 @@ func (m *OwnershipTransferStarted) MarshalToSizedBuffer(dAtA []byte) (int, error
 		copy(dAtA[i:], m.NewOwner)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.NewOwner)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.PreviousOwner) > 0 {
 		i -= len(m.PreviousOwner)
 		copy(dAtA[i:], m.PreviousOwner)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.PreviousOwner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -760,12 +985,19 @@ func (m *OwnershipTransferred) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.NewOwner)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.NewOwner)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.PreviousOwner) > 0 {
 		i -= len(m.PreviousOwner)
 		copy(dAtA[i:], m.PreviousOwner)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.PreviousOwner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -801,18 +1033,25 @@ func (m *Recovered) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintEvents(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1a
+	dAtA[i] = 0x22
 	if len(m.To) > 0 {
 		i -= len(m.To)
 		copy(dAtA[i:], m.To)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.To)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.From) > 0 {
 		i -= len(m.From)
 		copy(dAtA[i:], m.From)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.From)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -830,12 +1069,33 @@ func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *DenomAllowed) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	return n
+}
+
 func (m *MintAllowance) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = len(m.Account)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -851,6 +1111,10 @@ func (m *MaxMintAllowance) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = m.Amount.Size()
 	n += 1 + l + sovEvents(uint64(l))
 	return n
@@ -862,6 +1126,10 @@ func (m *SystemAccountAdded) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = len(m.Account)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -875,6 +1143,10 @@ func (m *SystemAccountRemoved) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = len(m.Account)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -888,6 +1160,10 @@ func (m *AdminAccountAdded) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = len(m.Account)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -901,6 +1177,10 @@ func (m *AdminAccountRemoved) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = len(m.Account)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -914,6 +1194,10 @@ func (m *OwnershipTransferStarted) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = len(m.PreviousOwner)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -931,6 +1215,10 @@ func (m *OwnershipTransferred) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = len(m.PreviousOwner)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -948,6 +1236,10 @@ func (m *Recovered) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
 	l = len(m.From)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -966,6 +1258,120 @@ func sovEvents(x uint64) (n int) {
 }
 func sozEvents(x uint64) (n int) {
 	return sovEvents(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *DenomAllowed) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DenomAllowed: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DenomAllowed: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *MintAllowance) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -998,6 +1404,38 @@ func (m *MintAllowance) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
 			var stringLen uint64
@@ -1028,7 +1466,7 @@ func (m *MintAllowance) Unmarshal(dAtA []byte) error {
 			}
 			m.Account = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -1114,6 +1552,38 @@ func (m *MaxMintAllowance) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
 			var stringLen uint64
@@ -1198,6 +1668,38 @@ func (m *SystemAccountAdded) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
 			var stringLen uint64
@@ -1279,6 +1781,38 @@ func (m *SystemAccountRemoved) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
@@ -1362,6 +1896,38 @@ func (m *AdminAccountAdded) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
 			var stringLen uint64
@@ -1443,6 +2009,38 @@ func (m *AdminAccountRemoved) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
@@ -1526,6 +2124,38 @@ func (m *OwnershipTransferStarted) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PreviousOwner", wireType)
 			}
 			var stringLen uint64
@@ -1556,7 +2186,7 @@ func (m *OwnershipTransferStarted) Unmarshal(dAtA []byte) error {
 			}
 			m.PreviousOwner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NewOwner", wireType)
 			}
@@ -1640,6 +2270,38 @@ func (m *OwnershipTransferred) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PreviousOwner", wireType)
 			}
 			var stringLen uint64
@@ -1670,7 +2332,7 @@ func (m *OwnershipTransferred) Unmarshal(dAtA []byte) error {
 			}
 			m.PreviousOwner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NewOwner", wireType)
 			}
@@ -1754,6 +2416,38 @@ func (m *Recovered) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
 			}
 			var stringLen uint64
@@ -1784,7 +2478,7 @@ func (m *Recovered) Unmarshal(dAtA []byte) error {
 			}
 			m.From = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
 			}
@@ -1816,7 +2510,7 @@ func (m *Recovered) Unmarshal(dAtA []byte) error {
 			}
 			m.To = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}

@@ -154,7 +154,7 @@ func NewSimApp(
 	)
 
 	app.FlorinKeeper = florinkeeper.NewKeeper(
-		keys[florintypes.ModuleName], "aeure", app.AccountKeeper, nil,
+		keys[florintypes.ModuleName], app.AccountKeeper, nil,
 	)
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),

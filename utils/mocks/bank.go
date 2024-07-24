@@ -33,6 +33,14 @@ func (k BankKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom strin
 	return sdk.NewCoin(denom, k.Balances[addr.String()].AmountOf(denom))
 }
 
+func (k BankKeeper) GetSupply(ctx sdk.Context, denom string) sdk.Coin {
+	if denom == "uusdc" {
+		return sdk.NewCoin(denom, sdk.NewIntFromUint64(1_000_000))
+	}
+
+	return sdk.NewCoin(denom, sdk.ZeroInt())
+}
+
 func (k BankKeeper) MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error {
 	address := authtypes.NewModuleAddress(moduleName).String()
 	k.Balances[address] = k.Balances[address].Add(amt...)

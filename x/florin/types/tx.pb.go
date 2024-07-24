@@ -31,7 +31,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // MsgAcceptOwnership implements the acceptOwnership (0x79ba5097) method.
 type MsgAcceptOwnership struct {
-	Signer string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
+	Denom  string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer string `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
 }
 
 func (m *MsgAcceptOwnership) Reset()         { *m = MsgAcceptOwnership{} }
@@ -106,8 +107,9 @@ var xxx_messageInfo_MsgAcceptOwnershipResponse proto.InternalMessageInfo
 
 // MsgAddAdminAccount implements the addAdminAccount (0x4fe57e7a) method.
 type MsgAddAdminAccount struct {
-	Signer  string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	Denom   string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer  string `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	Account string `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (m *MsgAddAdminAccount) Reset()         { *m = MsgAddAdminAccount{} }
@@ -182,8 +184,9 @@ var xxx_messageInfo_MsgAddAdminAccountResponse proto.InternalMessageInfo
 
 // MsgAddSystemAccount implements the addSystemAccount (0xa84c56d0) method.
 type MsgAddSystemAccount struct {
-	Signer  string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	Denom   string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer  string `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	Account string `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (m *MsgAddSystemAccount) Reset()         { *m = MsgAddSystemAccount{} }
@@ -256,19 +259,97 @@ func (m *MsgAddSystemAccountResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddSystemAccountResponse proto.InternalMessageInfo
 
+// MsgAllowDenom is the request of the AllowDenom action.
+type MsgAllowDenom struct {
+	Signer string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
+	Denom  string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Owner  string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *MsgAllowDenom) Reset()         { *m = MsgAllowDenom{} }
+func (m *MsgAllowDenom) String() string { return proto.CompactTextString(m) }
+func (*MsgAllowDenom) ProtoMessage()    {}
+func (*MsgAllowDenom) Descriptor() ([]byte, []int) {
+	return fileDescriptor_de2a06c2ec80785c, []int{6}
+}
+func (m *MsgAllowDenom) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAllowDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAllowDenom.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAllowDenom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAllowDenom.Merge(m, src)
+}
+func (m *MsgAllowDenom) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAllowDenom) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAllowDenom.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAllowDenom proto.InternalMessageInfo
+
+// MsgAllowDenomResponse is the response of the AllowDenom action.
+type MsgAllowDenomResponse struct {
+}
+
+func (m *MsgAllowDenomResponse) Reset()         { *m = MsgAllowDenomResponse{} }
+func (m *MsgAllowDenomResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAllowDenomResponse) ProtoMessage()    {}
+func (*MsgAllowDenomResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_de2a06c2ec80785c, []int{7}
+}
+func (m *MsgAllowDenomResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAllowDenomResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAllowDenomResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAllowDenomResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAllowDenomResponse.Merge(m, src)
+}
+func (m *MsgAllowDenomResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAllowDenomResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAllowDenomResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAllowDenomResponse proto.InternalMessageInfo
+
 // MsgBurn implements the burn (0x8d1247ba) method.
 type MsgBurn struct {
-	Signer    string                                 `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	From      string                                 `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	Amount    github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
-	Signature []byte                                 `protobuf:"bytes,4,opt,name=signature,proto3" json:"signature,omitempty"`
+	Denom     string                                 `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer    string                                 `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	From      string                                 `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
+	Amount    github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Signature []byte                                 `protobuf:"bytes,5,opt,name=signature,proto3" json:"signature,omitempty"`
 }
 
 func (m *MsgBurn) Reset()         { *m = MsgBurn{} }
 func (m *MsgBurn) String() string { return proto.CompactTextString(m) }
 func (*MsgBurn) ProtoMessage()    {}
 func (*MsgBurn) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{6}
+	return fileDescriptor_de2a06c2ec80785c, []int{8}
 }
 func (m *MsgBurn) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -305,7 +386,7 @@ func (m *MsgBurnResponse) Reset()         { *m = MsgBurnResponse{} }
 func (m *MsgBurnResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgBurnResponse) ProtoMessage()    {}
 func (*MsgBurnResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{7}
+	return fileDescriptor_de2a06c2ec80785c, []int{9}
 }
 func (m *MsgBurnResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -336,16 +417,17 @@ var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 
 // MsgMint implements the mint (0x40c10f19) method.
 type MsgMint struct {
-	Signer string                                 `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	To     string                                 `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
-	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Denom  string                                 `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer string                                 `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	To     string                                 `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgMint) Reset()         { *m = MsgMint{} }
 func (m *MsgMint) String() string { return proto.CompactTextString(m) }
 func (*MsgMint) ProtoMessage()    {}
 func (*MsgMint) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{8}
+	return fileDescriptor_de2a06c2ec80785c, []int{10}
 }
 func (m *MsgMint) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -382,7 +464,7 @@ func (m *MsgMintResponse) Reset()         { *m = MsgMintResponse{} }
 func (m *MsgMintResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgMintResponse) ProtoMessage()    {}
 func (*MsgMintResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{9}
+	return fileDescriptor_de2a06c2ec80785c, []int{11}
 }
 func (m *MsgMintResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -413,17 +495,18 @@ var xxx_messageInfo_MsgMintResponse proto.InternalMessageInfo
 
 // MsgRecover implements the recover (0x6eb4c609) method.
 type MsgRecover struct {
-	Signer    string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	From      string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	To        string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	Signature []byte `protobuf:"bytes,4,opt,name=signature,proto3" json:"signature,omitempty"`
+	Denom     string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer    string `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	From      string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
+	To        string `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
+	Signature []byte `protobuf:"bytes,5,opt,name=signature,proto3" json:"signature,omitempty"`
 }
 
 func (m *MsgRecover) Reset()         { *m = MsgRecover{} }
 func (m *MsgRecover) String() string { return proto.CompactTextString(m) }
 func (*MsgRecover) ProtoMessage()    {}
 func (*MsgRecover) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{10}
+	return fileDescriptor_de2a06c2ec80785c, []int{12}
 }
 func (m *MsgRecover) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -460,7 +543,7 @@ func (m *MsgRecoverResponse) Reset()         { *m = MsgRecoverResponse{} }
 func (m *MsgRecoverResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRecoverResponse) ProtoMessage()    {}
 func (*MsgRecoverResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{11}
+	return fileDescriptor_de2a06c2ec80785c, []int{13}
 }
 func (m *MsgRecoverResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -491,15 +574,16 @@ var xxx_messageInfo_MsgRecoverResponse proto.InternalMessageInfo
 
 // MsgRemoveAdminAccount implements the removeAdminAccount (0x67a89a72) method.
 type MsgRemoveAdminAccount struct {
-	Signer  string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	Denom   string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer  string `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	Account string `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (m *MsgRemoveAdminAccount) Reset()         { *m = MsgRemoveAdminAccount{} }
 func (m *MsgRemoveAdminAccount) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveAdminAccount) ProtoMessage()    {}
 func (*MsgRemoveAdminAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{12}
+	return fileDescriptor_de2a06c2ec80785c, []int{14}
 }
 func (m *MsgRemoveAdminAccount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -536,7 +620,7 @@ func (m *MsgRemoveAdminAccountResponse) Reset()         { *m = MsgRemoveAdminAcc
 func (m *MsgRemoveAdminAccountResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveAdminAccountResponse) ProtoMessage()    {}
 func (*MsgRemoveAdminAccountResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{13}
+	return fileDescriptor_de2a06c2ec80785c, []int{15}
 }
 func (m *MsgRemoveAdminAccountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -567,15 +651,16 @@ var xxx_messageInfo_MsgRemoveAdminAccountResponse proto.InternalMessageInfo
 
 // MsgRemoveSystemAccount implements the removeSystemAccount (0xebbc3d46) method.
 type MsgRemoveSystemAccount struct {
-	Signer  string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	Denom   string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer  string `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	Account string `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (m *MsgRemoveSystemAccount) Reset()         { *m = MsgRemoveSystemAccount{} }
 func (m *MsgRemoveSystemAccount) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveSystemAccount) ProtoMessage()    {}
 func (*MsgRemoveSystemAccount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{14}
+	return fileDescriptor_de2a06c2ec80785c, []int{16}
 }
 func (m *MsgRemoveSystemAccount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -612,7 +697,7 @@ func (m *MsgRemoveSystemAccountResponse) Reset()         { *m = MsgRemoveSystemA
 func (m *MsgRemoveSystemAccountResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveSystemAccountResponse) ProtoMessage()    {}
 func (*MsgRemoveSystemAccountResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{15}
+	return fileDescriptor_de2a06c2ec80785c, []int{17}
 }
 func (m *MsgRemoveSystemAccountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -643,15 +728,16 @@ var xxx_messageInfo_MsgRemoveSystemAccountResponse proto.InternalMessageInfo
 
 // MsgSetMaxMintAllowance implements the setMaxMintAllowance (0xfd2319c4) method.
 type MsgSetMaxMintAllowance struct {
-	Signer string                                 `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Denom  string                                 `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer string                                 `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgSetMaxMintAllowance) Reset()         { *m = MsgSetMaxMintAllowance{} }
 func (m *MsgSetMaxMintAllowance) String() string { return proto.CompactTextString(m) }
 func (*MsgSetMaxMintAllowance) ProtoMessage()    {}
 func (*MsgSetMaxMintAllowance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{16}
+	return fileDescriptor_de2a06c2ec80785c, []int{18}
 }
 func (m *MsgSetMaxMintAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -688,7 +774,7 @@ func (m *MsgSetMaxMintAllowanceResponse) Reset()         { *m = MsgSetMaxMintAll
 func (m *MsgSetMaxMintAllowanceResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSetMaxMintAllowanceResponse) ProtoMessage()    {}
 func (*MsgSetMaxMintAllowanceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{17}
+	return fileDescriptor_de2a06c2ec80785c, []int{19}
 }
 func (m *MsgSetMaxMintAllowanceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -719,16 +805,17 @@ var xxx_messageInfo_MsgSetMaxMintAllowanceResponse proto.InternalMessageInfo
 
 // MsgSetMintAllowance implements the setMintAllowance (0xf27c5f6e) method.
 type MsgSetMintAllowance struct {
-	Signer  string                                 `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	Account string                                 `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
-	Amount  github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+	Denom   string                                 `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer  string                                 `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	Account string                                 `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
+	Amount  github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgSetMintAllowance) Reset()         { *m = MsgSetMintAllowance{} }
 func (m *MsgSetMintAllowance) String() string { return proto.CompactTextString(m) }
 func (*MsgSetMintAllowance) ProtoMessage()    {}
 func (*MsgSetMintAllowance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{18}
+	return fileDescriptor_de2a06c2ec80785c, []int{20}
 }
 func (m *MsgSetMintAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -765,7 +852,7 @@ func (m *MsgSetMintAllowanceResponse) Reset()         { *m = MsgSetMintAllowance
 func (m *MsgSetMintAllowanceResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSetMintAllowanceResponse) ProtoMessage()    {}
 func (*MsgSetMintAllowanceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{19}
+	return fileDescriptor_de2a06c2ec80785c, []int{21}
 }
 func (m *MsgSetMintAllowanceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -796,15 +883,16 @@ var xxx_messageInfo_MsgSetMintAllowanceResponse proto.InternalMessageInfo
 
 // MsgTransferOwnership implements the transferOwnership (0xf2fde38b) method.
 type MsgTransferOwnership struct {
-	Signer   string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	NewOwner string `protobuf:"bytes,2,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
+	Denom    string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Signer   string `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
+	NewOwner string `protobuf:"bytes,3,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
 }
 
 func (m *MsgTransferOwnership) Reset()         { *m = MsgTransferOwnership{} }
 func (m *MsgTransferOwnership) String() string { return proto.CompactTextString(m) }
 func (*MsgTransferOwnership) ProtoMessage()    {}
 func (*MsgTransferOwnership) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{20}
+	return fileDescriptor_de2a06c2ec80785c, []int{22}
 }
 func (m *MsgTransferOwnership) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -841,7 +929,7 @@ func (m *MsgTransferOwnershipResponse) Reset()         { *m = MsgTransferOwnersh
 func (m *MsgTransferOwnershipResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgTransferOwnershipResponse) ProtoMessage()    {}
 func (*MsgTransferOwnershipResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de2a06c2ec80785c, []int{21}
+	return fileDescriptor_de2a06c2ec80785c, []int{23}
 }
 func (m *MsgTransferOwnershipResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -877,6 +965,8 @@ func init() {
 	proto.RegisterType((*MsgAddAdminAccountResponse)(nil), "florin.v1.MsgAddAdminAccountResponse")
 	proto.RegisterType((*MsgAddSystemAccount)(nil), "florin.v1.MsgAddSystemAccount")
 	proto.RegisterType((*MsgAddSystemAccountResponse)(nil), "florin.v1.MsgAddSystemAccountResponse")
+	proto.RegisterType((*MsgAllowDenom)(nil), "florin.v1.MsgAllowDenom")
+	proto.RegisterType((*MsgAllowDenomResponse)(nil), "florin.v1.MsgAllowDenomResponse")
 	proto.RegisterType((*MsgBurn)(nil), "florin.v1.MsgBurn")
 	proto.RegisterType((*MsgBurnResponse)(nil), "florin.v1.MsgBurnResponse")
 	proto.RegisterType((*MsgMint)(nil), "florin.v1.MsgMint")
@@ -898,52 +988,56 @@ func init() {
 func init() { proto.RegisterFile("florin/v1/tx.proto", fileDescriptor_de2a06c2ec80785c) }
 
 var fileDescriptor_de2a06c2ec80785c = []byte{
-	// 715 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0x3f, 0x6f, 0xd3, 0x4e,
-	0x18, 0x8e, 0xd3, 0xaa, 0x69, 0x5e, 0xfd, 0xf4, 0x2b, 0xbd, 0xfe, 0x51, 0xe4, 0x36, 0x4e, 0xa8,
-	0x44, 0x29, 0x43, 0x1d, 0x15, 0xa4, 0x0e, 0x2c, 0x28, 0x1d, 0x40, 0x0c, 0x16, 0x90, 0x16, 0x21,
-	0x55, 0x42, 0xe0, 0x3a, 0x57, 0x37, 0x22, 0xbe, 0x8b, 0x7c, 0x97, 0xa4, 0x5d, 0x61, 0x61, 0x64,
-	0x65, 0xeb, 0xc2, 0xc4, 0x17, 0xe9, 0xd8, 0x11, 0x31, 0x54, 0xa8, 0x59, 0xf8, 0x18, 0xc8, 0x67,
-	0xe7, 0xea, 0x3f, 0x97, 0xa4, 0x48, 0x61, 0x8a, 0xfd, 0xbe, 0xcf, 0xfb, 0x3c, 0x4f, 0x2e, 0xaf,
-	0x9f, 0x18, 0xd0, 0x71, 0x9b, 0xfa, 0x2d, 0x52, 0xeb, 0xed, 0xd4, 0xf8, 0xa9, 0xd9, 0xf1, 0x29,
-	0xa7, 0xa8, 0x18, 0xd6, 0xcc, 0xde, 0x8e, 0xbe, 0xec, 0x52, 0x97, 0x8a, 0x6a, 0x2d, 0xb8, 0x0a,
-	0x01, 0x1b, 0xbb, 0x80, 0x2c, 0xe6, 0xd6, 0x1d, 0x07, 0x77, 0xf8, 0x8b, 0x3e, 0xc1, 0x3e, 0x3b,
-	0x69, 0x75, 0xd0, 0x2a, 0xcc, 0xb1, 0x96, 0x4b, 0xb0, 0x5f, 0xd2, 0xaa, 0xda, 0x56, 0xb1, 0x11,
-	0xdd, 0x3d, 0x9e, 0xff, 0x7c, 0x5e, 0xc9, 0xfd, 0x3e, 0xaf, 0xe4, 0x36, 0xd6, 0x41, 0xcf, 0xce,
-	0x35, 0x30, 0xeb, 0x50, 0xc2, 0xf0, 0xc6, 0xcb, 0x90, 0xb5, 0xd9, 0xac, 0x37, 0xbd, 0x16, 0xa9,
-	0x3b, 0x0e, 0xed, 0x12, 0x3e, 0x8a, 0x15, 0x95, 0xa0, 0x60, 0x87, 0x90, 0x52, 0x5e, 0x34, 0x86,
-	0xb7, 0x59, 0xbd, 0x24, 0xa3, 0xd4, 0x7b, 0x05, 0x4b, 0x61, 0x77, 0xff, 0x8c, 0x71, 0xec, 0x4d,
-	0x43, 0xb0, 0x0c, 0x6b, 0x0a, 0x4a, 0xa9, 0xf8, 0x4d, 0x83, 0x82, 0xc5, 0xdc, 0xbd, 0xae, 0x4f,
-	0x46, 0xca, 0x20, 0x98, 0x3d, 0xf6, 0xa9, 0x17, 0x69, 0x88, 0x6b, 0xf4, 0x14, 0xe6, 0x6c, 0x4f,
-	0x28, 0xcf, 0x04, 0xd5, 0x3d, 0xf3, 0xe2, 0xaa, 0x92, 0xfb, 0x79, 0x55, 0xd9, 0x74, 0x5b, 0xfc,
-	0xa4, 0x7b, 0x64, 0x3a, 0xd4, 0xab, 0x39, 0x94, 0x79, 0x94, 0x45, 0x1f, 0xdb, 0xac, 0xf9, 0xa1,
-	0xc6, 0xcf, 0x3a, 0x98, 0x99, 0xcf, 0x09, 0x6f, 0x44, 0xd3, 0x68, 0x1d, 0x8a, 0x81, 0x8a, 0xcd,
-	0xbb, 0x3e, 0x2e, 0xcd, 0x56, 0xb5, 0xad, 0xff, 0x1a, 0x37, 0x85, 0xd8, 0xd7, 0x58, 0x84, 0x85,
-	0xc8, 0xa6, 0xb4, 0xfe, 0x29, 0xb4, 0x6e, 0xb5, 0xc6, 0x9c, 0xd0, 0xff, 0x90, 0xe7, 0x34, 0x32,
-	0x9e, 0xe7, 0x74, 0x5a, 0xb6, 0x33, 0xc6, 0x02, 0x13, 0xd2, 0x58, 0x07, 0xc0, 0x62, 0x6e, 0x03,
-	0x3b, 0xb4, 0x87, 0xfd, 0xbf, 0x3a, 0xd5, 0xd0, 0xee, 0x8c, 0xb4, 0x7b, 0xdb, 0xd3, 0x59, 0x16,
-	0x7b, 0x1a, 0x29, 0x4a, 0x1f, 0xfb, 0xb0, 0x22, 0xaa, 0x1e, 0xed, 0xe1, 0xa9, 0x2d, 0x70, 0x05,
-	0xca, 0x4a, 0x52, 0xa9, 0x7a, 0x00, 0xab, 0x12, 0x30, 0xbd, 0x35, 0xae, 0x82, 0xa1, 0x66, 0x95,
-	0xba, 0x1f, 0x35, 0x21, 0xbc, 0x8f, 0xb9, 0x65, 0x9f, 0x06, 0xbf, 0x47, 0xbd, 0xdd, 0xa6, 0x7d,
-	0x9b, 0x38, 0x78, 0xa4, 0xf0, 0xcd, 0x36, 0xe4, 0xa7, 0xb4, 0x0d, 0xa1, 0x4d, 0x85, 0x07, 0x69,
-	0xf3, 0xab, 0x26, 0x9e, 0xf1, 0x00, 0x72, 0x2b, 0x8f, 0x23, 0x0f, 0xe7, 0x1f, 0xec, 0x72, 0x98,
-	0x15, 0x69, 0x6b, 0xd2, 0xfa, 0x6b, 0x58, 0xb6, 0x98, 0x7b, 0xe0, 0xdb, 0x84, 0x1d, 0x63, 0x7f,
-	0x62, 0xca, 0xa2, 0x35, 0x28, 0x12, 0xdc, 0x7f, 0x47, 0x03, 0x60, 0x64, 0x7e, 0x9e, 0xe0, 0xbe,
-	0x18, 0x8c, 0xa9, 0x1a, 0xb0, 0xae, 0xa2, 0x1d, 0xca, 0x3e, 0xfc, 0x5e, 0x80, 0x19, 0x8b, 0xb9,
-	0xe8, 0x0d, 0x2c, 0xa4, 0xf3, 0xbd, 0x6c, 0xca, 0xff, 0x05, 0x33, 0x1b, 0xe3, 0xfa, 0xbd, 0xb1,
-	0xed, 0xa1, 0x80, 0x20, 0x4e, 0x45, 0x7c, 0x9a, 0x38, 0xd9, 0xce, 0x10, 0xab, 0xe3, 0x1c, 0x1d,
-	0xc2, 0x9d, 0x4c, 0x96, 0x1b, 0x99, 0xd1, 0x44, 0x5f, 0xdf, 0x1c, 0xdf, 0x97, 0xdc, 0xbb, 0x30,
-	0x2b, 0x42, 0x1b, 0x25, 0xf1, 0x41, 0x4d, 0xd7, 0xb3, 0xb5, 0xf8, 0x9c, 0x48, 0xcc, 0xd4, 0x5c,
-	0x50, 0x4b, 0xcf, 0xc5, 0x43, 0x0d, 0x3d, 0x81, 0xc2, 0x30, 0xd1, 0x56, 0x92, 0xb0, 0xa8, 0xac,
-	0x97, 0x95, 0x65, 0x49, 0xf0, 0x1e, 0x90, 0x22, 0x8a, 0xaa, 0xe9, 0xa1, 0x34, 0x42, 0xdf, 0x9a,
-	0x84, 0x90, 0x0a, 0x0e, 0x2c, 0xa9, 0x62, 0xe7, 0xae, 0x8a, 0x20, 0x79, 0xe8, 0x0f, 0x26, 0x42,
-	0xe2, 0x22, 0xaa, 0x88, 0x49, 0x89, 0x28, 0x20, 0x69, 0x91, 0x31, 0x21, 0x11, 0x2c, 0x4e, 0x26,
-	0x20, 0x8c, 0xec, 0x78, 0x82, 0x7e, 0x73, 0x7c, 0x5f, 0x72, 0xbf, 0x85, 0xc5, 0xec, 0x23, 0x5c,
-	0x49, 0x0e, 0x67, 0x00, 0xfa, 0xfd, 0x09, 0x80, 0x21, 0xfd, 0xde, 0xb3, 0x8b, 0x6b, 0x43, 0xbb,
-	0xbc, 0x36, 0xb4, 0x5f, 0xd7, 0x86, 0xf6, 0x65, 0x60, 0xe4, 0x2e, 0x07, 0x46, 0xee, 0xc7, 0xc0,
-	0xc8, 0x1d, 0x6e, 0xc7, 0x72, 0x89, 0xd0, 0xa3, 0x36, 0xde, 0xb6, 0x19, 0xc3, 0x9c, 0xd5, 0xa2,
-	0xf7, 0xbd, 0xd3, 0xe1, 0x85, 0x88, 0xa8, 0xa3, 0x39, 0xf1, 0x62, 0xf7, 0xe8, 0x4f, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0x7e, 0xa5, 0xc6, 0x29, 0x0f, 0x0a, 0x00, 0x00,
+	// 781 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0x4d, 0x4f, 0x13, 0x41,
+	0x18, 0xee, 0x96, 0x42, 0xe9, 0x1b, 0x15, 0x19, 0x0a, 0x36, 0x0b, 0xdd, 0x56, 0x12, 0x11, 0x0f,
+	0x6c, 0x83, 0x26, 0x1e, 0xbc, 0x18, 0x88, 0xf1, 0x23, 0x71, 0x43, 0x52, 0x4c, 0x4c, 0x48, 0x88,
+	0x2e, 0xdb, 0xe9, 0xb2, 0xd2, 0x9d, 0x69, 0x76, 0xb6, 0x2d, 0xfc, 0x01, 0xe3, 0xd1, 0xa3, 0xde,
+	0xf8, 0x07, 0xfe, 0x00, 0xff, 0x00, 0x47, 0x8e, 0xc6, 0x03, 0x31, 0x70, 0xf1, 0x0f, 0x78, 0x37,
+	0x3b, 0xbb, 0x1d, 0xf6, 0x8b, 0x62, 0x91, 0x9e, 0xba, 0xf3, 0x7e, 0x3d, 0xcf, 0x3b, 0x1f, 0xcf,
+	0x5b, 0x40, 0xcd, 0x16, 0x75, 0x2c, 0x52, 0xeb, 0xae, 0xd6, 0xdc, 0x7d, 0xb5, 0xed, 0x50, 0x97,
+	0xa2, 0x82, 0x6f, 0x53, 0xbb, 0xab, 0x72, 0xd1, 0xa4, 0x26, 0xe5, 0xd6, 0x9a, 0xf7, 0xe5, 0x07,
+	0x2c, 0xbe, 0x06, 0xa4, 0x31, 0x73, 0xcd, 0x30, 0x70, 0xdb, 0xdd, 0xe8, 0x11, 0xec, 0xb0, 0x5d,
+	0xab, 0x8d, 0x8a, 0x30, 0xde, 0xc0, 0x84, 0xda, 0x25, 0xa9, 0x2a, 0x2d, 0x17, 0xea, 0xfe, 0x02,
+	0xcd, 0xc1, 0x04, 0xb3, 0x4c, 0x82, 0x9d, 0x52, 0x96, 0x9b, 0x83, 0xd5, 0x93, 0xc9, 0x4f, 0x87,
+	0x95, 0xcc, 0xef, 0xc3, 0x4a, 0x66, 0x71, 0x01, 0xe4, 0x64, 0xb5, 0x3a, 0x66, 0x6d, 0x4a, 0x18,
+	0x5e, 0x6c, 0xfa, 0x58, 0x8d, 0xc6, 0x5a, 0xc3, 0xb6, 0xc8, 0x9a, 0x61, 0xd0, 0x0e, 0x71, 0x87,
+	0xc3, 0x42, 0x25, 0xc8, 0xeb, 0x7e, 0x62, 0x69, 0x8c, 0x3b, 0xfa, 0xcb, 0x24, 0x8b, 0x28, 0x8e,
+	0x60, 0x61, 0xc2, 0x8c, 0xef, 0xdd, 0x3c, 0x60, 0x2e, 0xb6, 0x47, 0x47, 0xa3, 0x0c, 0xf3, 0x29,
+	0x40, 0x82, 0xc7, 0x36, 0xdc, 0xf4, 0xdc, 0xad, 0x16, 0xed, 0x3d, 0x8b, 0x61, 0x49, 0x11, 0x2c,
+	0xc1, 0x2c, 0x1b, 0x66, 0x56, 0x84, 0x71, 0xea, 0xed, 0x70, 0x80, 0xef, 0x2f, 0x42, 0xe8, 0x77,
+	0x60, 0x36, 0x52, 0x5e, 0xe0, 0x7e, 0x97, 0x20, 0xaf, 0x31, 0x73, 0xbd, 0xe3, 0x90, 0x21, 0x9b,
+	0x46, 0x90, 0x6b, 0x3a, 0xd4, 0x0e, 0x10, 0xf9, 0x37, 0x7a, 0x0e, 0x13, 0xba, 0xcd, 0xf7, 0x21,
+	0xe7, 0x59, 0xd7, 0xd5, 0xa3, 0x93, 0x4a, 0xe6, 0xe7, 0x49, 0x65, 0xc9, 0xb4, 0xdc, 0xdd, 0xce,
+	0x8e, 0x6a, 0x50, 0xbb, 0x66, 0x50, 0x66, 0x53, 0x16, 0xfc, 0xac, 0xb0, 0xc6, 0x5e, 0xcd, 0x3d,
+	0x68, 0x63, 0xa6, 0xbe, 0x22, 0x6e, 0x3d, 0xc8, 0x46, 0x0b, 0x50, 0xf0, 0x50, 0x74, 0xb7, 0xe3,
+	0xe0, 0xd2, 0x78, 0x55, 0x5a, 0xbe, 0x51, 0x3f, 0x37, 0x84, 0xda, 0x9a, 0x86, 0xa9, 0x80, 0xbc,
+	0x68, 0xe8, 0xab, 0xdf, 0x90, 0x66, 0x0d, 0x7d, 0x8a, 0xb7, 0x20, 0xeb, 0xd2, 0xa0, 0x9d, 0xac,
+	0x4b, 0xaf, 0xab, 0x99, 0x04, 0x5d, 0x8f, 0x9a, 0xa0, 0xfb, 0x51, 0x02, 0xd0, 0x98, 0x59, 0xc7,
+	0x06, 0xed, 0x86, 0x4f, 0xf7, 0xca, 0x47, 0xe0, 0x77, 0x91, 0x13, 0x5d, 0xfc, 0xeb, 0x56, 0x16,
+	0xf9, 0x73, 0x0c, 0x78, 0x08, 0x7a, 0x16, 0xbf, 0x37, 0x75, 0x6c, 0xd3, 0x2e, 0x1e, 0xf1, 0x3b,
+	0xad, 0x40, 0x39, 0x15, 0x4a, 0x70, 0xf9, 0x00, 0x73, 0x22, 0x60, 0xd4, 0xaf, 0xb5, 0x0a, 0x4a,
+	0x3a, 0x96, 0x60, 0xf3, 0x45, 0xe2, 0x74, 0x36, 0xb1, 0xab, 0xe9, 0xfb, 0xde, 0x91, 0xf2, 0xc7,
+	0xa5, 0x13, 0x03, 0x0f, 0x49, 0xe7, 0xfc, 0x9a, 0x8d, 0x5d, 0xd3, 0x35, 0xf3, 0xc9, 0xa7, 0x30,
+	0x13, 0xe4, 0xbf, 0x49, 0x5c, 0xf6, 0xbc, 0x90, 0xff, 0x60, 0x7e, 0xe1, 0x46, 0x8e, 0xe0, 0xe9,
+	0xf8, 0xf2, 0x19, 0x27, 0x2c, 0x1a, 0xda, 0x83, 0xa2, 0xc6, 0xcc, 0x37, 0x8e, 0x4e, 0x58, 0x13,
+	0x3b, 0x57, 0x1c, 0x5d, 0x68, 0x1e, 0x0a, 0x04, 0xf7, 0xde, 0x85, 0x95, 0x74, 0x92, 0xe0, 0xde,
+	0x46, 0x4c, 0x4c, 0x15, 0x58, 0x48, 0x03, 0xeb, 0x93, 0x79, 0xf8, 0x27, 0x0f, 0x63, 0x1a, 0x33,
+	0xd1, 0x5b, 0x98, 0x8a, 0x8f, 0xd2, 0xb2, 0x2a, 0x46, 0xb0, 0x9a, 0x9c, 0x8d, 0xf2, 0xbd, 0x81,
+	0xee, 0x3e, 0x00, 0x2f, 0x1c, 0x9b, 0x9b, 0xf1, 0xc2, 0x51, 0x77, 0xa2, 0x70, 0xfa, 0x34, 0x44,
+	0x5b, 0x70, 0x3b, 0x31, 0x0a, 0x95, 0x44, 0x6a, 0xc4, 0x2f, 0x2f, 0x0d, 0xf6, 0x8b, 0xda, 0x2f,
+	0x01, 0x42, 0xe3, 0xad, 0x14, 0xcb, 0x12, 0x1e, 0xb9, 0x7a, 0x91, 0x47, 0x54, 0x7a, 0x0c, 0x39,
+	0x3e, 0xaf, 0x50, 0x34, 0xd2, 0xb3, 0xc9, 0x72, 0xd2, 0x16, 0xce, 0xe3, 0x63, 0x21, 0x96, 0xe7,
+	0xd9, 0xe2, 0x79, 0x61, 0x8d, 0x46, 0x4f, 0x21, 0xdf, 0xd7, 0xe7, 0xd9, 0x68, 0x58, 0x60, 0x96,
+	0xcb, 0xa9, 0x66, 0x51, 0xe0, 0x3d, 0xa0, 0x14, 0x09, 0xad, 0xc6, 0x93, 0xe2, 0x11, 0xf2, 0xf2,
+	0x65, 0x11, 0x02, 0xc1, 0x80, 0x99, 0x34, 0x61, 0xbc, 0x9b, 0x56, 0x20, 0x7a, 0x7c, 0x0f, 0x2e,
+	0x0d, 0x09, 0x83, 0xa4, 0xc9, 0x5d, 0x0c, 0x24, 0x25, 0x24, 0x0e, 0x32, 0x40, 0x9a, 0xbc, 0x2b,
+	0x98, 0x90, 0x25, 0x25, 0x99, 0x1e, 0x29, 0xbf, 0x34, 0xd8, 0x2f, 0x6a, 0x6f, 0xc3, 0x74, 0x52,
+	0x22, 0x2a, 0xd1, 0xe4, 0x44, 0x80, 0x7c, 0xff, 0x92, 0x80, 0x7e, 0xf9, 0xf5, 0x17, 0x47, 0xa7,
+	0x8a, 0x74, 0x7c, 0xaa, 0x48, 0xbf, 0x4e, 0x15, 0xe9, 0xf3, 0x99, 0x92, 0x39, 0x3e, 0x53, 0x32,
+	0x3f, 0xce, 0x94, 0xcc, 0xd6, 0x4a, 0x48, 0xf7, 0x08, 0xdd, 0x69, 0xe1, 0x15, 0x9d, 0x31, 0xec,
+	0xb2, 0x5a, 0xf0, 0x27, 0x7d, 0xbf, 0xff, 0xc1, 0x25, 0x70, 0x67, 0x82, 0xff, 0x1b, 0x7f, 0xf4,
+	0x37, 0x00, 0x00, 0xff, 0xff, 0xcf, 0xc8, 0xdc, 0xd0, 0xc4, 0x0b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -961,6 +1055,7 @@ type MsgClient interface {
 	AcceptOwnership(ctx context.Context, in *MsgAcceptOwnership, opts ...grpc.CallOption) (*MsgAcceptOwnershipResponse, error)
 	AddAdminAccount(ctx context.Context, in *MsgAddAdminAccount, opts ...grpc.CallOption) (*MsgAddAdminAccountResponse, error)
 	AddSystemAccount(ctx context.Context, in *MsgAddSystemAccount, opts ...grpc.CallOption) (*MsgAddSystemAccountResponse, error)
+	AllowDenom(ctx context.Context, in *MsgAllowDenom, opts ...grpc.CallOption) (*MsgAllowDenomResponse, error)
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error)
 	Mint(ctx context.Context, in *MsgMint, opts ...grpc.CallOption) (*MsgMintResponse, error)
 	Recover(ctx context.Context, in *MsgRecover, opts ...grpc.CallOption) (*MsgRecoverResponse, error)
@@ -1000,6 +1095,15 @@ func (c *msgClient) AddAdminAccount(ctx context.Context, in *MsgAddAdminAccount,
 func (c *msgClient) AddSystemAccount(ctx context.Context, in *MsgAddSystemAccount, opts ...grpc.CallOption) (*MsgAddSystemAccountResponse, error) {
 	out := new(MsgAddSystemAccountResponse)
 	err := c.cc.Invoke(ctx, "/florin.v1.Msg/AddSystemAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AllowDenom(ctx context.Context, in *MsgAllowDenom, opts ...grpc.CallOption) (*MsgAllowDenomResponse, error) {
+	out := new(MsgAllowDenomResponse)
+	err := c.cc.Invoke(ctx, "/florin.v1.Msg/AllowDenom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1083,6 +1187,7 @@ type MsgServer interface {
 	AcceptOwnership(context.Context, *MsgAcceptOwnership) (*MsgAcceptOwnershipResponse, error)
 	AddAdminAccount(context.Context, *MsgAddAdminAccount) (*MsgAddAdminAccountResponse, error)
 	AddSystemAccount(context.Context, *MsgAddSystemAccount) (*MsgAddSystemAccountResponse, error)
+	AllowDenom(context.Context, *MsgAllowDenom) (*MsgAllowDenomResponse, error)
 	Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error)
 	Mint(context.Context, *MsgMint) (*MsgMintResponse, error)
 	Recover(context.Context, *MsgRecover) (*MsgRecoverResponse, error)
@@ -1105,6 +1210,9 @@ func (*UnimplementedMsgServer) AddAdminAccount(ctx context.Context, req *MsgAddA
 }
 func (*UnimplementedMsgServer) AddSystemAccount(ctx context.Context, req *MsgAddSystemAccount) (*MsgAddSystemAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddSystemAccount not implemented")
+}
+func (*UnimplementedMsgServer) AllowDenom(ctx context.Context, req *MsgAllowDenom) (*MsgAllowDenomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllowDenom not implemented")
 }
 func (*UnimplementedMsgServer) Burn(ctx context.Context, req *MsgBurn) (*MsgBurnResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Burn not implemented")
@@ -1185,6 +1293,24 @@ func _Msg_AddSystemAccount_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).AddSystemAccount(ctx, req.(*MsgAddSystemAccount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AllowDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAllowDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AllowDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/florin.v1.Msg/AllowDenom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AllowDenom(ctx, req.(*MsgAllowDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1350,6 +1476,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AddSystemAccount_Handler,
 		},
 		{
+			MethodName: "AllowDenom",
+			Handler:    _Msg_AllowDenom_Handler,
+		},
+		{
 			MethodName: "Burn",
 			Handler:    _Msg_Burn_Handler,
 		},
@@ -1411,6 +1541,13 @@ func (m *MsgAcceptOwnership) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
 		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
+		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
@@ -1464,12 +1601,19 @@ func (m *MsgAddAdminAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Account)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1524,12 +1668,19 @@ func (m *MsgAddSystemAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Account)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1552,6 +1703,73 @@ func (m *MsgAddSystemAccountResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgAddSystemAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAllowDenom) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAllowDenom) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAllowDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Signer) > 0 {
+		i -= len(m.Signer)
+		copy(dAtA[i:], m.Signer)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAllowDenomResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAllowDenomResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAllowDenomResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1584,7 +1802,7 @@ func (m *MsgBurn) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Signature)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signature)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x2a
 	}
 	{
 		size := m.Amount.Size()
@@ -1595,18 +1813,25 @@ func (m *MsgBurn) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1a
+	dAtA[i] = 0x22
 	if len(m.From) > 0 {
 		i -= len(m.From)
 		copy(dAtA[i:], m.From)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.From)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1665,18 +1890,25 @@ func (m *MsgMint) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1a
+	dAtA[i] = 0x22
 	if len(m.To) > 0 {
 		i -= len(m.To)
 		copy(dAtA[i:], m.To)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.To)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1731,26 +1963,33 @@ func (m *MsgRecover) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Signature)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signature)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x2a
 	}
 	if len(m.To) > 0 {
 		i -= len(m.To)
 		copy(dAtA[i:], m.To)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.To)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 	}
 	if len(m.From) > 0 {
 		i -= len(m.From)
 		copy(dAtA[i:], m.From)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.From)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1805,12 +2044,19 @@ func (m *MsgRemoveAdminAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Account)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1865,12 +2111,19 @@ func (m *MsgRemoveSystemAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Account)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1929,11 +2182,18 @@ func (m *MsgSetMaxMintAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x12
+	dAtA[i] = 0x1a
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1992,18 +2252,25 @@ func (m *MsgSetMintAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1a
+	dAtA[i] = 0x22
 	if len(m.Account) > 0 {
 		i -= len(m.Account)
 		copy(dAtA[i:], m.Account)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Account)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -2058,12 +2325,19 @@ func (m *MsgTransferOwnership) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.NewOwner)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.NewOwner)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Signer) > 0 {
 		i -= len(m.Signer)
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -2110,6 +2384,10 @@ func (m *MsgAcceptOwnership) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2132,6 +2410,10 @@ func (m *MsgAddAdminAccount) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2158,6 +2440,10 @@ func (m *MsgAddSystemAccount) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2178,12 +2464,46 @@ func (m *MsgAddSystemAccountResponse) Size() (n int) {
 	return n
 }
 
+func (m *MsgAllowDenom) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Signer)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgAllowDenomResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgBurn) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2216,6 +2536,10 @@ func (m *MsgMint) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2244,6 +2568,10 @@ func (m *MsgRecover) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2278,6 +2606,10 @@ func (m *MsgRemoveAdminAccount) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2304,6 +2636,10 @@ func (m *MsgRemoveSystemAccount) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2330,6 +2666,10 @@ func (m *MsgSetMaxMintAllowance) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2354,6 +2694,10 @@ func (m *MsgSetMintAllowance) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2382,6 +2726,10 @@ func (m *MsgTransferOwnership) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Signer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2438,6 +2786,38 @@ func (m *MsgAcceptOwnership) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
@@ -2571,6 +2951,38 @@ func (m *MsgAddAdminAccount) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -2601,7 +3013,7 @@ func (m *MsgAddAdminAccount) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
@@ -2735,6 +3147,38 @@ func (m *MsgAddSystemAccount) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -2765,7 +3209,7 @@ func (m *MsgAddSystemAccount) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
@@ -2868,7 +3312,7 @@ func (m *MsgAddSystemAccountResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgBurn) Unmarshal(dAtA []byte) error {
+func (m *MsgAllowDenom) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2891,10 +3335,10 @@ func (m *MsgBurn) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgBurn: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAllowDenom: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgBurn: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAllowDenom: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2931,6 +3375,234 @@ func (m *MsgBurn) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAllowDenomResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAllowDenomResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAllowDenomResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgBurn) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgBurn: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgBurn: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signer = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
 			}
 			var stringLen uint64
@@ -2961,7 +3633,7 @@ func (m *MsgBurn) Unmarshal(dAtA []byte) error {
 			}
 			m.From = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -2995,7 +3667,7 @@ func (m *MsgBurn) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
 			}
@@ -3131,6 +3803,38 @@ func (m *MsgMint) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -3161,7 +3865,7 @@ func (m *MsgMint) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
 			}
@@ -3193,7 +3897,7 @@ func (m *MsgMint) Unmarshal(dAtA []byte) error {
 			}
 			m.To = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -3329,6 +4033,38 @@ func (m *MsgRecover) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -3359,7 +4095,7 @@ func (m *MsgRecover) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
 			}
@@ -3391,7 +4127,7 @@ func (m *MsgRecover) Unmarshal(dAtA []byte) error {
 			}
 			m.From = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
 			}
@@ -3423,7 +4159,7 @@ func (m *MsgRecover) Unmarshal(dAtA []byte) error {
 			}
 			m.To = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
 			}
@@ -3559,6 +4295,38 @@ func (m *MsgRemoveAdminAccount) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -3589,7 +4357,7 @@ func (m *MsgRemoveAdminAccount) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
@@ -3723,6 +4491,38 @@ func (m *MsgRemoveSystemAccount) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -3753,7 +4553,7 @@ func (m *MsgRemoveSystemAccount) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
@@ -3887,6 +4687,38 @@ func (m *MsgSetMaxMintAllowance) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -3917,7 +4749,7 @@ func (m *MsgSetMaxMintAllowance) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -4053,6 +4885,38 @@ func (m *MsgSetMintAllowance) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -4083,7 +4947,7 @@ func (m *MsgSetMintAllowance) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
@@ -4115,7 +4979,7 @@ func (m *MsgSetMintAllowance) Unmarshal(dAtA []byte) error {
 			}
 			m.Account = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -4251,6 +5115,38 @@ func (m *MsgTransferOwnership) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}
 			var stringLen uint64
@@ -4281,7 +5177,7 @@ func (m *MsgTransferOwnership) Unmarshal(dAtA []byte) error {
 			}
 			m.Signer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NewOwner", wireType)
 			}
