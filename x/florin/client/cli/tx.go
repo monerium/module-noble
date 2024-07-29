@@ -15,6 +15,7 @@
 package cli
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 
@@ -43,6 +44,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(TxAllowDenom())
 	cmd.AddCommand(TxBurn())
 	cmd.AddCommand(TxMint())
+	cmd.AddCommand(TxRecover())
 	cmd.AddCommand(TxRemoveAdminAccount())
 	cmd.AddCommand(TxRemoveSystemAccount())
 	cmd.AddCommand(TxSetMaxMintAllowance())
@@ -158,9 +160,9 @@ func TxAllowDenom() *cobra.Command {
 
 func TxBurn() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [denom] [from] [amount]",
+		Use:   "burn [denom] [from] [amount] [signature]",
 		Short: "Transaction that burns a specific denom",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -172,11 +174,17 @@ func TxBurn() *cobra.Command {
 				return errors.New("invalid amount")
 			}
 
+			signature, err := base64.StdEncoding.DecodeString(args[3])
+			if err != nil {
+				return err
+			}
+
 			msg := &types.MsgBurn{
-				Denom:  args[0],
-				Signer: clientCtx.GetFromAddress().String(),
-				From:   args[1],
-				Amount: amount,
+				Denom:     args[0],
+				Signer:    clientCtx.GetFromAddress().String(),
+				From:      args[1],
+				Amount:    amount,
+				Signature: signature,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -209,6 +217,39 @@ func TxMint() *cobra.Command {
 				Signer: clientCtx.GetFromAddress().String(),
 				To:     args[1],
 				Amount: amount,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func TxRecover() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "recover [denom] [from] [to] [signature]",
+		Short: "Recover balance of a specific denom from an account",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			signature, err := base64.StdEncoding.DecodeString(args[3])
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgRecover{
+				Denom:     args[0],
+				Signer:    clientCtx.GetFromAddress().String(),
+				From:      args[1],
+				To:        args[2],
+				Signature: signature,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
