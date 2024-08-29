@@ -3,7 +3,7 @@ module github.com/noble-assets/florin
 go 1.21
 
 require (
-	adr36.dev v0.0.0-20240610115000-7f5928e5c04b
+	adr36.dev v0.0.0-20240829163820-17879c0e838f
 	cosmossdk.io/errors v1.0.0
 	github.com/cosmos/cosmos-sdk v0.45.16
 	github.com/gogo/protobuf v1.3.3
