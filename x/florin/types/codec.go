@@ -19,7 +19,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	"github.com/noble-assets/florin/x/florin/types/blacklist"
+	"github.com/monerium/module-noble/x/florin/types/blacklist"
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {

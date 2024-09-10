@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/noble-assets/florin/simapp"
-	"github.com/noble-assets/florin/simapp/simd/cmd"
+	"github.com/monerium/module-noble/simapp"
+	"github.com/monerium/module-noble/simapp/simd/cmd"
 )
 
 var (

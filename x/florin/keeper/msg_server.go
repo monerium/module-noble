@@ -21,7 +21,7 @@ import (
 	"adr36.dev"
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/noble-assets/florin/x/florin/types"
+	"github.com/monerium/module-noble/x/florin/types"
 )
 
 var _ types.MsgServer = &msgServer{}

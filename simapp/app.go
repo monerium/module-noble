@@ -45,9 +45,9 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/noble-assets/florin/x/florin"
-	florinkeeper "github.com/noble-assets/florin/x/florin/keeper"
-	florintypes "github.com/noble-assets/florin/x/florin/types"
+	"github.com/monerium/module-noble/x/florin"
+	florinkeeper "github.com/monerium/module-noble/x/florin/keeper"
+	florintypes "github.com/monerium/module-noble/x/florin/types"
 )
 
 var (

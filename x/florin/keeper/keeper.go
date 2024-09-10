@@ -19,8 +19,8 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/noble-assets/florin/x/florin/types"
-	"github.com/noble-assets/florin/x/florin/types/blacklist"
+	"github.com/monerium/module-noble/x/florin/types"
+	"github.com/monerium/module-noble/x/florin/types/blacklist"
 )
 
 type Keeper struct {

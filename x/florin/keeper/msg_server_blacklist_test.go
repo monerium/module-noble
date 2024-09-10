@@ -18,10 +18,10 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/noble-assets/florin/utils"
-	"github.com/noble-assets/florin/utils/mocks"
-	"github.com/noble-assets/florin/x/florin/keeper"
-	"github.com/noble-assets/florin/x/florin/types/blacklist"
+	"github.com/monerium/module-noble/utils"
+	"github.com/monerium/module-noble/utils/mocks"
+	"github.com/monerium/module-noble/x/florin/keeper"
+	"github.com/monerium/module-noble/x/florin/types/blacklist"
 	"github.com/stretchr/testify/require"
 )
 

@@ -16,9 +16,9 @@ package florin
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/noble-assets/florin/x/florin/keeper"
-	"github.com/noble-assets/florin/x/florin/types"
-	"github.com/noble-assets/florin/x/florin/types/blacklist"
+	"github.com/monerium/module-noble/x/florin/keeper"
+	"github.com/monerium/module-noble/x/florin/types"
+	"github.com/monerium/module-noble/x/florin/types/blacklist"
 )
 
 func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genesis types.GenesisState) {

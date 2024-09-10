@@ -17,9 +17,9 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/noble-assets/florin/utils"
-	"github.com/noble-assets/florin/utils/mocks"
-	"github.com/noble-assets/florin/x/florin/types"
+	"github.com/monerium/module-noble/utils"
+	"github.com/monerium/module-noble/utils/mocks"
+	"github.com/monerium/module-noble/x/florin/types"
 	"github.com/stretchr/testify/require"
 )
 
