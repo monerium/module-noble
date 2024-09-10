@@ -156,7 +156,7 @@ replace (
 	// https://github.com/cosmos/cosmos-sdk/issues/8469
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
-	// use local noble-assets/florin
+	// use local monerium/module-noble
 	github.com/monerium/module-noble => ../
 
 	// use cosmos compatible syndtr/goleveldb
