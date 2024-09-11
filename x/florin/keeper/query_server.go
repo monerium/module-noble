@@ -20,7 +20,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/noble-assets/florin/x/florin/types"
+	"github.com/monerium/module-noble/x/florin/types"
 )
 
 var _ types.QueryServer = &queryServer{}

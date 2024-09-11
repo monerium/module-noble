@@ -19,7 +19,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/noble-assets/florin/x/florin/types/blacklist"
+	"github.com/monerium/module-noble/x/florin/types/blacklist"
 )
 
 var _ blacklist.QueryServer = &blacklistQueryServer{}

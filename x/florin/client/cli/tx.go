@@ -23,7 +23,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/noble-assets/florin/x/florin/types"
+	"github.com/monerium/module-noble/x/florin/types"
 	"github.com/spf13/cobra"
 )
 

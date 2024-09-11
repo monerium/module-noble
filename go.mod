@@ -1,4 +1,4 @@
-module github.com/noble-assets/florin
+module github.com/monerium/module-noble
 
 go 1.21
 
