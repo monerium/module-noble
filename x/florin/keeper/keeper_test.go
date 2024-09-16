@@ -18,8 +18,8 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/monerium/module-noble/utils"
-	"github.com/monerium/module-noble/utils/mocks"
+	"github.com/monerium/module-noble/v2/utils"
+	"github.com/monerium/module-noble/v2/utils/mocks"
 	"github.com/stretchr/testify/require"
 )
 

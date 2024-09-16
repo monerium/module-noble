@@ -20,9 +20,9 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/monerium/module-noble/x/florin"
-	"github.com/monerium/module-noble/x/florin/keeper"
-	"github.com/monerium/module-noble/x/florin/types"
+	"github.com/monerium/module-noble/v2/x/florin"
+	"github.com/monerium/module-noble/v2/x/florin/keeper"
+	"github.com/monerium/module-noble/v2/x/florin/types"
 )
 
 func FlorinKeeper() (*keeper.Keeper, sdk.Context) {

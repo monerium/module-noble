@@ -22,10 +22,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/monerium/module-noble/utils"
-	"github.com/monerium/module-noble/utils/mocks"
-	"github.com/monerium/module-noble/x/florin/keeper"
-	"github.com/monerium/module-noble/x/florin/types"
+	"github.com/monerium/module-noble/v2/utils"
+	"github.com/monerium/module-noble/v2/utils/mocks"
+	"github.com/monerium/module-noble/v2/x/florin/keeper"
+	"github.com/monerium/module-noble/v2/x/florin/types"
 	"github.com/stretchr/testify/require"
 )
 

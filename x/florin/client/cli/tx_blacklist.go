@@ -18,7 +18,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/monerium/module-noble/x/florin/types/blacklist"
+	"github.com/monerium/module-noble/v2/x/florin/types/blacklist"
 	"github.com/spf13/cobra"
 )
 
