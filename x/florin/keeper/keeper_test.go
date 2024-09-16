@@ -17,6 +17,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/utils"
 	"github.com/monerium/module-noble/v2/utils/mocks"
@@ -26,13 +27,13 @@ import (
 func TestSendRestriction(t *testing.T) {
 	keeper, ctx := mocks.FlorinKeeper()
 	sender, recipient := utils.TestAccount(), utils.TestAccount()
-	ONE := sdk.NewCoin("ueure", sdk.NewInt(1_000_000_000_000_000_000))
+	ONE := sdk.NewCoin("ueure", math.NewInt(1_000_000_000_000_000_000))
 
 	// ACT: Attempt transfer with non $EURe coin.
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	_, err := keeper.SendRestrictionFn(
 		ctx, sender.Bytes, recipient.Bytes,
-		sdk.NewCoins(sdk.NewCoin("uusdc", sdk.NewInt(1_000_000))),
+		sdk.NewCoins(sdk.NewCoin("uusdc", math.NewInt(1_000_000))),
 	)
 	// ASSERT: The transfer should've succeeded.
 	require.NoError(t, err)

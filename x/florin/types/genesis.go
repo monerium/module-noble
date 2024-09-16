@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"slices"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/x/florin/types/blacklist"
 )
@@ -98,7 +99,7 @@ func (gs *GenesisState) Validate() error {
 			return fmt.Errorf("found a max mint allowance (%s) for a not allowed denom %s", maxAllowance, denom)
 		}
 
-		if _, ok := sdk.NewIntFromString(maxAllowance); !ok {
+		if _, ok := math.NewIntFromString(maxAllowance); !ok {
 			return fmt.Errorf("invalid max mint allowance (%s) for denom %s", maxAllowance, denom)
 		}
 	}

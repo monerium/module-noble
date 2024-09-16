@@ -15,28 +15,29 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	"cosmossdk.io/core/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/x/florin/types"
 	"github.com/monerium/module-noble/v2/x/florin/types/blacklist"
 )
 
 type Keeper struct {
-	storeKey storetypes.StoreKey
+	storeService store.KVStoreService
 
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 }
 
 func NewKeeper(
-	storeKey storetypes.StoreKey,
+	storeService store.KVStoreService,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 ) *Keeper {
 	return &Keeper{
-		storeKey: storeKey,
+		storeService: storeService,
 
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
@@ -49,7 +50,9 @@ func (k *Keeper) SetBankKeeper(bankKeeper types.BankKeeper) {
 }
 
 // SendRestrictionFn executes necessary checks against all EURe, GBPe, ISKe, USDe transfers.
-func (k *Keeper) SendRestrictionFn(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) (newToAddr sdk.AccAddress, err error) {
+func (k *Keeper) SendRestrictionFn(goCtx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) (newToAddr sdk.AccAddress, err error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
 	for _, allowedDenom := range k.GetAllowedDenoms(ctx) {
 		if amount := amt.AmountOf(allowedDenom); !amount.IsZero() {
 			valid := !k.IsAdversary(ctx, fromAddr.String())

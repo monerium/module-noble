@@ -19,27 +19,30 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"cosmossdk.io/core/appmodule"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/monerium/module-noble/v2/x/florin/client/cli"
 	"github.com/monerium/module-noble/v2/x/florin/keeper"
 	"github.com/monerium/module-noble/v2/x/florin/types"
 	"github.com/monerium/module-noble/v2/x/florin/types/blacklist"
 	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // ConsensusVersion defines the current x/florin module consensus version.
 const ConsensusVersion = 1
 
 var (
-	_ module.AppModuleBasic = AppModuleBasic{}
-	_ module.AppModule      = AppModule{}
+	_ module.AppModuleBasic      = AppModule{}
+	_ appmodule.AppModule        = AppModule{}
+	_ module.HasConsensusVersion = AppModule{}
+	_ module.HasGenesis          = AppModule{}
+	_ module.HasGenesisBasics    = AppModuleBasic{}
+	_ module.HasServices         = AppModule{}
 )
 
 //
@@ -60,6 +63,16 @@ func (AppModuleBasic) RegisterInterfaces(reg codectypes.InterfaceRegistry) {
 	types.RegisterInterfaces(reg)
 }
 
+func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
+
+	if err := blacklist.RegisterQueryHandlerClient(context.Background(), mux, blacklist.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
+}
+
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.DefaultGenesisState())
 }
@@ -71,26 +84,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingCo
 	}
 
 	return genesis.Validate()
-}
-
-func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
-
-func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
-		panic(err)
-	}
-
-	if err := blacklist.RegisterQueryHandlerClient(context.Background(), mux, blacklist.NewQueryClient(clientCtx)); err != nil {
-		panic(err)
-	}
-}
-
-func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.GetTxCmd()
-}
-
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd()
 }
 
 //
@@ -108,26 +101,23 @@ func NewAppModule(keeper *keeper.Keeper) AppModule {
 	}
 }
 
-func (m AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, bz json.RawMessage) []abci.ValidatorUpdate {
+func (AppModule) IsOnePerModuleType() {}
+
+func (AppModule) IsAppModule() {}
+
+func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
+
+func (m AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, bz json.RawMessage) {
 	var genesis types.GenesisState
 	cdc.MustUnmarshalJSON(bz, &genesis)
 
 	InitGenesis(ctx, m.keeper, genesis)
-	return nil
 }
 
 func (m AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	genesis := ExportGenesis(ctx, m.keeper)
 	return cdc.MustMarshalJSON(genesis)
 }
-
-func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
-
-func (AppModule) Route() sdk.Route { return sdk.Route{} }
-
-func (AppModule) QuerierRoute() string { return types.ModuleName }
-
-func (AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier { return nil }
 
 func (m AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(m.keeper))
@@ -137,4 +127,12 @@ func (m AppModule) RegisterServices(cfg module.Configurator) {
 	blacklist.RegisterQueryServer(cfg.QueryServer(), keeper.NewBlacklistQueryServer(m.keeper))
 }
 
-func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
+//
+
+func (AppModuleBasic) GetTxCmd() *cobra.Command {
+	return cli.GetTxCmd()
+}
+
+func (AppModuleBasic) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
