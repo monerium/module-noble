@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package florin.v1;
 
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 import "florin/blacklist/v1/genesis.proto";
 import "gogoproto/gogo.proto";
 
@@ -41,7 +43,9 @@ message Allowance {
   string denom = 1;
   string address = 2;
   string allowance = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }
