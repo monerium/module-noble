@@ -36,6 +36,7 @@ func GetQueryCmd() *cobra.Command {
 
 	cmd.AddCommand(GetBlacklistQueryCmd())
 
+	cmd.AddCommand(QueryAuthority())
 	cmd.AddCommand(QueryAllowedDenoms())
 	cmd.AddCommand(QueryOwners())
 	cmd.AddCommand(QuerySystems())
@@ -43,6 +44,29 @@ func GetQueryCmd() *cobra.Command {
 	cmd.AddCommand(QueryMaxMintAllowances())
 	cmd.AddCommand(QueryMintAllowances())
 	cmd.AddCommand(QueryMintAllowance())
+
+	return cmd
+}
+
+func QueryAuthority() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "authority",
+		Short: "Query the authority address of this module",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.Authority(context.Background(), &types.QueryAuthority{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }
