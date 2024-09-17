@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	Query_Authority_FullMethodName         = "/florin.v1.Query/Authority"
 	Query_AllowedDenoms_FullMethodName     = "/florin.v1.Query/AllowedDenoms"
 	Query_Owners_FullMethodName            = "/florin.v1.Query/Owners"
 	Query_Owner_FullMethodName             = "/florin.v1.Query/Owner"
@@ -36,6 +37,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
+	Authority(ctx context.Context, in *QueryAuthority, opts ...grpc.CallOption) (*QueryAuthorityResponse, error)
 	AllowedDenoms(ctx context.Context, in *QueryAllowedDenoms, opts ...grpc.CallOption) (*QueryAllowedDenomsResponse, error)
 	Owners(ctx context.Context, in *QueryOwners, opts ...grpc.CallOption) (*QueryOwnersResponse, error)
 	Owner(ctx context.Context, in *QueryOwner, opts ...grpc.CallOption) (*QueryOwnerResponse, error)
@@ -55,6 +57,16 @@ type queryClient struct {
 
 func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
+}
+
+func (c *queryClient) Authority(ctx context.Context, in *QueryAuthority, opts ...grpc.CallOption) (*QueryAuthorityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryAuthorityResponse)
+	err := c.cc.Invoke(ctx, Query_Authority_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *queryClient) AllowedDenoms(ctx context.Context, in *QueryAllowedDenoms, opts ...grpc.CallOption) (*QueryAllowedDenomsResponse, error) {
@@ -171,6 +183,7 @@ func (c *queryClient) MintAllowance(ctx context.Context, in *QueryMintAllowance,
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
 type QueryServer interface {
+	Authority(context.Context, *QueryAuthority) (*QueryAuthorityResponse, error)
 	AllowedDenoms(context.Context, *QueryAllowedDenoms) (*QueryAllowedDenomsResponse, error)
 	Owners(context.Context, *QueryOwners) (*QueryOwnersResponse, error)
 	Owner(context.Context, *QueryOwner) (*QueryOwnerResponse, error)
@@ -192,6 +205,9 @@ type QueryServer interface {
 // pointer dereference when methods are called.
 type UnimplementedQueryServer struct{}
 
+func (UnimplementedQueryServer) Authority(context.Context, *QueryAuthority) (*QueryAuthorityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Authority not implemented")
+}
 func (UnimplementedQueryServer) AllowedDenoms(context.Context, *QueryAllowedDenoms) (*QueryAllowedDenomsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllowedDenoms not implemented")
 }
@@ -244,6 +260,24 @@ func RegisterQueryServer(s grpc.ServiceRegistrar, srv QueryServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&Query_ServiceDesc, srv)
+}
+
+func _Query_Authority_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAuthority)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Authority(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Authority_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Authority(ctx, req.(*QueryAuthority))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_AllowedDenoms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -451,6 +485,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "florin.v1.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Authority",
+			Handler:    _Query_Authority_Handler,
+		},
 		{
 			MethodName: "AllowedDenoms",
 			Handler:    _Query_AllowedDenoms_Handler,

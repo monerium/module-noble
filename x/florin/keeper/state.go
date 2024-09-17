@@ -24,18 +24,6 @@ import (
 
 //
 
-func (k *Keeper) GetAuthority(ctx sdk.Context) string {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return string(store.Get(types.AuthorityKey))
-}
-
-func (k *Keeper) SetAuthority(ctx sdk.Context, authority string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(types.AuthorityKey, []byte(authority))
-}
-
-//
-
 func (k *Keeper) GetAllowedDenoms(ctx sdk.Context) (allowedDenoms []string) {
 	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(adapter, types.AllowedDenomPrefix)

@@ -1,4 +1,4 @@
-.PHONY: proto-format proto-lint proto-gen license format lint test-unit build
+.PHONY: proto-format proto-lint proto-breaking proto-gen license format lint test-unit build
 all: proto-all format test-unit build
 
 ###############################################################################
@@ -38,7 +38,7 @@ lint:
 BUF_VERSION=1.41
 BUILDER_VERSION=0.15.1
 
-proto-all: proto-format proto-lint proto-gen
+proto-all: proto-format proto-lint proto-breaking proto-gen
 
 proto-format:
 	@echo "🤖 Running protobuf formatter..."
@@ -57,6 +57,12 @@ proto-lint:
 	@docker run --rm --volume "$(PWD)":/workspace --workdir /workspace \
 		bufbuild/buf:$(BUF_VERSION) lint
 	@echo "✅ Completed protobuf linting!"
+
+proto-breaking:
+	@echo "🤖 Running protobuf breaking checks..."
+	@docker run --rm --volume "$(PWD)":/workspace --workdir /workspace \
+		bufbuild/buf:$(BUF_VERSION) breaking --against "https://github.com/monerium/module-noble.git#branch=v1.0.0"
+	@echo "✅ Completed protobuf breaking checks!"
 
 ###############################################################################
 ###                                 Testing                                 ###

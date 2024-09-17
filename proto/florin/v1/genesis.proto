@@ -14,7 +14,8 @@ message GenesisState {
   florin.blacklist.v1.GenesisState blacklist_state = 1 [(gogoproto.nullable) = false];
 
   // authority is the address that controls allowed denoms of this module.
-  string authority = 2;
+  // Deprecated and moved to a variable upon keeper instantiation.
+  string authority = 2 [deprecated = true];
   // allowed_denoms is a unique list of denoms that this module is allowed to burn / mint / etc.
   repeated string allowed_denoms = 3;
 

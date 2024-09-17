@@ -26,6 +26,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestAuthorityQuery(t *testing.T) {
+	k, ctx := mocks.FlorinKeeper()
+	server := keeper.NewQueryServer(k)
+
+	// ACT: Attempt to query authority with invalid request.
+	_, err := server.Authority(ctx, nil)
+	// ASSERT: The query should've failed due to invalid request.
+	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
+
+	// ACT: Attempt to query authority.
+	res, err := server.Authority(ctx, &types.QueryAuthority{})
+	// ASSERT: The query should've succeeded.
+	require.NoError(t, err)
+	require.Equal(t, "authority", res.Authority)
+}
+
 func TestAllowedDenomsQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
 	goCtx := sdk.WrapSDKContext(ctx)

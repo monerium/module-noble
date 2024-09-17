@@ -100,12 +100,8 @@ func (k msgServer) AddSystemAccount(goCtx context.Context, msg *types.MsgAddSyst
 func (k msgServer) AllowDenom(goCtx context.Context, msg *types.MsgAllowDenom) (*types.MsgAllowDenomResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	authority := k.GetAuthority(ctx)
-	if authority == "" {
-		return nil, types.ErrNoAuthority
-	}
-	if msg.Signer != authority {
-		return nil, errors.Wrapf(types.ErrInvalidAuthority, "expected %s, got %s", authority, msg.Signer)
+	if msg.Signer != k.authority {
+		return nil, errors.Wrapf(types.ErrInvalidAuthority, "expected %s, got %s", k.authority, msg.Signer)
 	}
 
 	supply := k.bankKeeper.GetSupply(ctx, msg.Denom)

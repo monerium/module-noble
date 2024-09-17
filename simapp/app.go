@@ -33,9 +33,8 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/x/params"  // import for side effects
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	"github.com/monerium/module-noble/v2/x/florin"
+	_ "github.com/monerium/module-noble/v2/x/florin" // import for side effects
 	florinkeeper "github.com/monerium/module-noble/v2/x/florin/keeper"
-	florintypes "github.com/monerium/module-noble/v2/x/florin/types"
 )
 
 var DefaultNodeHome string
@@ -121,24 +120,13 @@ func NewSimApp(
 		&app.BankKeeper,
 		&app.ConsensusKeeper,
 		&app.StakingKeeper,
+		// Custom Modules
+		&app.FlorinKeeper,
 	); err != nil {
 		return nil, err
 	}
 
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
-
-	if err := app.RegisterStores(storetypes.NewKVStoreKey(florintypes.ModuleName)); err != nil {
-		return nil, err
-	}
-	app.FlorinKeeper = florinkeeper.NewKeeper(
-		runtime.NewKVStoreService(app.GetKey(florintypes.ModuleName)),
-		app.AccountKeeper,
-		nil,
-	)
-	app.BankKeeper.AppendSendRestriction(app.FlorinKeeper.SendRestrictionFn)
-	if err := app.RegisterModules(florin.NewAppModule(app.FlorinKeeper)); err != nil {
-		return nil, err
-	}
 
 	if err := app.RegisterStreamingServices(appOpts, app.kvStoreKeys()); err != nil {
 		return nil, err
