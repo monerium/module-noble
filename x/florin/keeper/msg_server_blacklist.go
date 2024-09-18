@@ -19,7 +19,7 @@ import (
 
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/monerium/module-noble/x/florin/types/blacklist"
+	"github.com/monerium/module-noble/v2/x/florin/types/blacklist"
 )
 
 var _ blacklist.MsgServer = &blacklistMsgServer{}
