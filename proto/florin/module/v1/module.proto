@@ -8,6 +8,6 @@ import "cosmos/app/v1alpha1/module.proto";
 message Module {
   option (cosmos.app.v1alpha1.module) = {go_import: "github.com/monerium/module-noble/v2/x/florin"};
 
-  // authority is the account with permissions to allow new denoms.
+  // authority is the address that controls allowed denoms of this module.
   string authority = 1;
 }

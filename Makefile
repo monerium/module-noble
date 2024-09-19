@@ -17,7 +17,7 @@ build:
 gofumpt_cmd=mvdan.cc/gofumpt
 golangci_lint_cmd=github.com/golangci/golangci-lint/cmd/golangci-lint
 
-FILES := $(shell find $(shell go list -f '{{.Dir}}' ./...) -name "*.go" -a -not -name "*.pb.go" -a -not -name "*.pb.gw.go" -a -not -name "*.pulsar.go" | sed "s|$(shell pwd)/||g")
+FILES := $(shell find $(shell go list -f '{{.Dir}}' ./...) -name "*.go" -a -not -name "*.pb.go" -a -not -name "*.pb.gw.go" | sed "s|$(shell pwd)/||g")
 license:
 	@go-license --config .github/license.yml $(FILES)
 
@@ -35,10 +35,10 @@ lint:
 ###                                Protobuf                                 ###
 ###############################################################################
 
-BUF_VERSION=1.41
+BUF_VERSION=1.42
 BUILDER_VERSION=0.15.1
 
-proto-all: proto-format proto-lint proto-gen
+proto-all: proto-format proto-lint proto-breaking proto-gen
 
 proto-format:
 	@echo "🤖 Running protobuf formatter..."
@@ -57,6 +57,12 @@ proto-lint:
 	@docker run --rm --volume "$(PWD)":/workspace --workdir /workspace \
 		bufbuild/buf:$(BUF_VERSION) lint
 	@echo "✅ Completed protobuf linting!"
+
+proto-breaking:
+	@echo "🤖 Running protobuf breaking checks..."
+	@docker run --rm --volume "$(PWD)":/workspace --workdir /workspace \
+		bufbuild/buf:$(BUF_VERSION) breaking --against "https://github.com/monerium/module-noble.git#branch=v1.0.0"
+	@echo "✅ Completed protobuf breaking checks!"
 
 ###############################################################################
 ###                                 Testing                                 ###
