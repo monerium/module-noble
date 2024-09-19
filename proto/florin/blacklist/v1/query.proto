@@ -2,20 +2,24 @@ syntax = "proto3";
 
 package florin.blacklist.v1;
 
+import "cosmos/query/v1/query.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/monerium/module-noble/v2/x/florin/types/blacklist";
 
 service Query {
   rpc Owner(QueryOwner) returns (QueryOwnerResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/florin/blacklist/v1/owner";
   }
 
   rpc Admins(QueryAdmins) returns (QueryAdminsResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/florin/blacklist/v1/admins";
   }
 
   rpc Adversaries(QueryAdversaries) returns (QueryAdversariesResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/florin/blacklist/v1/adversaries";
   }
 }

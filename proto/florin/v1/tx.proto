@@ -2,11 +2,16 @@ syntax = "proto3";
 
 package florin.v1;
 
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/monerium/module-noble/v2/x/florin/types";
 
 service Msg {
+  option (cosmos.msg.v1.service) = true;
+
   rpc AcceptOwnership(MsgAcceptOwnership) returns (MsgAcceptOwnershipResponse);
   rpc AddAdminAccount(MsgAddAdminAccount) returns (MsgAddAdminAccountResponse);
   rpc AddSystemAccount(MsgAddSystemAccount) returns (MsgAddSystemAccountResponse);
@@ -23,11 +28,14 @@ service Msg {
 
 // MsgAcceptOwnership implements the acceptOwnership (0x79ba5097) method.
 message MsgAcceptOwnership {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/AcceptOwnership";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgAcceptOwnershipResponse is the response of the AcceptOwnership action.
@@ -35,12 +43,15 @@ message MsgAcceptOwnershipResponse {}
 
 // MsgAddAdminAccount implements the addAdminAccount (0x4fe57e7a) method.
 message MsgAddAdminAccount {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/AddAdminAccount";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string account = 3;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string account = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgAddAdminAccountResponse is the response of the AddAminAccount action.
@@ -48,12 +59,15 @@ message MsgAddAdminAccountResponse {}
 
 // MsgAddSystemAccount implements the addSystemAccount (0xa84c56d0) method.
 message MsgAddSystemAccount {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/AddSystemAccount";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string account = 3;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string account = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgAddSystemAccountResponse is the response of the AddSystemAccount action.
@@ -61,12 +75,15 @@ message MsgAddSystemAccountResponse {}
 
 // MsgAllowDenom is the request of the AllowDenom action.
 message MsgAllowDenom {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/AllowDenom";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string denom = 2;
-  string owner = 3;
+  string owner = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgAllowDenomResponse is the response of the AllowDenom action.
@@ -74,14 +91,19 @@ message MsgAllowDenomResponse {}
 
 // MsgBurn implements the burn (0x8d1247ba) method.
 message MsgBurn {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/Burn";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string from = 3;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string amount = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   bytes signature = 5;
@@ -92,14 +114,19 @@ message MsgBurnResponse {}
 
 // MsgMint implements the mint (0x40c10f19) method.
 message MsgMint {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/Mint";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string to = 3;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string amount = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }
@@ -109,13 +136,16 @@ message MsgMintResponse {}
 
 // MsgRecover implements the recover (0x6eb4c609) method.
 message MsgRecover {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/Recover";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string from = 3;
-  string to = 4;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   bytes signature = 5;
 }
 
@@ -124,12 +154,15 @@ message MsgRecoverResponse {}
 
 // MsgRemoveAdminAccount implements the removeAdminAccount (0x67a89a72) method.
 message MsgRemoveAdminAccount {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/RemoveAdminAccount";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string account = 3;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string account = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgRemoveAdminAccountResponse is the response of the RemoveAdminAccount action.
@@ -137,12 +170,15 @@ message MsgRemoveAdminAccountResponse {}
 
 // MsgRemoveSystemAccount implements the removeSystemAccount (0xebbc3d46) method.
 message MsgRemoveSystemAccount {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/RemoveSystemAccount";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string account = 3;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string account = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgRemoveSystemAccountResponse is the response of the RemoveSystemAccount action.
@@ -150,13 +186,18 @@ message MsgRemoveSystemAccountResponse {}
 
 // MsgSetMaxMintAllowance implements the setMaxMintAllowance (0xfd2319c4) method.
 message MsgSetMaxMintAllowance {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/SetMaxMintAllowance";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string amount = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }
@@ -166,14 +207,19 @@ message MsgSetMaxMintAllowanceResponse {}
 
 // MsgSetMintAllowance implements the setMintAllowance (0xf27c5f6e) method.
 message MsgSetMintAllowance {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/SetMintAllowance";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string account = 3;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string account = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string amount = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }
@@ -183,12 +229,15 @@ message MsgSetMintAllowanceResponse {}
 
 // MsgTransferOwnership implements the transferOwnership (0xf2fde38b) method.
 message MsgTransferOwnership {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/TransferOwnership";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   string denom = 1;
-  string signer = 2;
-  string new_owner = 3;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string new_owner = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgTransferOwnershipResponse is the response of the TransferOwnership action.

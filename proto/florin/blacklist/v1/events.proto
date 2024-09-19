@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package florin.blacklist.v1;
 
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/monerium/module-noble/v2/x/florin/types/blacklist";
@@ -16,7 +18,9 @@ message Decision {
 
   // amount is the number of tokens.
   string amount = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 

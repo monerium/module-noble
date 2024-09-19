@@ -2,11 +2,16 @@ syntax = "proto3";
 
 package florin.blacklist.v1;
 
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/monerium/module-noble/v2/x/florin/types/blacklist";
 
 service Msg {
+  option (cosmos.msg.v1.service) = true;
+
   rpc AcceptOwnership(MsgAcceptOwnership) returns (MsgAcceptOwnershipResponse);
   rpc AddAdminAccount(MsgAddAdminAccount) returns (MsgAddAdminAccountResponse);
   rpc Ban(MsgBan) returns (MsgBanResponse);
@@ -17,10 +22,13 @@ service Msg {
 
 // MsgAcceptOwnership implements the acceptOwnership (0x79ba5097) method.
 message MsgAcceptOwnership {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/blacklist/AcceptOwnership";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgAcceptOwnershipResponse is the response of the AcceptOwnership action.
@@ -28,11 +36,14 @@ message MsgAcceptOwnershipResponse {}
 
 // MsgAddAdminAccount implements the addAdminAccount (0x4fe57e7a) method.
 message MsgAddAdminAccount {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/blacklist/AddAminAccount";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string account = 2;
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string account = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgAddAdminAccountResponse is the response of the AddAminAccount action.
@@ -40,11 +51,14 @@ message MsgAddAdminAccountResponse {}
 
 // MsgBan implements the ban (0x97c3ccd8) method.
 message MsgBan {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/blacklist/Ban";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string adversary = 2;
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string adversary = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgBanResponse is the response of the Ban action.
@@ -52,11 +66,14 @@ message MsgBanResponse {}
 
 // MsgRemoveAdminAccount implements the removeAdminAccount (0x67a89a72) method.
 message MsgRemoveAdminAccount {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/blacklist/RemoveAdminAccount";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string account = 2;
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string account = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgRemoveAdminAccountResponse is the response of the RemoveAdminAccount action.
@@ -64,11 +81,14 @@ message MsgRemoveAdminAccountResponse {}
 
 // MsgTransferOwnership implements the transferOwnership (0xf2fde38b) method.
 message MsgTransferOwnership {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/blacklist/TransferOwnership";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string new_owner = 2;
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string new_owner = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgTransferOwnershipResponse is the response of the TransferOwnership action.
@@ -76,11 +96,14 @@ message MsgTransferOwnershipResponse {}
 
 // MsgUnban implements the unban (0xb9f14557) method.
 message MsgUnban {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/blacklist/Unban";
+
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string signer = 1;
-  string friend = 2;
+  string signer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string friend = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgUnbanResponse is the response of the Unban action.
