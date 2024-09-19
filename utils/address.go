@@ -15,8 +15,8 @@
 package utils
 
 import (
+	"github.com/cometbft/cometbft/crypto/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
 
 type Account struct {

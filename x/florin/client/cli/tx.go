@@ -19,10 +19,10 @@ import (
 	"errors"
 	"fmt"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/x/florin/types"
 	"github.com/spf13/cobra"
 )
@@ -169,7 +169,7 @@ func TxBurn() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[2])
+			amount, ok := math.NewIntFromString(args[2])
 			if !ok {
 				return errors.New("invalid amount")
 			}
@@ -207,7 +207,7 @@ func TxMint() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[2])
+			amount, ok := math.NewIntFromString(args[2])
 			if !ok {
 				return errors.New("invalid amount")
 			}
@@ -324,7 +324,7 @@ func TxSetMaxMintAllowance() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[1])
+			amount, ok := math.NewIntFromString(args[1])
 			if !ok {
 				return errors.New("invalid amount")
 			}
@@ -355,7 +355,7 @@ func TxSetMintAllowance() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[2])
+			amount, ok := math.NewIntFromString(args[2])
 			if !ok {
 				return errors.New("invalid amount")
 			}

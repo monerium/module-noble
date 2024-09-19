@@ -15,9 +15,10 @@
 package mocks
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/x/florin"
@@ -37,7 +38,7 @@ func FlorinWithKeepers(account types.AccountKeeper, bank BankKeeper) (*keeper.Ke
 	types.RegisterInterfaces(reg)
 	_ = codec.NewProtoCodec(reg)
 
-	k := keeper.NewKeeper(key, account, bank)
+	k := keeper.NewKeeper(runtime.NewKVStoreService(key), account, bank)
 
 	bank = bank.WithSendCoinsRestriction(k.SendRestrictionFn)
 	k.SetBankKeeper(bank)

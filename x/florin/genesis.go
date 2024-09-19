@@ -15,6 +15,7 @@
 package florin
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/x/florin/keeper"
 	"github.com/monerium/module-noble/v2/x/florin/types"
@@ -51,7 +52,7 @@ func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genesis types.GenesisState) 
 		k.SetMintAllowance(ctx, item.Denom, item.Address, item.Allowance)
 	}
 	for denom, rawMaxAllowance := range genesis.MaxMintAllowances {
-		maxAllowance, _ := sdk.NewIntFromString(rawMaxAllowance)
+		maxAllowance, _ := math.NewIntFromString(rawMaxAllowance)
 		k.SetMaxMintAllowance(ctx, denom, maxAllowance)
 	}
 }

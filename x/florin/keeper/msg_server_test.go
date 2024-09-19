@@ -18,6 +18,7 @@ import (
 	"encoding/base64"
 	"testing"
 
+	"cosmossdk.io/math"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -30,8 +31,8 @@ import (
 )
 
 var (
-	MaxMintAllowance, _ = sdk.NewIntFromString("3000000000000000000000000")
-	One, _              = sdk.NewIntFromString("1000000000000000000")
+	MaxMintAllowance, _ = math.NewIntFromString("3000000000000000000000000")
+	One, _              = math.NewIntFromString("1000000000000000000")
 )
 
 func TestAcceptOwnership(t *testing.T) {
@@ -238,7 +239,7 @@ func TestBurn(t *testing.T) {
 	pubkey, _ := codectypes.NewAnyWithValue(&secp256k1.PubKey{Key: bz})
 
 	account := mocks.AccountKeeper{
-		Accounts: make(map[string]authtypes.AccountI),
+		Accounts: make(map[string]sdk.AccountI),
 	}
 	bank := mocks.BankKeeper{
 		Balances:    make(map[string]sdk.Coins),
@@ -415,7 +416,7 @@ func TestRecover(t *testing.T) {
 	pubkey, _ := codectypes.NewAnyWithValue(&secp256k1.PubKey{Key: bz})
 
 	account := mocks.AccountKeeper{
-		Accounts: make(map[string]authtypes.AccountI),
+		Accounts: make(map[string]sdk.AccountI),
 	}
 	bank := mocks.BankKeeper{
 		Balances:    make(map[string]sdk.Coins),

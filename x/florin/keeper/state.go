@@ -15,7 +15,9 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/x/florin/types"
 )
@@ -23,19 +25,20 @@ import (
 //
 
 func (k *Keeper) GetAuthority(ctx sdk.Context) string {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return string(store.Get(types.AuthorityKey))
 }
 
 func (k *Keeper) SetAuthority(ctx sdk.Context, authority string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.AuthorityKey, []byte(authority))
 }
 
 //
 
 func (k *Keeper) GetAllowedDenoms(ctx sdk.Context) (allowedDenoms []string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AllowedDenomPrefix)
+	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(adapter, types.AllowedDenomPrefix)
 	itr := store.Iterator(nil, nil)
 
 	defer itr.Close()
@@ -48,24 +51,25 @@ func (k *Keeper) GetAllowedDenoms(ctx sdk.Context) (allowedDenoms []string) {
 }
 
 func (k *Keeper) IsAllowedDenom(ctx sdk.Context, denom string) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return store.Has(types.AllowedDenomKey(denom))
 }
 
 func (k *Keeper) SetAllowedDenom(ctx sdk.Context, denom string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.AllowedDenomKey(denom), []byte{})
 }
 
 //
 
 func (k *Keeper) GetOwner(ctx sdk.Context, denom string) string {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return string(store.Get(types.OwnerKey(denom)))
 }
 
 func (k *Keeper) GetOwners(ctx sdk.Context) map[string]string {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.OwnerPrefix)
+	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(adapter, types.OwnerPrefix)
 	itr := store.Iterator(nil, nil)
 
 	defer itr.Close()
@@ -79,24 +83,25 @@ func (k *Keeper) GetOwners(ctx sdk.Context) map[string]string {
 }
 
 func (k *Keeper) SetOwner(ctx sdk.Context, denom string, owner string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.OwnerKey(denom), []byte(owner))
 }
 
 //
 
 func (k *Keeper) DeletePendingOwner(ctx sdk.Context, denom string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.PendingOwnerKey(denom))
 }
 
 func (k *Keeper) GetPendingOwner(ctx sdk.Context, denom string) string {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return string(store.Get(types.PendingOwnerKey(denom)))
 }
 
 func (k *Keeper) GetPendingOwners(ctx sdk.Context) map[string]string {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingOwnerPrefix)
+	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(adapter, types.PendingOwnerPrefix)
 	itr := store.Iterator(nil, nil)
 
 	defer itr.Close()
@@ -110,20 +115,21 @@ func (k *Keeper) GetPendingOwners(ctx sdk.Context) map[string]string {
 }
 
 func (k *Keeper) SetPendingOwner(ctx sdk.Context, denom string, pendingOwner string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.PendingOwnerKey(denom), []byte(pendingOwner))
 }
 
 //
 
 func (k *Keeper) DeleteSystem(ctx sdk.Context, denom string, address string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.SystemKey(denom, address))
 }
 
 func (k *Keeper) GetSystemsByDenom(ctx sdk.Context, denom string) (systems []string) {
 	bz := append(types.SystemPrefix, []byte(denom)...)
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), bz)
+	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(adapter, bz)
 	itr := store.Iterator(nil, nil)
 
 	defer itr.Close()
@@ -151,25 +157,26 @@ func (k *Keeper) GetSystems(ctx sdk.Context) (systems []types.Account) {
 }
 
 func (k *Keeper) IsSystem(ctx sdk.Context, denom string, address string) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return store.Has(types.SystemKey(denom, address))
 }
 
 func (k *Keeper) SetSystem(ctx sdk.Context, denom string, address string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.SystemKey(denom, address), []byte{})
 }
 
 //
 
 func (k *Keeper) DeleteAdmin(ctx sdk.Context, denom string, admin string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.AdminKey(denom, admin))
 }
 
 func (k *Keeper) GetAdminsByDenom(ctx sdk.Context, denom string) (admins []string) {
 	bz := append(types.AdminPrefix, []byte(denom)...)
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), bz)
+	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(adapter, bz)
 	itr := store.Iterator(nil, nil)
 
 	defer itr.Close()
@@ -197,22 +204,22 @@ func (k *Keeper) GetAdmins(ctx sdk.Context) (admins []types.Account) {
 }
 
 func (k *Keeper) IsAdmin(ctx sdk.Context, denom string, admin string) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return store.Has(types.AdminKey(denom, admin))
 }
 
 func (k *Keeper) SetAdmin(ctx sdk.Context, denom string, admin string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.AdminKey(denom, admin), []byte{})
 }
 
 //
 
-func (k *Keeper) GetMintAllowance(ctx sdk.Context, denom string, address string) (allowance sdk.Int) {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) GetMintAllowance(ctx sdk.Context, denom string, address string) (allowance math.Int) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.MintAllowanceKey(denom, address))
 
-	allowance = sdk.ZeroInt()
+	allowance = math.ZeroInt()
 	_ = allowance.Unmarshal(bz)
 
 	return
@@ -220,13 +227,14 @@ func (k *Keeper) GetMintAllowance(ctx sdk.Context, denom string, address string)
 
 func (k *Keeper) GetMintAllowancesByDenom(ctx sdk.Context, denom string) (allowances []types.Allowance) {
 	bz := append(types.MintAllowancePrefix, []byte(denom)...)
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), bz)
+	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(adapter, bz)
 	itr := store.Iterator(nil, nil)
 
 	defer itr.Close()
 
 	for ; itr.Valid(); itr.Next() {
-		var allowance sdk.Int
+		var allowance math.Int
 		_ = allowance.Unmarshal(itr.Value())
 
 		allowances = append(allowances, types.Allowance{
@@ -249,33 +257,34 @@ func (k *Keeper) GetMintAllowances(ctx sdk.Context) (allowances []types.Allowanc
 	return
 }
 
-func (k *Keeper) SetMintAllowance(ctx sdk.Context, denom string, address string, allowance sdk.Int) {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) SetMintAllowance(ctx sdk.Context, denom string, address string, allowance math.Int) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz, _ := allowance.Marshal()
 	store.Set(types.MintAllowanceKey(denom, address), bz)
 }
 
 //
 
-func (k *Keeper) GetMaxMintAllowance(ctx sdk.Context, denom string) (maxAllowance sdk.Int) {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) GetMaxMintAllowance(ctx sdk.Context, denom string) (maxAllowance math.Int) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.MaxMintAllowanceKey(denom))
 
-	maxAllowance = sdk.ZeroInt()
+	maxAllowance = math.ZeroInt()
 	_ = maxAllowance.Unmarshal(bz)
 
 	return
 }
 
 func (k *Keeper) GetMaxMintAllowances(ctx sdk.Context) map[string]string {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.MaxMintAllowancePrefix)
+	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(adapter, types.MaxMintAllowancePrefix)
 	itr := store.Iterator(nil, nil)
 
 	defer itr.Close()
 
 	maxAllowances := make(map[string]string)
 	for ; itr.Valid(); itr.Next() {
-		maxAllowance := sdk.ZeroInt()
+		maxAllowance := math.ZeroInt()
 		_ = maxAllowance.Unmarshal(itr.Value())
 
 		maxAllowances[string(itr.Key())] = maxAllowance.String()
@@ -284,8 +293,8 @@ func (k *Keeper) GetMaxMintAllowances(ctx sdk.Context) map[string]string {
 	return maxAllowances
 }
 
-func (k *Keeper) SetMaxMintAllowance(ctx sdk.Context, denom string, maxAllowance sdk.Int) {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) SetMaxMintAllowance(ctx sdk.Context, denom string, maxAllowance math.Int) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz, _ := maxAllowance.Marshal()
 	store.Set(types.MaxMintAllowanceKey(denom), bz)
 }
