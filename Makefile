@@ -1,4 +1,4 @@
-.PHONY: proto-format proto-lint proto-gen license format lint test-unit build
+.PHONY: proto-format proto-lint proto-breaking proto-gen license format lint test-unit build
 all: proto-all format test-unit build
 
 ###############################################################################
