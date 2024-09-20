@@ -3,7 +3,6 @@ module github.com/monerium/module-noble/v2/simapp
 go 1.22
 
 require (
-	cosmossdk.io/api v0.7.5
 	cosmossdk.io/client/v2 v2.0.0-beta.4
 	cosmossdk.io/core v0.11.1
 	cosmossdk.io/depinject v1.0.0
@@ -20,6 +19,7 @@ require (
 
 require (
 	adr36.dev v0.0.0-20240916174542-e2c73055e6d4 // indirect
+	cosmossdk.io/api v0.7.5 // indirect
 	cosmossdk.io/collections v0.4.0 // indirect
 	cosmossdk.io/errors v1.0.1 // indirect
 	cosmossdk.io/math v1.3.0 // indirect
