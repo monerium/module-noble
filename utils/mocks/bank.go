@@ -22,7 +22,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/monerium/module-noble/v2/x/florin/types"
+	"github.com/monerium/module-noble/v2/types"
 )
 
 var _ types.BankKeeper = BankKeeper{}

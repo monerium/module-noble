@@ -6,7 +6,7 @@ import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/monerium/module-noble/v2/x/florin/types";
+option go_package = "github.com/monerium/module-noble/v2/types";
 
 // Emitted when a denom is allowed.
 message DenomAllowed {

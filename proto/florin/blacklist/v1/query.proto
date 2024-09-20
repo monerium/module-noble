@@ -5,7 +5,7 @@ package florin.blacklist.v1;
 import "cosmos/query/v1/query.proto";
 import "google/api/annotations.proto";
 
-option go_package = "github.com/monerium/module-noble/v2/x/florin/types/blacklist";
+option go_package = "github.com/monerium/module-noble/v2/types/blacklist";
 
 service Query {
   rpc Owner(QueryOwner) returns (QueryOwnerResponse) {
