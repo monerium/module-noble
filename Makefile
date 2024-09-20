@@ -35,7 +35,7 @@ lint:
 ###                                Protobuf                                 ###
 ###############################################################################
 
-BUF_VERSION=1.41
+BUF_VERSION=1.42
 BUILDER_VERSION=0.15.1
 
 proto-all: proto-format proto-lint proto-breaking proto-gen

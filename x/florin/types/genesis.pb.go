@@ -31,7 +31,7 @@ type GenesisState struct {
 	// blacklist_state is the genesis state of the blacklist submodule.
 	BlacklistState blacklist.GenesisState `protobuf:"bytes,1,opt,name=blacklist_state,json=blacklistState,proto3" json:"blacklist_state"`
 	// authority is the address that controls allowed denoms of this module.
-	// Deprecated and moved to a variable upon keeper instantiation.
+	// Deprecated and moved to a variable set upon Keeper initialization.
 	Authority string `protobuf:"bytes,2,opt,name=authority,proto3" json:"authority,omitempty"` // Deprecated: Do not use.
 	// allowed_denoms is a unique list of denoms that this module is allowed to burn / mint / etc.
 	AllowedDenoms []string `protobuf:"bytes,3,rep,name=allowed_denoms,json=allowedDenoms,proto3" json:"allowed_denoms,omitempty"`
