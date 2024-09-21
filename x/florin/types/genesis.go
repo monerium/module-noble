@@ -38,12 +38,6 @@ func (gs *GenesisState) Validate() error {
 		return err
 	}
 
-	if gs.Authority != "" {
-		if _, err := sdk.AccAddressFromBech32(gs.Authority); err != nil {
-			return fmt.Errorf("invalid authority address (%s): %s", gs.Authority, err)
-		}
-	}
-
 	for denom, owner := range gs.Owners {
 		if !slices.Contains(gs.AllowedDenoms, denom) {
 			return fmt.Errorf("found an owner (%s) for a not allowed denom %s", owner, denom)

@@ -181,17 +181,8 @@ func TestAllowDenom(t *testing.T) {
 	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewMsgServer(k)
 
-	// ACT: Attempt to allow denom with no authority set.
-	_, err := server.AllowDenom(goCtx, &types.MsgAllowDenom{})
-	// ASSERT: The action should've failed due to no authority set.
-	require.ErrorIs(t, err, types.ErrNoAuthority)
-
-	// ARRANGE: Set authority in state.
-	authority := utils.TestAccount()
-	k.SetAuthority(ctx, authority.Address)
-
 	// ACT: Attempt to allow denom with invalid signer.
-	_, err = server.AllowDenom(goCtx, &types.MsgAllowDenom{
+	_, err := server.AllowDenom(goCtx, &types.MsgAllowDenom{
 		Signer: utils.TestAccount().Address,
 	})
 	// ASSERT: The action should've failed due to invalid signer.
@@ -199,7 +190,7 @@ func TestAllowDenom(t *testing.T) {
 
 	// ACT: Attempt to allow denom already in use.
 	_, err = server.AllowDenom(goCtx, &types.MsgAllowDenom{
-		Signer: authority.Address,
+		Signer: "authority",
 		Denom:  "uusdc",
 	})
 	// ASSERT: The action should've failed due to invalid denom.
@@ -210,7 +201,7 @@ func TestAllowDenom(t *testing.T) {
 
 	// ACT: Attempt to allow denom.
 	_, err = server.AllowDenom(goCtx, &types.MsgAllowDenom{
-		Signer: authority.Address,
+		Signer: "authority",
 		Denom:  "uusde",
 		Owner:  owner.Address,
 	})

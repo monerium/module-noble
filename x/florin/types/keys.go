@@ -17,7 +17,6 @@ package types
 const ModuleName = "florin"
 
 var (
-	AuthorityKey           = []byte("authority")
 	AllowedDenomPrefix     = []byte("allowed_denom/")
 	OwnerPrefix            = []byte("owner/")
 	PendingOwnerPrefix     = []byte("pending_owner/")

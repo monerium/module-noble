@@ -12,6 +12,10 @@ import "google/api/annotations.proto";
 option go_package = "github.com/monerium/module-noble/v2/x/florin/types";
 
 service Query {
+  rpc Authority(QueryAuthority) returns (QueryAuthorityResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v1/authority";
+  }
   rpc AllowedDenoms(QueryAllowedDenoms) returns (QueryAllowedDenomsResponse) {
     option (cosmos.query.v1.module_query_safe) = true;
     option (google.api.http).get = "/florin/v1/allowed_denoms";
@@ -64,6 +68,12 @@ service Query {
 }
 
 //
+
+message QueryAuthority {}
+
+message QueryAuthorityResponse {
+  string authority = 1;
+}
 
 message QueryAllowedDenoms {}
 

@@ -20,12 +20,17 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/appmodule"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/depinject"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	modulev1 "github.com/monerium/module-noble/v2/api/module/v1"
 	"github.com/monerium/module-noble/v2/x/florin/client/cli"
 	"github.com/monerium/module-noble/v2/x/florin/keeper"
 	"github.com/monerium/module-noble/v2/x/florin/types"
@@ -135,4 +140,47 @@ func (AppModuleBasic) GetTxCmd() *cobra.Command {
 
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
+}
+
+//
+
+func init() {
+	appmodule.Register(&modulev1.Module{},
+		appmodule.Provide(ProvideModule),
+	)
+}
+
+type ModuleInputs struct {
+	depinject.In
+
+	Config       *modulev1.Module
+	StoreService store.KVStoreService
+
+	AccountKeeper types.AccountKeeper
+	BankKeeper    types.BankKeeper
+}
+
+type ModuleOutputs struct {
+	depinject.Out
+
+	Keeper      *keeper.Keeper
+	Module      appmodule.AppModule
+	Restriction banktypes.SendRestrictionFn
+}
+
+func ProvideModule(in ModuleInputs) ModuleOutputs {
+	if in.Config.Authority == "" {
+		panic("authority for x/florin module must be set")
+	}
+
+	authority := authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
+	k := keeper.NewKeeper(
+		authority.String(),
+		in.StoreService,
+		in.AccountKeeper,
+		in.BankKeeper,
+	)
+	m := NewAppModule(k)
+
+	return ModuleOutputs{Keeper: k, Module: m, Restriction: k.SendRestrictionFn}
 }

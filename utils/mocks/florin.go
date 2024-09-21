@@ -38,7 +38,7 @@ func FlorinWithKeepers(account types.AccountKeeper, bank BankKeeper) (*keeper.Ke
 	types.RegisterInterfaces(reg)
 	_ = codec.NewProtoCodec(reg)
 
-	k := keeper.NewKeeper(runtime.NewKVStoreService(key), account, bank)
+	k := keeper.NewKeeper("authority", runtime.NewKVStoreService(key), account, bank)
 
 	bank = bank.WithSendCoinsRestriction(k.SendRestrictionFn)
 	k.SetBankKeeper(bank)

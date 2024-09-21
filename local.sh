@@ -21,7 +21,7 @@ if ! [ -f .florin/data/priv_validator_state.json ]; then
   florind genesis add-genesis-account blacklist-pending-owner 10000000uusdc --home .florin --keyring-backend test
   BLACKLIST_ADMIN=$(florind keys add blacklist-admin --home .florin --keyring-backend test --output json | jq .address)
   florind genesis add-genesis-account blacklist-admin 10000000uusdc --home .florin --keyring-backend test
-  AUTHORITY=$(florind keys add authority --home .florin --keyring-backend test --output json | jq .address)
+  florind keys add authority --recover --home .florin --keyring-backend test <<< "market ready pilot lunch host cancel drive script remove brief lunch entry worth giant unknown grain romance gym tide perfect short because envelope sentence" &> /dev/null
   florind genesis add-genesis-account authority 1000000uusdc --home .florin --keyring-backend test
   OWNER=$(florind keys add owner --home .florin --keyring-backend test --output json | jq .address)
   florind genesis add-genesis-account owner 10000000uusdc --home .florin --keyring-backend test
@@ -41,7 +41,6 @@ if ! [ -f .florin/data/priv_validator_state.json ]; then
   touch $TEMP && jq '.app_state.florin.blacklist_state.owner = '$BLACKLIST_OWNER'' .florin/config/genesis.json > $TEMP && mv $TEMP .florin/config/genesis.json
   touch $TEMP && jq '.app_state.florin.blacklist_state.admins = ['$BLACKLIST_ADMIN']' .florin/config/genesis.json > $TEMP && mv $TEMP .florin/config/genesis.json
   touch $TEMP && jq '.app_state.florin.blacklist_state.adversaries = ['$BOB']' .florin/config/genesis.json > $TEMP && mv $TEMP .florin/config/genesis.json
-  touch $TEMP && jq '.app_state.florin.authority = '$AUTHORITY'' .florin/config/genesis.json > $TEMP && mv $TEMP .florin/config/genesis.json
   touch $TEMP && jq '.app_state.florin.owners = { "ueure": '$OWNER' }' .florin/config/genesis.json > $TEMP && mv $TEMP .florin/config/genesis.json
   touch $TEMP && jq '.app_state.florin.systems = [{ "denom": "ueure", "address": '$SYSTEM'}]' .florin/config/genesis.json > $TEMP && mv $TEMP .florin/config/genesis.json
   touch $TEMP && jq '.app_state.florin.admins = [{ "denom": "ueure", "address": '$ADMIN'}]' .florin/config/genesis.json > $TEMP && mv $TEMP .florin/config/genesis.json

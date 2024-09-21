@@ -25,6 +25,7 @@ import (
 )
 
 type Keeper struct {
+	authority    string
 	storeService store.KVStoreService
 
 	accountKeeper types.AccountKeeper
@@ -32,11 +33,13 @@ type Keeper struct {
 }
 
 func NewKeeper(
+	authority string,
 	storeService store.KVStoreService,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 ) *Keeper {
 	return &Keeper{
+		authority:    authority,
 		storeService: storeService,
 
 		accountKeeper: accountKeeper,

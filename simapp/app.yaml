@@ -38,3 +38,10 @@ modules:
   - name: tx
     config:
       "@type": cosmos.tx.config.v1.Config
+
+  - name: florin
+    config:
+      "@type": florin.module.v1.Module
+      # NOTE: This is a dummy account used for local testing.
+      # market ready pilot lunch host cancel drive script remove brief lunch entry worth giant unknown grain romance gym tide perfect short because envelope sentence
+      authority: noble1u8mhfyh8a753twmwnsl9ce77cfuuez47sahdnw

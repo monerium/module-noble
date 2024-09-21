@@ -32,7 +32,6 @@ func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genesis types.GenesisState) 
 		k.SetAdversary(ctx, adversary)
 	}
 
-	k.SetAuthority(ctx, genesis.Authority)
 	for _, denom := range genesis.AllowedDenoms {
 		k.SetAllowedDenom(ctx, denom)
 	}
@@ -65,7 +64,6 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 			Admins:       k.GetBlacklistAdmins(ctx),
 			Adversaries:  k.GetAdversaries(ctx),
 		},
-		Authority:         k.GetAuthority(ctx),
 		AllowedDenoms:     k.GetAllowedDenoms(ctx),
 		Owners:            k.GetOwners(ctx),
 		PendingOwners:     k.GetPendingOwners(ctx),

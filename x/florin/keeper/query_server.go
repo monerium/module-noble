@@ -33,6 +33,14 @@ func NewQueryServer(keeper *Keeper) types.QueryServer {
 	return &queryServer{Keeper: keeper}
 }
 
+func (k queryServer) Authority(_ context.Context, req *types.QueryAuthority) (*types.QueryAuthorityResponse, error) {
+	if req == nil {
+		return nil, errors.ErrInvalidRequest
+	}
+
+	return &types.QueryAuthorityResponse{Authority: k.authority}, nil
+}
+
 func (k queryServer) AllowedDenoms(goCtx context.Context, req *types.QueryAllowedDenoms) (*types.QueryAllowedDenomsResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest

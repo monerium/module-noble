@@ -6,7 +6,6 @@ import (
 	"cosmossdk.io/client/v2/autocli"
 	clientv2keyring "cosmossdk.io/client/v2/autocli/keyring"
 	"cosmossdk.io/core/address"
-	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
 	cmtcfg "github.com/cometbft/cometbft/config"
@@ -23,8 +22,6 @@ import (
 	txmodule "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/monerium/module-noble/v2/simapp"
-	"github.com/monerium/module-noble/v2/x/florin"
-	florintypes "github.com/monerium/module-noble/v2/x/florin/types"
 	"github.com/spf13/cobra"
 )
 
@@ -97,15 +94,6 @@ func NewRootCmd() *cobra.Command {
 
 			return server.InterceptConfigsPreRunHandler(cmd, serverconfig.DefaultConfigTemplate, srvCfg, cmtcfg.DefaultConfig())
 		},
-	}
-
-	modules := map[string]appmodule.AppModule{
-		florintypes.ModuleName: florin.AppModule{},
-	}
-	for name, mod := range modules {
-		moduleBasicManager[name] = module.CoreAppModuleBasicAdaptor(name, mod)
-		moduleBasicManager[name].RegisterInterfaces(clientCtx.InterfaceRegistry)
-		autoCliOpts.Modules[name] = mod
 	}
 
 	initRootCmd(rootCmd, clientCtx.TxConfig, moduleBasicManager)
