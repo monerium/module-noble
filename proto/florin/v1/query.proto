@@ -9,7 +9,7 @@ import "florin/v1/genesis.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
-option go_package = "github.com/monerium/module-noble/v2/x/florin/types";
+option go_package = "github.com/monerium/module-noble/v2/types";
 
 service Query {
   rpc Authority(QueryAuthority) returns (QueryAuthorityResponse) {

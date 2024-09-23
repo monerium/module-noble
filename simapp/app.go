@@ -24,7 +24,7 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/x/bank"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus"
 	_ "github.com/cosmos/cosmos-sdk/x/staking"
-	_ "github.com/monerium/module-noble/v2/x/florin"
+	_ "github.com/monerium/module-noble/v2"
 
 	// Cosmos Modules
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -34,7 +34,7 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	// Custom Modules
-	florinkeeper "github.com/monerium/module-noble/v2/x/florin/keeper"
+	florinkeeper "github.com/monerium/module-noble/v2/keeper"
 )
 
 var DefaultNodeHome string
