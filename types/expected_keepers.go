@@ -20,10 +20,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type AccountKeeper interface {
-	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
-}
-
 type BankKeeper interface {
 	BurnCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
 	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin

@@ -15,11 +15,13 @@
 package keeper
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 
 	"adr36.dev"
 	"cosmossdk.io/errors"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/types"
 )
@@ -128,14 +130,20 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 		return nil, types.ErrInvalidSystem
 	}
 
-	address := sdk.MustAccAddressFromBech32(msg.From)
-	account := k.accountKeeper.GetAccount(ctx, address)
-	if account == nil || account.GetPubKey() == nil {
-		return nil, types.ErrNoPubKey
+	var pubKey cryptotypes.PubKey
+	if err := k.cdc.UnpackAny(msg.PubKey, &pubKey); err != nil {
+		return nil, errors.Wrap(err, "unable to unpack pubkey")
+	}
+	from, err := k.addressCodec.StringToBytes(msg.From)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to decode user address %s", msg.From)
+	}
+	if !bytes.Equal(from, pubKey.Address()) {
+		return nil, types.ErrInvalidPubKey
 	}
 
 	if !adr36.VerifySignature(
-		account.GetPubKey(),
+		pubKey,
 		[]byte("I hereby declare that I am the address owner."),
 		msg.Signature,
 	) {
@@ -143,8 +151,7 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
-	from := sdk.MustAccAddressFromBech32(msg.From)
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, from, types.ModuleName, coins)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, from, types.ModuleName, coins)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to transfer from user to module")
 	}
@@ -175,8 +182,11 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 	k.Keeper.SetMintAllowance(ctx, msg.Denom, msg.Signer, allowance)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
-	to := sdk.MustAccAddressFromBech32(msg.To)
-	err := k.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
+	to, err := k.addressCodec.StringToBytes(msg.To)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to decode user address %s", msg.To)
+	}
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to mint to module")
 	}
@@ -202,14 +212,20 @@ func (k msgServer) Recover(goCtx context.Context, msg *types.MsgRecover) (*types
 		return nil, types.ErrInvalidSystem
 	}
 
-	from := sdk.MustAccAddressFromBech32(msg.From)
-	account := k.accountKeeper.GetAccount(ctx, from)
-	if account == nil || account.GetPubKey() == nil {
-		return nil, types.ErrNoPubKey
+	var pubKey cryptotypes.PubKey
+	if err := k.cdc.UnpackAny(msg.PubKey, &pubKey); err != nil {
+		return nil, errors.Wrap(err, "unable to unpack pubkey")
+	}
+	from, err := k.addressCodec.StringToBytes(msg.From)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to decode user address %s", msg.From)
+	}
+	if !bytes.Equal(from, pubKey.Address()) {
+		return nil, types.ErrInvalidPubKey
 	}
 
 	if !adr36.VerifySignature(
-		account.GetPubKey(),
+		pubKey,
 		[]byte("I hereby declare that I am the address owner."),
 		msg.Signature,
 	) {
@@ -221,8 +237,11 @@ func (k msgServer) Recover(goCtx context.Context, msg *types.MsgRecover) (*types
 		return &types.MsgRecoverResponse{}, nil
 	}
 
-	to := sdk.MustAccAddressFromBech32(msg.To)
-	err := k.bankKeeper.SendCoins(ctx, from, to, sdk.NewCoins(balance))
+	to, err := k.addressCodec.StringToBytes(msg.To)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to decode user address %s", msg.To)
+	}
+	err = k.bankKeeper.SendCoins(ctx, from, to, sdk.NewCoins(balance))
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to transfer from user to user")
 	}

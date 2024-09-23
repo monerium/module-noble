@@ -29,6 +29,6 @@ var (
 	ErrInvalidAdmin          = errors.Register(ModuleName, 10, "signer is not an admin")
 	ErrInvalidAllowance      = errors.Register(ModuleName, 11, "allowance cannot be negative or greater than max")
 	ErrInsufficientAllowance = errors.Register(ModuleName, 12, "insufficient allowance")
-	ErrNoPubKey              = errors.Register(ModuleName, 13, "there is no public key")
+	ErrInvalidPubKey         = errors.Register(ModuleName, 13, "invalid public key")
 	ErrInvalidSignature      = errors.Register(ModuleName, 14, "invalid signature")
 )

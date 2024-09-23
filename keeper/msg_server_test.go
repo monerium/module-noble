@@ -22,7 +22,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/monerium/module-noble/v2/keeper"
 	"github.com/monerium/module-noble/v2/types"
 	"github.com/monerium/module-noble/v2/utils"
@@ -229,14 +228,11 @@ func TestBurn(t *testing.T) {
 	bz, _ := base64.StdEncoding.DecodeString("AlE8CxHR19ID5lxrVtTxSgJFlK3T+eYtyDM/vBA3Fowr")
 	pubkey, _ := codectypes.NewAnyWithValue(&secp256k1.PubKey{Key: bz})
 
-	account := mocks.AccountKeeper{
-		Accounts: make(map[string]sdk.AccountI),
-	}
 	bank := mocks.BankKeeper{
 		Balances:    make(map[string]sdk.Coins),
 		Restriction: mocks.NoOpSendRestrictionFn,
 	}
-	k, ctx := mocks.FlorinWithKeepers(account, bank)
+	k, ctx := mocks.FlorinWithKeepers(bank)
 	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewMsgServer(k)
 
@@ -257,34 +253,36 @@ func TestBurn(t *testing.T) {
 	// ASSERT: The action should've failed due to invalid signer.
 	require.ErrorIs(t, err, types.ErrInvalidSystem)
 
-	// ACT: Attempt to burn with no account in state.
+	// ACT: Attempt to burn with invalid any.
+	invalidPubKey, _ := codectypes.NewAnyWithValue(&types.MsgBurn{})
+	_, err = server.Burn(goCtx, &types.MsgBurn{
+		Denom:  "ueure",
+		Signer: system.Address,
+		PubKey: invalidPubKey,
+	})
+	// ASSERT: The action should've failed due to invalid any.
+	require.ErrorContains(t, err, "unable to unpack pubkey")
+
+	// ACT: Attempt to burn with invalid user address.
+	_, err = server.Burn(goCtx, &types.MsgBurn{
+		Denom:  "ueure",
+		Signer: system.Address,
+		From:   utils.TestAccount().Invalid,
+		PubKey: pubkey,
+	})
+	// ASSERT: The action should've failed due to invalid user address.
+	require.ErrorContains(t, err, "unable to decode user address")
+
+	// ACT: Attempt to burn with invalid public key.
+	invalidPubKey, _ = codectypes.NewAnyWithValue(secp256k1.GenPrivKey().PubKey())
 	_, err = server.Burn(goCtx, &types.MsgBurn{
 		Denom:  "ueure",
 		Signer: system.Address,
 		From:   "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+		PubKey: invalidPubKey,
 	})
-	// ASSERT: The action should've failed due to no account.
-	require.ErrorIs(t, err, types.ErrNoPubKey)
-
-	// ARRANGE: Set account in state, without pubkey.
-	account.Accounts["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"] = &authtypes.BaseAccount{}
-
-	// ACT: Attempt to burn with no pubkey in state.
-	_, err = server.Burn(goCtx, &types.MsgBurn{
-		Denom:  "ueure",
-		Signer: system.Address,
-		From:   "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
-	})
-	// ASSERT: The action should've failed due to no pubkey.
-	require.ErrorIs(t, err, types.ErrNoPubKey)
-
-	// ARRANGE: Set pubkey in state.
-	account.Accounts["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"] = &authtypes.BaseAccount{
-		Address:       "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
-		PubKey:        pubkey,
-		AccountNumber: 0,
-		Sequence:      0,
-	}
+	// ASSERT: The action should've failed due to invalid public key.
+	require.ErrorIs(t, err, types.ErrInvalidPubKey)
 
 	// ACT: Attempt to burn with invalid signature.
 	signature, _ := base64.StdEncoding.DecodeString("QBrRfIqjdBvXx9zaBcuiE9P5SVesxFO/He3deyx2OE0NoSNqwmSb7b5iP2UhZRI1duiOeho3+NETUkCBv14zjQ==")
@@ -293,6 +291,7 @@ func TestBurn(t *testing.T) {
 		Signer:    system.Address,
 		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
 		Signature: signature,
+		PubKey:    pubkey,
 	})
 	// ASSERT: The action should've failed due to invalid signature.
 	require.ErrorIs(t, err, types.ErrInvalidSignature)
@@ -305,6 +304,7 @@ func TestBurn(t *testing.T) {
 		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
 		Amount:    One,
 		Signature: signature,
+		PubKey:    pubkey,
 	})
 	// ASSERT: The action should've failed due to insufficient balance.
 	require.ErrorContains(t, err, "unable to transfer from user to module")
@@ -319,6 +319,7 @@ func TestBurn(t *testing.T) {
 		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
 		Amount:    One,
 		Signature: signature,
+		PubKey:    pubkey,
 	})
 	// ASSERT: The action should've succeeded.
 	require.NoError(t, err)
@@ -330,7 +331,7 @@ func TestMint(t *testing.T) {
 		Balances:    make(map[string]sdk.Coins),
 		Restriction: mocks.NoOpSendRestrictionFn,
 	}
-	k, ctx := mocks.FlorinWithKeepers(mocks.AccountKeeper{}, bank)
+	k, ctx := mocks.FlorinWithKeepers(bank)
 	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewMsgServer(k)
 
@@ -375,6 +376,16 @@ func TestMint(t *testing.T) {
 	// ARRANGE: Generate a user account.
 	user := utils.TestAccount()
 
+	// ACT: Attempt to mint with invalid user address.
+	_, err = server.Mint(goCtx, &types.MsgMint{
+		Denom:  "ueure",
+		Signer: system.Address,
+		To:     user.Invalid,
+		Amount: math.ZeroInt(),
+	})
+	// ASSERT: The action should've failed due to invalid user address.
+	require.ErrorContains(t, err, "unable to decode user address")
+
 	// ACT: Attempt to mint.
 	_, err = server.Mint(goCtx, &types.MsgMint{
 		Denom:  "ueure",
@@ -406,14 +417,11 @@ func TestRecover(t *testing.T) {
 	bz, _ := base64.StdEncoding.DecodeString("AlE8CxHR19ID5lxrVtTxSgJFlK3T+eYtyDM/vBA3Fowr")
 	pubkey, _ := codectypes.NewAnyWithValue(&secp256k1.PubKey{Key: bz})
 
-	account := mocks.AccountKeeper{
-		Accounts: make(map[string]sdk.AccountI),
-	}
 	bank := mocks.BankKeeper{
 		Balances:    make(map[string]sdk.Coins),
 		Restriction: mocks.NoOpSendRestrictionFn,
 	}
-	k, ctx := mocks.FlorinWithKeepers(account, bank)
+	k, ctx := mocks.FlorinWithKeepers(bank)
 	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewMsgServer(k)
 
@@ -434,34 +442,36 @@ func TestRecover(t *testing.T) {
 	// ASSERT: The action should've failed due to invalid signer.
 	require.ErrorIs(t, err, types.ErrInvalidSystem)
 
-	// ACT: Attempt to recover with no account in state.
+	// ACT: Attempt to recover with invalid any.
+	invalidPubKey, _ := codectypes.NewAnyWithValue(&types.MsgRecover{})
+	_, err = server.Recover(goCtx, &types.MsgRecover{
+		Denom:  "ueure",
+		Signer: system.Address,
+		PubKey: invalidPubKey,
+	})
+	// ASSERT: The action should've failed due to invalid any.
+	require.ErrorContains(t, err, "unable to unpack pubkey")
+
+	// ACT: Attempt to recover with invalid user address.
+	_, err = server.Recover(goCtx, &types.MsgRecover{
+		Denom:  "ueure",
+		Signer: system.Address,
+		From:   utils.TestAccount().Invalid,
+		PubKey: pubkey,
+	})
+	// ASSERT: The action should've failed due to invalid user address.
+	require.ErrorContains(t, err, "unable to decode user address")
+
+	// ACT: Attempt to recover with invalid public key.
+	invalidPubKey, _ = codectypes.NewAnyWithValue(secp256k1.GenPrivKey().PubKey())
 	_, err = server.Recover(goCtx, &types.MsgRecover{
 		Denom:  "ueure",
 		Signer: system.Address,
 		From:   "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+		PubKey: invalidPubKey,
 	})
-	// ASSERT: The action should've failed due to no account.
-	require.ErrorIs(t, err, types.ErrNoPubKey)
-
-	// ARRANGE: Set account in state, without pubkey.
-	account.Accounts["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"] = &authtypes.BaseAccount{}
-
-	// ACT: Attempt to recover with no pubkey in state.
-	_, err = server.Recover(goCtx, &types.MsgRecover{
-		Denom:  "ueure",
-		Signer: system.Address,
-		From:   "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
-	})
-	// ASSERT: The action should've failed due to no pubkey.
-	require.ErrorIs(t, err, types.ErrNoPubKey)
-
-	// ARRANGE: Set pubkey in state.
-	account.Accounts["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"] = &authtypes.BaseAccount{
-		Address:       "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
-		PubKey:        pubkey,
-		AccountNumber: 0,
-		Sequence:      0,
-	}
+	// ASSERT: The action should've failed due to invalid public key.
+	require.ErrorIs(t, err, types.ErrInvalidPubKey)
 
 	// ACT: Attempt to recover with invalid signature.
 	signature, _ := base64.StdEncoding.DecodeString("QBrRfIqjdBvXx9zaBcuiE9P5SVesxFO/He3deyx2OE0NoSNqwmSb7b5iP2UhZRI1duiOeho3+NETUkCBv14zjQ==")
@@ -470,6 +480,7 @@ func TestRecover(t *testing.T) {
 		Signer:    system.Address,
 		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
 		Signature: signature,
+		PubKey:    pubkey,
 	})
 	// ASSERT: The action should've failed due to invalid signature.
 	require.ErrorIs(t, err, types.ErrInvalidSignature)
@@ -485,12 +496,25 @@ func TestRecover(t *testing.T) {
 		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
 		To:        recipient.Address,
 		Signature: signature,
+		PubKey:    pubkey,
 	})
 	// ASSERT: The action should've succeeded.
 	require.NoError(t, err)
 
 	// ARRANGE: Give user 1 $EURe.
 	bank.Balances["noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2"] = sdk.NewCoins(sdk.NewCoin("ueure", One))
+
+	// ACT: Attempt to recover with invalid user address.
+	_, err = server.Recover(goCtx, &types.MsgRecover{
+		Denom:     "ueure",
+		Signer:    system.Address,
+		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
+		To:        recipient.Invalid,
+		Signature: signature,
+		PubKey:    pubkey,
+	})
+	// ASSERT: The action should've failed due to invalid user address.
+	require.ErrorContains(t, err, "unable to decode user address")
 
 	// ACT: Attempt to recover.
 	_, err = server.Recover(goCtx, &types.MsgRecover{
@@ -499,6 +523,7 @@ func TestRecover(t *testing.T) {
 		From:      "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
 		To:        recipient.Address,
 		Signature: signature,
+		PubKey:    pubkey,
 	})
 	// ASSERT: The action should've succeeded.
 	require.NoError(t, err)

@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
@@ -156,8 +157,9 @@ type ModuleInputs struct {
 	Config       *modulev1.Module
 	StoreService store.KVStoreService
 
-	AccountKeeper types.AccountKeeper
-	BankKeeper    types.BankKeeper
+	Cdc          codec.Codec
+	AddressCodec address.Codec
+	BankKeeper   types.BankKeeper
 }
 
 type ModuleOutputs struct {
@@ -177,7 +179,8 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	k := keeper.NewKeeper(
 		authority.String(),
 		in.StoreService,
-		in.AccountKeeper,
+		in.Cdc,
+		in.AddressCodec,
 		in.BankKeeper,
 	)
 	m := NewAppModule(k)

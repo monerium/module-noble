@@ -17,6 +17,7 @@ package mocks
 import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/address"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
@@ -27,18 +28,18 @@ import (
 )
 
 func FlorinKeeper() (*keeper.Keeper, sdk.Context) {
-	return FlorinWithKeepers(AccountKeeper{}, BankKeeper{})
+	return FlorinWithKeepers(BankKeeper{})
 }
 
-func FlorinWithKeepers(account types.AccountKeeper, bank BankKeeper) (*keeper.Keeper, sdk.Context) {
+func FlorinWithKeepers(bank BankKeeper) (*keeper.Keeper, sdk.Context) {
 	key := storetypes.NewKVStoreKey(types.ModuleName)
 	tkey := storetypes.NewTransientStoreKey("transient_florin")
 
 	reg := codectypes.NewInterfaceRegistry()
 	types.RegisterInterfaces(reg)
-	_ = codec.NewProtoCodec(reg)
+	cdc := codec.NewProtoCodec(reg)
 
-	k := keeper.NewKeeper("authority", runtime.NewKVStoreService(key), account, bank)
+	k := keeper.NewKeeper("authority", runtime.NewKVStoreService(key), cdc, address.NewBech32Codec("noble"), bank)
 
 	bank = bank.WithSendCoinsRestriction(k.SendRestrictionFn)
 	k.SetBankKeeper(bank)
