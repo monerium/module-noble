@@ -36,9 +36,7 @@ func NewMsgServer(keeper *Keeper) types.MsgServer {
 	return &msgServer{Keeper: keeper}
 }
 
-func (k msgServer) AcceptOwnership(goCtx context.Context, msg *types.MsgAcceptOwnership) (*types.MsgAcceptOwnershipResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) AcceptOwnership(ctx context.Context, msg *types.MsgAcceptOwnership) (*types.MsgAcceptOwnershipResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -51,19 +49,21 @@ func (k msgServer) AcceptOwnership(goCtx context.Context, msg *types.MsgAcceptOw
 	}
 
 	owner := k.GetOwner(ctx, msg.Denom)
-	k.SetOwner(ctx, msg.Denom, msg.Signer)
-	k.DeletePendingOwner(ctx, msg.Denom)
+	if err := k.SetOwner(ctx, msg.Denom, msg.Signer); err != nil {
+		return nil, errors.Wrapf(types.ErrInvalidOwner, "failed to set owner: %s", msg.Denom)
+	}
+	if err := k.DeletePendingOwner(ctx, msg.Denom); err != nil {
+		return nil, errors.Wrapf(types.ErrInvalidPendingOwner, "failed to delete pending owner: %s", msg.Denom)
+	}
 
-	return &types.MsgAcceptOwnershipResponse{}, ctx.EventManager().EmitTypedEvent(&types.OwnershipTransferred{
+	return &types.MsgAcceptOwnershipResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.OwnershipTransferred{
 		Denom:         msg.Denom,
 		PreviousOwner: owner,
 		NewOwner:      msg.Signer,
 	})
 }
 
-func (k msgServer) AddAdminAccount(goCtx context.Context, msg *types.MsgAddAdminAccount) (*types.MsgAddAdminAccountResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) AddAdminAccount(ctx context.Context, msg *types.MsgAddAdminAccount) (*types.MsgAddAdminAccountResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -72,17 +72,17 @@ func (k msgServer) AddAdminAccount(goCtx context.Context, msg *types.MsgAddAdmin
 		return nil, err
 	}
 
-	k.SetAdmin(ctx, msg.Denom, msg.Account)
+	if err := k.SetAdmin(ctx, msg.Denom, msg.Account); err != nil {
+		return nil, err
+	}
 
-	return &types.MsgAddAdminAccountResponse{}, ctx.EventManager().EmitTypedEvent(&types.AdminAccountAdded{
+	return &types.MsgAddAdminAccountResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.AdminAccountAdded{
 		Denom:   msg.Denom,
 		Account: msg.Account,
 	})
 }
 
-func (k msgServer) AddSystemAccount(goCtx context.Context, msg *types.MsgAddSystemAccount) (*types.MsgAddSystemAccountResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) AddSystemAccount(ctx context.Context, msg *types.MsgAddSystemAccount) (*types.MsgAddSystemAccountResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -91,17 +91,17 @@ func (k msgServer) AddSystemAccount(goCtx context.Context, msg *types.MsgAddSyst
 		return nil, err
 	}
 
-	k.SetSystem(ctx, msg.Denom, msg.Account)
+	if err := k.SetSystem(ctx, msg.Denom, msg.Account); err != nil {
+		return nil, err
+	}
 
-	return &types.MsgAddSystemAccountResponse{}, ctx.EventManager().EmitTypedEvent(&types.SystemAccountAdded{
+	return &types.MsgAddSystemAccountResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.SystemAccountAdded{
 		Denom:   msg.Denom,
 		Account: msg.Account,
 	})
 }
 
-func (k msgServer) AllowDenom(goCtx context.Context, msg *types.MsgAllowDenom) (*types.MsgAllowDenomResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) AllowDenom(ctx context.Context, msg *types.MsgAllowDenom) (*types.MsgAllowDenomResponse, error) {
 	if msg.Signer != k.authority {
 		return nil, errors.Wrapf(types.ErrInvalidAuthority, "expected %s, got %s", k.authority, msg.Signer)
 	}
@@ -111,18 +111,20 @@ func (k msgServer) AllowDenom(goCtx context.Context, msg *types.MsgAllowDenom) (
 		return nil, types.ErrInvalidDenom
 	}
 
-	k.SetAllowedDenom(ctx, msg.Denom)
-	k.SetOwner(ctx, msg.Denom, msg.Owner)
+	if err := k.SetAllowedDenom(ctx, msg.Denom); err != nil {
+		return nil, err
+	}
+	if err := k.SetOwner(ctx, msg.Denom, msg.Owner); err != nil {
+		return nil, err
+	}
 
-	return &types.MsgAllowDenomResponse{}, ctx.EventManager().EmitTypedEvent(&types.DenomAllowed{
+	return &types.MsgAllowDenomResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.DenomAllowed{
 		Denom: msg.Denom,
 		Owner: msg.Owner,
 	})
 }
 
-func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBurnResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) Burn(ctx context.Context, msg *types.MsgBurn) (*types.MsgBurnResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -136,7 +138,7 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	}
 	from, err := k.addressCodec.StringToBytes(msg.From)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to decode user address %s", msg.From)
+		return nil, errors.Wrap(err, "unable to decode user address")
 	}
 	if !bytes.Equal(from, pubKey.Address()) {
 		return nil, types.ErrInvalidPubKey
@@ -163,9 +165,7 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	return &types.MsgBurnResponse{}, nil
 }
 
-func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMintResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) Mint(ctx context.Context, msg *types.MsgMint) (*types.MsgMintResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -179,12 +179,14 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 	}
 
 	allowance = allowance.Sub(msg.Amount)
-	k.Keeper.SetMintAllowance(ctx, msg.Denom, msg.Signer, allowance)
+	if err := k.Keeper.SetMintAllowance(ctx, msg.Denom, msg.Signer, allowance); err != nil {
+		return nil, err
+	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, msg.Amount))
 	to, err := k.addressCodec.StringToBytes(msg.To)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to decode user address %s", msg.To)
+		return nil, errors.Wrap(err, "unable to decode user address")
 	}
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	if err != nil {
@@ -195,16 +197,14 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 		return nil, errors.Wrap(err, "unable to transfer from module to user")
 	}
 
-	return &types.MsgMintResponse{}, ctx.EventManager().EmitTypedEvent(&types.MintAllowance{
+	return &types.MsgMintResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.MintAllowance{
 		Denom:   msg.Denom,
 		Account: msg.Signer,
 		Amount:  allowance,
 	})
 }
 
-func (k msgServer) Recover(goCtx context.Context, msg *types.MsgRecover) (*types.MsgRecoverResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) Recover(ctx context.Context, msg *types.MsgRecover) (*types.MsgRecoverResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -246,7 +246,7 @@ func (k msgServer) Recover(goCtx context.Context, msg *types.MsgRecover) (*types
 		return nil, errors.Wrap(err, "unable to transfer from user to user")
 	}
 
-	return &types.MsgRecoverResponse{}, ctx.EventManager().EmitTypedEvent(&types.Recovered{
+	return &types.MsgRecoverResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.Recovered{
 		Denom:  msg.Denom,
 		From:   msg.From,
 		To:     msg.To,
@@ -254,9 +254,7 @@ func (k msgServer) Recover(goCtx context.Context, msg *types.MsgRecover) (*types
 	})
 }
 
-func (k msgServer) RemoveAdminAccount(goCtx context.Context, msg *types.MsgRemoveAdminAccount) (*types.MsgRemoveAdminAccountResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) RemoveAdminAccount(ctx context.Context, msg *types.MsgRemoveAdminAccount) (*types.MsgRemoveAdminAccountResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -265,17 +263,17 @@ func (k msgServer) RemoveAdminAccount(goCtx context.Context, msg *types.MsgRemov
 		return nil, err
 	}
 
-	k.DeleteAdmin(ctx, msg.Denom, msg.Account)
+	if err := k.DeleteAdmin(ctx, msg.Denom, msg.Account); err != nil {
+		return nil, err
+	}
 
-	return &types.MsgRemoveAdminAccountResponse{}, ctx.EventManager().EmitTypedEvent(&types.AdminAccountRemoved{
+	return &types.MsgRemoveAdminAccountResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.AdminAccountRemoved{
 		Denom:   msg.Denom,
 		Account: msg.Account,
 	})
 }
 
-func (k msgServer) RemoveSystemAccount(goCtx context.Context, msg *types.MsgRemoveSystemAccount) (*types.MsgRemoveSystemAccountResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) RemoveSystemAccount(ctx context.Context, msg *types.MsgRemoveSystemAccount) (*types.MsgRemoveSystemAccountResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -284,17 +282,17 @@ func (k msgServer) RemoveSystemAccount(goCtx context.Context, msg *types.MsgRemo
 		return nil, err
 	}
 
-	k.DeleteSystem(ctx, msg.Denom, msg.Account)
+	if err := k.DeleteSystem(ctx, msg.Denom, msg.Account); err != nil {
+		return nil, err
+	}
 
-	return &types.MsgRemoveSystemAccountResponse{}, ctx.EventManager().EmitTypedEvent(&types.SystemAccountRemoved{
+	return &types.MsgRemoveSystemAccountResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.SystemAccountRemoved{
 		Denom:   msg.Denom,
 		Account: msg.Account,
 	})
 }
 
-func (k msgServer) SetMaxMintAllowance(goCtx context.Context, msg *types.MsgSetMaxMintAllowance) (*types.MsgSetMaxMintAllowanceResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) SetMaxMintAllowance(ctx context.Context, msg *types.MsgSetMaxMintAllowance) (*types.MsgSetMaxMintAllowanceResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -303,17 +301,17 @@ func (k msgServer) SetMaxMintAllowance(goCtx context.Context, msg *types.MsgSetM
 		return nil, err
 	}
 
-	k.Keeper.SetMaxMintAllowance(ctx, msg.Denom, msg.Amount)
+	if err := k.Keeper.SetMaxMintAllowance(ctx, msg.Denom, msg.Amount); err != nil {
+		return nil, err
+	}
 
-	return &types.MsgSetMaxMintAllowanceResponse{}, ctx.EventManager().EmitTypedEvent(&types.MaxMintAllowance{
+	return &types.MsgSetMaxMintAllowanceResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.MaxMintAllowance{
 		Denom:  msg.Denom,
 		Amount: msg.Amount,
 	})
 }
 
-func (k msgServer) SetMintAllowance(goCtx context.Context, msg *types.MsgSetMintAllowance) (*types.MsgSetMintAllowanceResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) SetMintAllowance(ctx context.Context, msg *types.MsgSetMintAllowance) (*types.MsgSetMintAllowanceResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -321,23 +319,22 @@ func (k msgServer) SetMintAllowance(goCtx context.Context, msg *types.MsgSetMint
 		return nil, types.ErrInvalidAdmin
 	}
 
-	maxMintAllowance := k.GetMaxMintAllowance(ctx, msg.Denom)
-	if msg.Amount.IsNegative() || msg.Amount.GT(maxMintAllowance) {
+	if msg.Amount.IsNegative() || msg.Amount.GT(k.GetMaxMintAllowance(ctx, msg.Denom)) {
 		return nil, types.ErrInvalidAllowance
 	}
 
-	k.Keeper.SetMintAllowance(ctx, msg.Denom, msg.Account, msg.Amount)
+	if err := k.Keeper.SetMintAllowance(ctx, msg.Denom, msg.Account, msg.Amount); err != nil {
+		return nil, err
+	}
 
-	return &types.MsgSetMintAllowanceResponse{}, ctx.EventManager().EmitTypedEvent(&types.MintAllowance{
+	return &types.MsgSetMintAllowanceResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.MintAllowance{
 		Denom:   msg.Denom,
 		Account: msg.Account,
 		Amount:  msg.Amount,
 	})
 }
 
-func (k msgServer) TransferOwnership(goCtx context.Context, msg *types.MsgTransferOwnership) (*types.MsgTransferOwnershipResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) TransferOwnership(ctx context.Context, msg *types.MsgTransferOwnership) (*types.MsgTransferOwnershipResponse, error) {
 	if !k.IsAllowedDenom(ctx, msg.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", msg.Denom)
 	}
@@ -350,9 +347,11 @@ func (k msgServer) TransferOwnership(goCtx context.Context, msg *types.MsgTransf
 		return nil, types.ErrSameOwner
 	}
 
-	k.SetPendingOwner(ctx, msg.Denom, msg.NewOwner)
+	if err := k.SetPendingOwner(ctx, msg.Denom, msg.NewOwner); err != nil {
+		return nil, err
+	}
 
-	return &types.MsgTransferOwnershipResponse{}, ctx.EventManager().EmitTypedEvent(&types.OwnershipTransferStarted{
+	return &types.MsgTransferOwnershipResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &types.OwnershipTransferStarted{
 		Denom:         msg.Denom,
 		PreviousOwner: owner,
 		NewOwner:      msg.NewOwner,
@@ -361,7 +360,7 @@ func (k msgServer) TransferOwnership(goCtx context.Context, msg *types.MsgTransf
 
 //
 
-func (k msgServer) EnsureOwner(ctx sdk.Context, denom string, signer string) (string, error) {
+func (k msgServer) EnsureOwner(ctx context.Context, denom string, signer string) (string, error) {
 	owner := k.GetOwner(ctx, denom)
 	if owner == "" {
 		return "", types.ErrNoOwner

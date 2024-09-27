@@ -23,36 +23,58 @@ import (
 )
 
 func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genesis types.GenesisState) {
-	k.SetBlacklistOwner(ctx, genesis.BlacklistState.Owner)
-	k.SetBlacklistPendingOwner(ctx, genesis.BlacklistState.PendingOwner)
+	if err := k.SetBlacklistOwner(ctx, genesis.BlacklistState.Owner); err != nil {
+		panic(err)
+	}
+	if err := k.SetBlacklistPendingOwner(ctx, genesis.BlacklistState.PendingOwner); err != nil {
+		panic(err)
+	}
 	for _, admin := range genesis.BlacklistState.Admins {
-		k.SetBlacklistAdmin(ctx, admin)
+		if err := k.SetBlacklistAdmin(ctx, admin); err != nil {
+			panic(err)
+		}
 	}
 	for _, adversary := range genesis.BlacklistState.Adversaries {
-		k.SetAdversary(ctx, adversary)
+		if err := k.SetAdversary(ctx, adversary); err != nil {
+			panic(err)
+		}
 	}
 
 	for _, denom := range genesis.AllowedDenoms {
-		k.SetAllowedDenom(ctx, denom)
+		if err := k.SetAllowedDenom(ctx, denom); err != nil {
+			panic(err)
+		}
 	}
 	for denom, owner := range genesis.Owners {
-		k.SetOwner(ctx, denom, owner)
+		if err := k.SetOwner(ctx, denom, owner); err != nil {
+			panic(err)
+		}
 	}
 	for denom, pendingOwner := range genesis.PendingOwners {
-		k.SetPendingOwner(ctx, denom, pendingOwner)
+		if err := k.SetPendingOwner(ctx, denom, pendingOwner); err != nil {
+			panic(err)
+		}
 	}
 	for _, system := range genesis.Systems {
-		k.SetSystem(ctx, system.Denom, system.Address)
+		if err := k.SetSystem(ctx, system.Denom, system.Address); err != nil {
+			panic(err)
+		}
 	}
 	for _, admin := range genesis.Admins {
-		k.SetAdmin(ctx, admin.Denom, admin.Address)
+		if err := k.SetAdmin(ctx, admin.Denom, admin.Address); err != nil {
+			panic(err)
+		}
 	}
 	for _, item := range genesis.MintAllowances {
-		k.SetMintAllowance(ctx, item.Denom, item.Address, item.Allowance)
+		if err := k.SetMintAllowance(ctx, item.Denom, item.Address, item.Allowance); err != nil {
+			panic(err)
+		}
 	}
 	for denom, rawMaxAllowance := range genesis.MaxMintAllowances {
 		maxAllowance, _ := math.NewIntFromString(rawMaxAllowance)
-		k.SetMaxMintAllowance(ctx, denom, maxAllowance)
+		if err := k.SetMaxMintAllowance(ctx, denom, maxAllowance); err != nil {
+			panic(err)
+		}
 	}
 }
 

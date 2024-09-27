@@ -18,7 +18,6 @@ import (
 	"context"
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/monerium/module-noble/v2/types"
 )
@@ -41,24 +40,20 @@ func (k queryServer) Authority(_ context.Context, req *types.QueryAuthority) (*t
 	return &types.QueryAuthorityResponse{Authority: k.authority}, nil
 }
 
-func (k queryServer) AllowedDenoms(goCtx context.Context, req *types.QueryAllowedDenoms) (*types.QueryAllowedDenomsResponse, error) {
+func (k queryServer) AllowedDenoms(ctx context.Context, req *types.QueryAllowedDenoms) (*types.QueryAllowedDenomsResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	return &types.QueryAllowedDenomsResponse{
 		AllowedDenoms: k.GetAllowedDenoms(ctx),
 	}, nil
 }
 
-func (k queryServer) Owners(goCtx context.Context, req *types.QueryOwners) (*types.QueryOwnersResponse, error) {
+func (k queryServer) Owners(ctx context.Context, req *types.QueryOwners) (*types.QueryOwnersResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	return &types.QueryOwnersResponse{
 		Owners:        k.GetOwners(ctx),
@@ -66,12 +61,11 @@ func (k queryServer) Owners(goCtx context.Context, req *types.QueryOwners) (*typ
 	}, nil
 }
 
-func (k queryServer) Owner(goCtx context.Context, req *types.QueryOwner) (*types.QueryOwnerResponse, error) {
+func (k queryServer) Owner(ctx context.Context, req *types.QueryOwner) (*types.QueryOwnerResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	if !k.IsAllowedDenom(ctx, req.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", req.Denom)
 	}
@@ -82,24 +76,21 @@ func (k queryServer) Owner(goCtx context.Context, req *types.QueryOwner) (*types
 	}, nil
 }
 
-func (k queryServer) Systems(goCtx context.Context, req *types.QuerySystems) (*types.QuerySystemsResponse, error) {
+func (k queryServer) Systems(ctx context.Context, req *types.QuerySystems) (*types.QuerySystemsResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	return &types.QuerySystemsResponse{
 		Systems: k.GetSystems(ctx),
 	}, nil
 }
 
-func (k queryServer) SystemsByDenom(goCtx context.Context, req *types.QuerySystemsByDenom) (*types.QuerySystemsByDenomResponse, error) {
+func (k queryServer) SystemsByDenom(ctx context.Context, req *types.QuerySystemsByDenom) (*types.QuerySystemsByDenomResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	if !k.IsAllowedDenom(ctx, req.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", req.Denom)
 	}
@@ -109,24 +100,21 @@ func (k queryServer) SystemsByDenom(goCtx context.Context, req *types.QuerySyste
 	}, nil
 }
 
-func (k queryServer) Admins(goCtx context.Context, req *types.QueryAdmins) (*types.QueryAdminsResponse, error) {
+func (k queryServer) Admins(ctx context.Context, req *types.QueryAdmins) (*types.QueryAdminsResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	return &types.QueryAdminsResponse{
 		Admins: k.GetAdmins(ctx),
 	}, nil
 }
 
-func (k queryServer) AdminsByDenom(goCtx context.Context, req *types.QueryAdminsByDenom) (*types.QueryAdminsByDenomResponse, error) {
+func (k queryServer) AdminsByDenom(ctx context.Context, req *types.QueryAdminsByDenom) (*types.QueryAdminsByDenomResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	if !k.IsAllowedDenom(ctx, req.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", req.Denom)
 	}
@@ -136,24 +124,21 @@ func (k queryServer) AdminsByDenom(goCtx context.Context, req *types.QueryAdmins
 	}, nil
 }
 
-func (k queryServer) MaxMintAllowances(goCtx context.Context, req *types.QueryMaxMintAllowances) (*types.QueryMaxMintAllowancesResponse, error) {
+func (k queryServer) MaxMintAllowances(ctx context.Context, req *types.QueryMaxMintAllowances) (*types.QueryMaxMintAllowancesResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	return &types.QueryMaxMintAllowancesResponse{
 		MaxMintAllowances: k.GetMaxMintAllowances(ctx),
 	}, nil
 }
 
-func (k queryServer) MaxMintAllowance(goCtx context.Context, req *types.QueryMaxMintAllowance) (*types.QueryMaxMintAllowanceResponse, error) {
+func (k queryServer) MaxMintAllowance(ctx context.Context, req *types.QueryMaxMintAllowance) (*types.QueryMaxMintAllowanceResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	if !k.IsAllowedDenom(ctx, req.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", req.Denom)
 	}
@@ -163,12 +148,11 @@ func (k queryServer) MaxMintAllowance(goCtx context.Context, req *types.QueryMax
 	}, nil
 }
 
-func (k queryServer) MintAllowances(goCtx context.Context, req *types.QueryMintAllowances) (*types.QueryMintAllowancesResponse, error) {
+func (k queryServer) MintAllowances(ctx context.Context, req *types.QueryMintAllowances) (*types.QueryMintAllowancesResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	if !k.IsAllowedDenom(ctx, req.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", req.Denom)
 	}
@@ -181,12 +165,11 @@ func (k queryServer) MintAllowances(goCtx context.Context, req *types.QueryMintA
 	return &types.QueryMintAllowancesResponse{Allowances: allowances}, nil
 }
 
-func (k queryServer) MintAllowance(goCtx context.Context, req *types.QueryMintAllowance) (*types.QueryMintAllowanceResponse, error) {
+func (k queryServer) MintAllowance(ctx context.Context, req *types.QueryMintAllowance) (*types.QueryMintAllowanceResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	if !k.IsAllowedDenom(ctx, req.Denom) {
 		return nil, fmt.Errorf("%s is not an allowed denom", req.Denom)
 	}

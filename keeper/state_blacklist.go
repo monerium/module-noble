@@ -14,100 +14,76 @@
 
 package keeper
 
-import (
-	"cosmossdk.io/store/prefix"
-	"github.com/cosmos/cosmos-sdk/runtime"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/monerium/module-noble/v2/types/blacklist"
-)
+import "context"
 
 //
 
-func (k *Keeper) GetBlacklistOwner(ctx sdk.Context) string {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return string(store.Get(blacklist.OwnerKey))
+func (k *Keeper) GetBlacklistOwner(ctx context.Context) string {
+	owner, _ := k.BlacklistOwner.Get(ctx)
+	return owner
 }
 
-func (k *Keeper) SetBlacklistOwner(ctx sdk.Context, owner string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(blacklist.OwnerKey, []byte(owner))
+func (k *Keeper) SetBlacklistOwner(ctx context.Context, owner string) error {
+	return k.BlacklistOwner.Set(ctx, owner)
 }
 
 //
 
-func (k *Keeper) DeleteBlacklistPendingOwner(ctx sdk.Context) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(blacklist.PendingOwnerKey)
+func (k *Keeper) DeleteBlacklistPendingOwner(ctx context.Context) error {
+	return k.BlacklistPendingOwner.Remove(ctx)
 }
 
-func (k *Keeper) GetBlacklistPendingOwner(ctx sdk.Context) string {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return string(store.Get(blacklist.PendingOwnerKey))
+func (k *Keeper) GetBlacklistPendingOwner(ctx context.Context) string {
+	pendingOwner, _ := k.BlacklistPendingOwner.Get(ctx)
+	return pendingOwner
 }
 
-func (k *Keeper) SetBlacklistPendingOwner(ctx sdk.Context, pendingOwner string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(blacklist.PendingOwnerKey, []byte(pendingOwner))
+func (k *Keeper) SetBlacklistPendingOwner(ctx context.Context, pendingOwner string) error {
+	return k.BlacklistPendingOwner.Set(ctx, pendingOwner)
 }
 
 //
 
-func (k *Keeper) DeleteBlacklistAdmin(ctx sdk.Context, admin string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(blacklist.AdminKey(admin))
+func (k *Keeper) DeleteBlacklistAdmin(ctx context.Context, admin string) error {
+	return k.BlacklistAdmins.Remove(ctx, admin)
 }
 
-func (k *Keeper) GetBlacklistAdmins(ctx sdk.Context) (admins []string) {
-	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(adapter, blacklist.AdminPrefix)
-	itr := store.Iterator(nil, nil)
-
-	defer itr.Close()
-
-	for ; itr.Valid(); itr.Next() {
-		admins = append(admins, string(itr.Key()))
-	}
-
+func (k *Keeper) GetBlacklistAdmins(ctx context.Context) (admins []string) {
+	_ = k.BlacklistAdmins.Walk(ctx, nil, func(admin string) (bool, error) {
+		admins = append(admins, admin)
+		return false, nil
+	})
 	return
 }
 
-func (k *Keeper) IsBlacklistAdmin(ctx sdk.Context, admin string) bool {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return store.Has(blacklist.AdminKey(admin))
+func (k *Keeper) IsBlacklistAdmin(ctx context.Context, admin string) bool {
+	isAdmin, _ := k.BlacklistAdmins.Has(ctx, admin)
+	return isAdmin
 }
 
-func (k *Keeper) SetBlacklistAdmin(ctx sdk.Context, admin string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(blacklist.AdminKey(admin), []byte{})
+func (k *Keeper) SetBlacklistAdmin(ctx context.Context, admin string) error {
+	return k.BlacklistAdmins.Set(ctx, admin)
 }
 
 //
 
-func (k *Keeper) DeleteAdversary(ctx sdk.Context, address string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(blacklist.AdversaryKey(address))
+func (k *Keeper) DeleteAdversary(ctx context.Context, address string) error {
+	return k.Adversaries.Remove(ctx, address)
 }
 
-func (k *Keeper) GetAdversaries(ctx sdk.Context) (adversaries []string) {
-	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(adapter, blacklist.AdversaryPrefix)
-	itr := store.Iterator(nil, nil)
-
-	defer itr.Close()
-
-	for ; itr.Valid(); itr.Next() {
-		adversaries = append(adversaries, string(itr.Key()))
-	}
-
+func (k *Keeper) GetAdversaries(ctx context.Context) (adversaries []string) {
+	_ = k.Adversaries.Walk(ctx, nil, func(adversary string) (bool, error) {
+		adversaries = append(adversaries, adversary)
+		return false, nil
+	})
 	return
 }
 
-func (k *Keeper) IsAdversary(ctx sdk.Context, address string) bool {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	return store.Has(blacklist.AdversaryKey(address))
+func (k *Keeper) IsAdversary(ctx context.Context, address string) bool {
+	isAdversary, _ := k.Adversaries.Has(ctx, address)
+	return isAdversary
 }
 
-func (k *Keeper) SetAdversary(ctx sdk.Context, address string) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Set(blacklist.AdversaryKey(address), []byte{})
+func (k *Keeper) SetAdversary(ctx context.Context, address string) error {
+	return k.Adversaries.Set(ctx, address)
 }

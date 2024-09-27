@@ -39,14 +39,21 @@ func FlorinWithKeepers(bank BankKeeper) (*keeper.Keeper, sdk.Context) {
 	types.RegisterInterfaces(reg)
 	cdc := codec.NewProtoCodec(reg)
 
-	k := keeper.NewKeeper("authority", runtime.NewKVStoreService(key), cdc, address.NewBech32Codec("noble"), bank)
+	k := keeper.NewKeeper(
+		"authority",
+		runtime.NewKVStoreService(key),
+		runtime.ProvideEventService(),
+		cdc,
+		address.NewBech32Codec("noble"),
+		bank,
+	)
 
 	bank = bank.WithSendCoinsRestriction(k.SendRestrictionFn)
 	k.SetBankKeeper(bank)
 
 	ctx := testutil.DefaultContext(key, tkey)
 	florin.InitGenesis(ctx, k, *types.DefaultGenesisState())
-	ctx.KVStore(key).Delete(types.MaxMintAllowanceKey("ueure"))
+	_ = k.MaxMintAllowance.Remove(ctx, "ueure")
 
 	return k, ctx
 }

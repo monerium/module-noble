@@ -1,3 +1,17 @@
+// Copyright 2024 Monerium ehf.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package simapp
 
 import (
@@ -145,11 +159,6 @@ func (app *SimApp) LegacyAmino() *codec.LegacyAmino {
 
 func (app *SimApp) SimulationManager() *module.SimulationManager {
 	return nil
-}
-
-func (app *SimApp) GetKey(storeKey string) *storetypes.KVStoreKey {
-	key, _ := app.UnsafeFindStoreKey(storeKey).(*storetypes.KVStoreKey)
-	return key
 }
 
 func (app *SimApp) kvStoreKeys() map[string]*storetypes.KVStoreKey {

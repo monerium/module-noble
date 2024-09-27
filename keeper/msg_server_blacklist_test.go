@@ -17,8 +17,9 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/collections"
 	"github.com/monerium/module-noble/v2/keeper"
+	"github.com/monerium/module-noble/v2/types"
 	"github.com/monerium/module-noble/v2/types/blacklist"
 	"github.com/monerium/module-noble/v2/utils"
 	"github.com/monerium/module-noble/v2/utils/mocks"
@@ -27,27 +28,56 @@ import (
 
 func TestBlacklistAcceptOwnership(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewBlacklistMsgServer(k)
 
 	// ACT: Attempt to accept ownership with no pending owner set.
-	_, err := server.AcceptOwnership(goCtx, &blacklist.MsgAcceptOwnership{})
+	_, err := server.AcceptOwnership(ctx, &blacklist.MsgAcceptOwnership{})
 	// ASSERT: The action should've failed due to no pending owner set.
 	require.ErrorIs(t, err, blacklist.ErrNoPendingOwner)
 
 	// ARRANGE: Set pending owner in state.
 	pendingOwner := utils.TestAccount()
-	k.SetBlacklistPendingOwner(ctx, pendingOwner.Address)
+	_ = k.SetBlacklistPendingOwner(ctx, pendingOwner.Address)
 
 	// ACT: Attempt to accept ownership with invalid signer.
-	_, err = server.AcceptOwnership(goCtx, &blacklist.MsgAcceptOwnership{
+	_, err = server.AcceptOwnership(ctx, &blacklist.MsgAcceptOwnership{
 		Signer: utils.TestAccount().Address,
 	})
 	// ASSERT: The action should've failed due to invalid signer.
 	require.ErrorIs(t, err, blacklist.ErrInvalidPendingOwner)
 
+	// ARRANGE: Set up a failing collection store for the attribute getter.
+	tmpOwner := k.BlacklistOwner
+	k.BlacklistOwner = collections.NewItem(
+		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Set, utils.GetKVStore(ctx, types.ModuleName))),
+		blacklist.OwnerKey, "blacklistOwner", collections.StringValue,
+	)
+
+	// ACT: Attempt to accept ownership with failing BlacklistOwner collection store.
+	_, err = server.AcceptOwnership(ctx, &blacklist.MsgAcceptOwnership{
+		Signer: pendingOwner.Address,
+	})
+	// ASSERT: The action should've failed due to collection store setter error.
+	require.Error(t, err, mocks.ErrorStoreAccess)
+	k.BlacklistOwner = tmpOwner
+
+	// ARRANGE: Set up a failing collection store for the attribute deleter.
+	tmpPendingOwner := k.BlacklistPendingOwner
+	k.BlacklistPendingOwner = collections.NewItem(
+		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Delete, utils.GetKVStore(ctx, types.ModuleName))),
+		blacklist.PendingOwnerKey, "blacklistPendingOwner", collections.StringValue,
+	)
+
+	// ACT: Attempt to accept ownership with failing BlacklistPendingOwner collection store.
+	_, err = server.AcceptOwnership(ctx, &blacklist.MsgAcceptOwnership{
+		Signer: pendingOwner.Address,
+	})
+	// ASSERT: The action should've failed due to collection store deleter error.
+	require.Error(t, err, mocks.ErrorStoreAccess)
+	k.BlacklistPendingOwner = tmpPendingOwner
+
 	// ACT: Attempt to accept ownership.
-	_, err = server.AcceptOwnership(goCtx, &blacklist.MsgAcceptOwnership{
+	_, err = server.AcceptOwnership(ctx, &blacklist.MsgAcceptOwnership{
 		Signer: pendingOwner.Address,
 	})
 	// ASSERT: The action should've succeeded.
@@ -61,20 +91,19 @@ func TestBlacklistAcceptOwnership(t *testing.T) {
 
 func TestBlacklistAddAdminAccount(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewBlacklistMsgServer(k)
 
 	// ACT: Attempt to add admin account with no owner set.
-	_, err := server.AddAdminAccount(goCtx, &blacklist.MsgAddAdminAccount{})
+	_, err := server.AddAdminAccount(ctx, &blacklist.MsgAddAdminAccount{})
 	// ASSERT: The action should've failed due to no owner set.
 	require.ErrorIs(t, err, blacklist.ErrNoOwner)
 
 	// ARRANGE: Set owner in state.
 	owner := utils.TestAccount()
-	k.SetBlacklistOwner(ctx, owner.Address)
+	_ = k.SetBlacklistOwner(ctx, owner.Address)
 
 	// ACT: Attempt to add admin account with invalid signer.
-	_, err = server.AddAdminAccount(goCtx, &blacklist.MsgAddAdminAccount{
+	_, err = server.AddAdminAccount(ctx, &blacklist.MsgAddAdminAccount{
 		Signer: utils.TestAccount().Address,
 	})
 	// ASSERT: The action should've failed due to invalid signer.
@@ -83,8 +112,24 @@ func TestBlacklistAddAdminAccount(t *testing.T) {
 	// ARRANGE: Generate an admin account.
 	admin := utils.TestAccount()
 
+	// ARRANGE: Set up a failing collection store for the attribute setter.
+	tmp := k.BlacklistAdmins
+	k.BlacklistAdmins = collections.NewKeySet(
+		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Set, utils.GetKVStore(ctx, types.ModuleName))),
+		blacklist.AdminPrefix, "blacklistAdmins", collections.StringKey,
+	)
+
+	// ACT: Attempt to add admin account with failing BlacklistAdmins collection store.
+	_, err = server.AddAdminAccount(ctx, &blacklist.MsgAddAdminAccount{
+		Signer:  owner.Address,
+		Account: admin.Address,
+	})
+	// ASSERT: The action should've failed due to collection store setter error.
+	require.Error(t, err, mocks.ErrorStoreAccess)
+	k.BlacklistAdmins = tmp
+
 	// ACT: Attempt to add admin account.
-	_, err = server.AddAdminAccount(goCtx, &blacklist.MsgAddAdminAccount{
+	_, err = server.AddAdminAccount(ctx, &blacklist.MsgAddAdminAccount{
 		Signer:  owner.Address,
 		Account: admin.Address,
 	})
@@ -98,15 +143,15 @@ func TestBlacklistAddAdminAccount(t *testing.T) {
 
 func TestBan(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewBlacklistMsgServer(k)
 
 	// ARRANGE: Set admin in state.
 	admin := utils.TestAccount()
-	k.SetBlacklistAdmin(ctx, admin.Address)
+	err := k.SetBlacklistAdmin(ctx, admin.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to ban with invalid signer.
-	_, err := server.Ban(goCtx, &blacklist.MsgBan{
+	_, err = server.Ban(ctx, &blacklist.MsgBan{
 		Signer: utils.TestAccount().Address,
 	})
 	// ASSERT: The action should've failed due to invalid signer.
@@ -115,8 +160,24 @@ func TestBan(t *testing.T) {
 	// ARRANGE: Generate an adversary account.
 	adversary := utils.TestAccount()
 
+	// ARRANGE: Set up a failing collection store for the attribute setter.
+	tmp := k.Adversaries
+	k.Adversaries = collections.NewKeySet(
+		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Set, utils.GetKVStore(ctx, types.ModuleName))),
+		blacklist.AdversaryPrefix, "adversaries", collections.StringKey,
+	)
+
+	// ACT: Attempt to ban with failing Adversaries collection store.
+	_, err = server.Ban(ctx, &blacklist.MsgBan{
+		Signer:    admin.Address,
+		Adversary: adversary.Address,
+	})
+	// ASSERT: The action should've failed due to collection store setter error.
+	require.Error(t, err, mocks.ErrorStoreAccess)
+	k.Adversaries = tmp
+
 	// ACT: Attempt to ban.
-	_, err = server.Ban(goCtx, &blacklist.MsgBan{
+	_, err = server.Ban(ctx, &blacklist.MsgBan{
 		Signer:    admin.Address,
 		Adversary: adversary.Address,
 	})
@@ -130,20 +191,19 @@ func TestBan(t *testing.T) {
 
 func TestBlacklistRemoveAdminAccount(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewBlacklistMsgServer(k)
 
 	// ACT: Attempt to remove admin account with no owner set.
-	_, err := server.RemoveAdminAccount(goCtx, &blacklist.MsgRemoveAdminAccount{})
+	_, err := server.RemoveAdminAccount(ctx, &blacklist.MsgRemoveAdminAccount{})
 	// ASSERT: The action should've failed due to no owner set.
 	require.ErrorIs(t, err, blacklist.ErrNoOwner)
 
 	// ARRANGE: Set owner in state.
 	owner := utils.TestAccount()
-	k.SetBlacklistOwner(ctx, owner.Address)
+	_ = k.SetBlacklistOwner(ctx, owner.Address)
 
 	// ACT: Attempt to remove admin account with invalid signer.
-	_, err = server.RemoveAdminAccount(goCtx, &blacklist.MsgRemoveAdminAccount{
+	_, err = server.RemoveAdminAccount(ctx, &blacklist.MsgRemoveAdminAccount{
 		Signer: utils.TestAccount().Address,
 	})
 	// ASSERT: The action should've failed due to invalid signer.
@@ -151,11 +211,28 @@ func TestBlacklistRemoveAdminAccount(t *testing.T) {
 
 	// ARRANGE: Set admin in state.
 	admin := utils.TestAccount()
-	k.SetBlacklistAdmin(ctx, admin.Address)
+	err = k.SetBlacklistAdmin(ctx, admin.Address)
+	require.NoError(t, err)
 	require.True(t, k.IsBlacklistAdmin(ctx, admin.Address))
 
+	// ARRANGE: Set up a failing collection store for the attribute deleter.
+	tmp := k.BlacklistAdmins
+	k.BlacklistAdmins = collections.NewKeySet(
+		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Delete, utils.GetKVStore(ctx, types.ModuleName))),
+		blacklist.AdminPrefix, "blacklistAdmins", collections.StringKey,
+	)
+
+	// ACT: Attempt to remove admin account with failing BlacklistAdmins collection store.
+	_, err = server.RemoveAdminAccount(ctx, &blacklist.MsgRemoveAdminAccount{
+		Signer:  owner.Address,
+		Account: admin.Address,
+	})
+	// ASSERT: The action should've failed due to collection store deleter error.
+	require.Error(t, err, mocks.ErrorStoreAccess)
+	k.BlacklistAdmins = tmp
+
 	// ACT: Attempt to remove admin account.
-	_, err = server.RemoveAdminAccount(goCtx, &blacklist.MsgRemoveAdminAccount{
+	_, err = server.RemoveAdminAccount(ctx, &blacklist.MsgRemoveAdminAccount{
 		Signer:  owner.Address,
 		Account: admin.Address,
 	})
@@ -169,27 +246,27 @@ func TestBlacklistRemoveAdminAccount(t *testing.T) {
 
 func TestBlacklistTransferOwnership(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewBlacklistMsgServer(k)
 
 	// ACT: Attempt to transfer ownership with no owner set.
-	_, err := server.TransferOwnership(goCtx, &blacklist.MsgTransferOwnership{})
+	_, err := server.TransferOwnership(ctx, &blacklist.MsgTransferOwnership{})
 	// ASSERT: The action should've failed due to no owner set.
 	require.ErrorIs(t, err, blacklist.ErrNoOwner)
 
 	// ARRANGE: Set owner in state.
 	owner := utils.TestAccount()
-	k.SetBlacklistOwner(ctx, owner.Address)
+	err = k.SetBlacklistOwner(ctx, owner.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to transfer ownership with invalid signer.
-	_, err = server.TransferOwnership(goCtx, &blacklist.MsgTransferOwnership{
+	_, err = server.TransferOwnership(ctx, &blacklist.MsgTransferOwnership{
 		Signer: utils.TestAccount().Address,
 	})
 	// ASSERT: The action should've failed due to invalid signer.
 	require.ErrorIs(t, err, blacklist.ErrInvalidOwner)
 
 	// ACT: Attempt to transfer ownership to same owner.
-	_, err = server.TransferOwnership(goCtx, &blacklist.MsgTransferOwnership{
+	_, err = server.TransferOwnership(ctx, &blacklist.MsgTransferOwnership{
 		Signer:   owner.Address,
 		NewOwner: owner.Address,
 	})
@@ -199,14 +276,31 @@ func TestBlacklistTransferOwnership(t *testing.T) {
 	// ARRANGE: Generate a pending owner account.
 	pendingOwner := utils.TestAccount()
 
+	// ARRANGE: Set up a failing collection store for the attribute setter.
+	tmp := k.BlacklistPendingOwner
+	k.BlacklistPendingOwner = collections.NewItem(
+		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Set, utils.GetKVStore(ctx, types.ModuleName))),
+		blacklist.PendingOwnerKey, "blacklistPendingOwner", collections.StringValue,
+	)
+
+	// ACT: Attempt to transfer ownership BlacklistPendingOwner collection store.
+	_, err = server.TransferOwnership(ctx, &blacklist.MsgTransferOwnership{
+		Signer:   owner.Address,
+		NewOwner: pendingOwner.Address,
+	})
+	// ASSERT: The action should've failed due to collection store setter error.
+	require.Error(t, err, mocks.ErrorStoreAccess)
+	k.BlacklistPendingOwner = tmp
+
 	// ACT: Attempt to transfer ownership.
-	_, err = server.TransferOwnership(goCtx, &blacklist.MsgTransferOwnership{
+	_, err = server.TransferOwnership(ctx, &blacklist.MsgTransferOwnership{
 		Signer:   owner.Address,
 		NewOwner: pendingOwner.Address,
 	})
 	// ASSERT: The action should've succeeded.
 	require.NoError(t, err)
 	require.Equal(t, owner.Address, k.GetBlacklistOwner(ctx))
+	require.NoError(t, err)
 	require.Equal(t, pendingOwner.Address, k.GetBlacklistPendingOwner(ctx))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
@@ -215,15 +309,14 @@ func TestBlacklistTransferOwnership(t *testing.T) {
 
 func TestUnban(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewBlacklistMsgServer(k)
 
 	// ARRANGE: Set admin in state.
 	admin := utils.TestAccount()
-	k.SetBlacklistAdmin(ctx, admin.Address)
+	_ = k.SetBlacklistAdmin(ctx, admin.Address)
 
 	// ACT: Attempt to unban with invalid signer.
-	_, err := server.Unban(goCtx, &blacklist.MsgUnban{
+	_, err := server.Unban(ctx, &blacklist.MsgUnban{
 		Signer: utils.TestAccount().Address,
 	})
 	// ASSERT: The action should've failed due to invalid signer.
@@ -231,11 +324,27 @@ func TestUnban(t *testing.T) {
 
 	// ARRANGE: Set adversary in state.
 	adversary := utils.TestAccount()
-	k.SetAdversary(ctx, adversary.Address)
+	_ = k.SetAdversary(ctx, adversary.Address)
 	require.True(t, k.IsAdversary(ctx, adversary.Address))
 
+	// ARRANGE: Set up a failing collection store for the attribute deleter.
+	tmp := k.Adversaries
+	k.Adversaries = collections.NewKeySet(
+		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Delete, utils.GetKVStore(ctx, types.ModuleName))),
+		blacklist.AdversaryPrefix, "adversaries", collections.StringKey,
+	)
+
+	// ACT: Attempt to unban with failing Adversaries collection store.
+	_, err = server.Unban(ctx, &blacklist.MsgUnban{
+		Signer: admin.Address,
+		Friend: adversary.Address,
+	})
+	// ASSERT: The action should've failed due to collection store deleter error.
+	require.Error(t, err, mocks.ErrorStoreAccess)
+	k.Adversaries = tmp
+
 	// ACT: Attempt to unban.
-	_, err = server.Unban(goCtx, &blacklist.MsgUnban{
+	_, err = server.Unban(ctx, &blacklist.MsgUnban{
 		Signer: admin.Address,
 		Friend: adversary.Address,
 	})
