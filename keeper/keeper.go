@@ -18,7 +18,9 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/store"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/types"
 	"github.com/monerium/module-noble/v2/types/blacklist"
@@ -28,22 +30,25 @@ type Keeper struct {
 	authority    string
 	storeService store.KVStoreService
 
-	accountKeeper types.AccountKeeper
-	bankKeeper    types.BankKeeper
+	cdc          codec.Codec
+	addressCodec address.Codec
+	bankKeeper   types.BankKeeper
 }
 
 func NewKeeper(
 	authority string,
 	storeService store.KVStoreService,
-	accountKeeper types.AccountKeeper,
+	cdc codec.Codec,
+	addressCodec address.Codec,
 	bankKeeper types.BankKeeper,
 ) *Keeper {
 	return &Keeper{
 		authority:    authority,
 		storeService: storeService,
 
-		accountKeeper: accountKeeper,
-		bankKeeper:    bankKeeper,
+		cdc:          cdc,
+		addressCodec: addressCodec,
+		bankKeeper:   bankKeeper,
 	}
 }
 

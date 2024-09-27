@@ -6,6 +6,7 @@ import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
 
 option go_package = "github.com/monerium/module-noble/v2/types";
 
@@ -107,6 +108,7 @@ message MsgBurn {
     (gogoproto.nullable) = false
   ];
   bytes signature = 5;
+  google.protobuf.Any pub_key = 6;
 }
 
 // MsgBurnResponse is the response of the Burn action.
@@ -147,6 +149,7 @@ message MsgRecover {
   string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string to = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   bytes signature = 5;
+  google.protobuf.Any pub_key = 6;
 }
 
 // MsgRecoverResponse is the response of the Recover action.
