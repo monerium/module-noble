@@ -17,7 +17,6 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/monerium/module-noble/v2/keeper"
 	"github.com/monerium/module-noble/v2/types"
@@ -44,16 +43,15 @@ func TestAuthorityQuery(t *testing.T) {
 
 func TestAllowedDenomsQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query allowed denoms with invalid request.
-	_, err := server.AllowedDenoms(goCtx, nil)
+	_, err := server.AllowedDenoms(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query allowed denoms.
-	res, err := server.AllowedDenoms(goCtx, &types.QueryAllowedDenoms{})
+	res, err := server.AllowedDenoms(ctx, &types.QueryAllowedDenoms{})
 	// ASSERT: The query should've succeeded.
 	require.NoError(t, err)
 	require.Len(t, res.AllowedDenoms, 1)
@@ -62,20 +60,20 @@ func TestAllowedDenomsQuery(t *testing.T) {
 
 func TestOwnersQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query owners with invalid request.
-	_, err := server.Owners(goCtx, nil)
+	_, err := server.Owners(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ARRANGE: Set an owner in state.
 	owner := utils.TestAccount()
-	k.SetOwner(ctx, "ueure", owner.Address)
+	err = k.SetOwner(ctx, "ueure", owner.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query owners.
-	res, err := server.Owners(goCtx, &types.QueryOwners{})
+	res, err := server.Owners(ctx, &types.QueryOwners{})
 	// ASSERT: The query should've succeeded, with empty pending owners.
 	require.NoError(t, err)
 	require.Len(t, res.Owners, 1)
@@ -84,10 +82,11 @@ func TestOwnersQuery(t *testing.T) {
 
 	// ARRANGE: Set a pending owner in state.
 	pendingOwner := utils.TestAccount()
-	k.SetPendingOwner(ctx, "ueure", pendingOwner.Address)
+	err = k.SetPendingOwner(ctx, "ueure", pendingOwner.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query owners.
-	res, err = server.Owners(goCtx, &types.QueryOwners{})
+	res, err = server.Owners(ctx, &types.QueryOwners{})
 	// ASSERT: The query should've succeeded, with pending owners.
 	require.NoError(t, err)
 	require.Len(t, res.Owners, 1)
@@ -98,25 +97,25 @@ func TestOwnersQuery(t *testing.T) {
 
 func TestOwnerQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query owner with invalid request.
-	_, err := server.Owner(goCtx, nil)
+	_, err := server.Owner(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query owner of not allowed denom.
-	_, err = server.Owner(goCtx, &types.QueryOwner{Denom: "uusde"})
+	_, err = server.Owner(ctx, &types.QueryOwner{Denom: "uusde"})
 	// ASSERT: The query should've failed due to not allowed denom.
 	require.ErrorContains(t, err, "uusde is not an allowed denom")
 
 	// ARRANGE: Set an owner in state.
 	owner := utils.TestAccount()
-	k.SetOwner(ctx, "ueure", owner.Address)
+	err = k.SetOwner(ctx, "ueure", owner.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query owner.
-	res, err := server.Owner(goCtx, &types.QueryOwner{Denom: "ueure"})
+	res, err := server.Owner(ctx, &types.QueryOwner{Denom: "ueure"})
 	// ASSERT: The query should've succeeded, with empty pending owner.
 	require.NoError(t, err)
 	require.Equal(t, owner.Address, res.Owner)
@@ -124,10 +123,11 @@ func TestOwnerQuery(t *testing.T) {
 
 	// ARRANGE: Set a pending owner in state.
 	pendingOwner := utils.TestAccount()
-	k.SetPendingOwner(ctx, "ueure", pendingOwner.Address)
+	err = k.SetPendingOwner(ctx, "ueure", pendingOwner.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query owner.
-	res, err = server.Owner(goCtx, &types.QueryOwner{Denom: "ueure"})
+	res, err = server.Owner(ctx, &types.QueryOwner{Denom: "ueure"})
 	// ASSERT: The query should've succeeded, with pending owner.
 	require.NoError(t, err)
 	require.Equal(t, owner.Address, res.Owner)
@@ -136,27 +136,28 @@ func TestOwnerQuery(t *testing.T) {
 
 func TestSystemsQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query systems with invalid request.
-	_, err := server.Systems(goCtx, nil)
+	_, err := server.Systems(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query systems with no state.
-	res, err := server.Systems(goCtx, &types.QuerySystems{})
+	res, err := server.Systems(ctx, &types.QuerySystems{})
 	// ASSERT: The query should've succeeded, returns empty.
 	require.NoError(t, err)
 	require.Empty(t, res.Systems)
 
 	// ARRANGE: Set system accounts in state.
 	system1, system2 := utils.TestAccount(), utils.TestAccount()
-	k.SetSystem(ctx, "ueure", system1.Address)
-	k.SetSystem(ctx, "ueure", system2.Address)
+	err = k.SetSystem(ctx, "ueure", system1.Address)
+	require.NoError(t, err)
+	err = k.SetSystem(ctx, "ueure", system2.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query systems.
-	res, err = server.Systems(goCtx, &types.QuerySystems{})
+	res, err = server.Systems(ctx, &types.QuerySystems{})
 	// ASSERT: The query should've succeeded.
 	require.NoError(t, err)
 	require.Len(t, res.Systems, 2)
@@ -166,32 +167,33 @@ func TestSystemsQuery(t *testing.T) {
 
 func TestSystemsByDenomQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query systems by denom with invalid request.
-	_, err := server.SystemsByDenom(goCtx, nil)
+	_, err := server.SystemsByDenom(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query systems by denom with not allowed denom.
-	_, err = server.SystemsByDenom(goCtx, &types.QuerySystemsByDenom{Denom: "uusde"})
+	_, err = server.SystemsByDenom(ctx, &types.QuerySystemsByDenom{Denom: "uusde"})
 	// ASSERT: The query should've failed due to not allowed denom.
 	require.ErrorContains(t, err, "uusde is not an allowed denom")
 
 	// ACT: Attempt to query systems by denom with no state.
-	res, err := server.SystemsByDenom(goCtx, &types.QuerySystemsByDenom{Denom: "ueure"})
+	res, err := server.SystemsByDenom(ctx, &types.QuerySystemsByDenom{Denom: "ueure"})
 	// ASSERT: The query should've succeeded, returns empty.
 	require.NoError(t, err)
 	require.Empty(t, res.Systems)
 
 	// ARRANGE: Set system accounts in state.
 	system1, system2 := utils.TestAccount(), utils.TestAccount()
-	k.SetSystem(ctx, "ueure", system1.Address)
-	k.SetSystem(ctx, "ueure", system2.Address)
+	err = k.SetSystem(ctx, "ueure", system1.Address)
+	require.NoError(t, err)
+	err = k.SetSystem(ctx, "ueure", system2.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query systems by denom.
-	res, err = server.SystemsByDenom(goCtx, &types.QuerySystemsByDenom{Denom: "ueure"})
+	res, err = server.SystemsByDenom(ctx, &types.QuerySystemsByDenom{Denom: "ueure"})
 	// ASSERT: The query should've succeeded.
 	require.NoError(t, err)
 	require.Len(t, res.Systems, 2)
@@ -201,27 +203,28 @@ func TestSystemsByDenomQuery(t *testing.T) {
 
 func TestAdminsQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query admins with invalid request.
-	_, err := server.Admins(goCtx, nil)
+	_, err := server.Admins(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query admins with no state.
-	res, err := server.Admins(goCtx, &types.QueryAdmins{})
+	res, err := server.Admins(ctx, &types.QueryAdmins{})
 	// ASSERT: The query should've succeeded, returns empty.
 	require.NoError(t, err)
 	require.Empty(t, res.Admins)
 
 	// ARRANGE: Set admin accounts in state.
 	admin1, admin2 := utils.TestAccount(), utils.TestAccount()
-	k.SetAdmin(ctx, "ueure", admin1.Address)
-	k.SetAdmin(ctx, "ueure", admin2.Address)
+	err = k.SetAdmin(ctx, "ueure", admin1.Address)
+	require.NoError(t, err)
+	err = k.SetAdmin(ctx, "ueure", admin2.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query admins.
-	res, err = server.Admins(goCtx, &types.QueryAdmins{})
+	res, err = server.Admins(ctx, &types.QueryAdmins{})
 	// ASSERT: The query should've succeeded.
 	require.NoError(t, err)
 	require.Len(t, res.Admins, 2)
@@ -231,32 +234,33 @@ func TestAdminsQuery(t *testing.T) {
 
 func TestAdminsByDenomQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query admins by denom with invalid request.
-	_, err := server.AdminsByDenom(goCtx, nil)
+	_, err := server.AdminsByDenom(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query admins by denom with not allowed denom.
-	_, err = server.AdminsByDenom(goCtx, &types.QueryAdminsByDenom{Denom: "uusde"})
+	_, err = server.AdminsByDenom(ctx, &types.QueryAdminsByDenom{Denom: "uusde"})
 	// ASSERT: The query should've failed due to not allowed denom.
 	require.ErrorContains(t, err, "uusde is not an allowed denom")
 
 	// ACT: Attempt to query admins by denom with no state.
-	res, err := server.AdminsByDenom(goCtx, &types.QueryAdminsByDenom{Denom: "ueure"})
+	res, err := server.AdminsByDenom(ctx, &types.QueryAdminsByDenom{Denom: "ueure"})
 	// ASSERT: The query should've succeeded, returns empty.
 	require.NoError(t, err)
 	require.Empty(t, res.Admins)
 
 	// ARRANGE: Set admin accounts in state.
 	admin1, admin2 := utils.TestAccount(), utils.TestAccount()
-	k.SetAdmin(ctx, "ueure", admin1.Address)
-	k.SetAdmin(ctx, "ueure", admin2.Address)
+	err = k.SetAdmin(ctx, "ueure", admin1.Address)
+	require.NoError(t, err)
+	err = k.SetAdmin(ctx, "ueure", admin2.Address)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query admins by denom.
-	res, err = server.AdminsByDenom(goCtx, &types.QueryAdminsByDenom{Denom: "ueure"})
+	res, err = server.AdminsByDenom(ctx, &types.QueryAdminsByDenom{Denom: "ueure"})
 	// ASSERT: The query should've succeeded.
 	require.NoError(t, err)
 	require.Len(t, res.Admins, 2)
@@ -266,25 +270,25 @@ func TestAdminsByDenomQuery(t *testing.T) {
 
 func TestMaxMintAllowancesQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query max mint allowances with invalid request.
-	_, err := server.MaxMintAllowances(goCtx, nil)
+	_, err := server.MaxMintAllowances(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query max mint allowances with no state.
-	res, err := server.MaxMintAllowances(goCtx, &types.QueryMaxMintAllowances{})
+	res, err := server.MaxMintAllowances(ctx, &types.QueryMaxMintAllowances{})
 	// ASSERT: The query should've succeeded, returning zero.
 	require.NoError(t, err)
 	require.Empty(t, res.MaxMintAllowances)
 
 	// ARRANGE: Set a max mint allowance in state.
-	k.SetMaxMintAllowance(ctx, "ueure", MaxMintAllowance)
+	err = k.SetMaxMintAllowance(ctx, "ueure", MaxMintAllowance)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query max mint allowances.
-	res, err = server.MaxMintAllowances(goCtx, &types.QueryMaxMintAllowances{})
+	res, err = server.MaxMintAllowances(ctx, &types.QueryMaxMintAllowances{})
 	// ASSERT: The query should've succeeded.
 	require.NoError(t, err)
 	require.Len(t, res.MaxMintAllowances, 1)
@@ -293,30 +297,30 @@ func TestMaxMintAllowancesQuery(t *testing.T) {
 
 func TestMaxMintAllowanceQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query max mint allowance with invalid request.
-	_, err := server.MaxMintAllowance(goCtx, nil)
+	_, err := server.MaxMintAllowance(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query max mint allowance of not allowed denom.
-	_, err = server.MaxMintAllowance(goCtx, &types.QueryMaxMintAllowance{Denom: "uusde"})
+	_, err = server.MaxMintAllowance(ctx, &types.QueryMaxMintAllowance{Denom: "uusde"})
 	// ASSERT: The query should've failed due to not allowed denom.
 	require.ErrorContains(t, err, "uusde is not an allowed denom")
 
 	// ACT: Attempt to query max mint allowance with no state.
-	res, err := server.MaxMintAllowance(goCtx, &types.QueryMaxMintAllowance{Denom: "ueure"})
-	// ASSERT: The query should've succeeded, returning zero.
+	res, err := server.MaxMintAllowance(ctx, &types.QueryMaxMintAllowance{Denom: "ueure"})
+	// ASSERT: The query should return err as the key is missing
 	require.NoError(t, err)
 	require.True(t, res.MaxMintAllowance.IsZero())
 
 	// ARRANGE: Set a max mint allowance in state.
-	k.SetMaxMintAllowance(ctx, "ueure", MaxMintAllowance)
+	err = k.SetMaxMintAllowance(ctx, "ueure", MaxMintAllowance)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query max mint allowance.
-	res, err = server.MaxMintAllowance(goCtx, &types.QueryMaxMintAllowance{Denom: "ueure"})
+	res, err = server.MaxMintAllowance(ctx, &types.QueryMaxMintAllowance{Denom: "ueure"})
 	// ASSERT: The query should've succeeded.
 	require.NoError(t, err)
 	require.Equal(t, MaxMintAllowance, res.MaxMintAllowance)
@@ -324,16 +328,15 @@ func TestMaxMintAllowanceQuery(t *testing.T) {
 
 func TestMintAllowancesQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query mint allowances with invalid request.
-	_, err := server.MintAllowances(goCtx, nil)
+	_, err := server.MintAllowances(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query mint allowances of not allowed denom.
-	_, err = server.MintAllowances(goCtx, &types.QueryMintAllowances{
+	_, err = server.MintAllowances(ctx, &types.QueryMintAllowances{
 		Denom: "uusde",
 	})
 	// ASSERT: The query should've failed due to not allowed denom.
@@ -341,10 +344,11 @@ func TestMintAllowancesQuery(t *testing.T) {
 
 	// ARRANGE: Set mint allowance in state.
 	minter := utils.TestAccount()
-	k.SetMintAllowance(ctx, "ueure", minter.Address, One)
+	err = k.SetMintAllowance(ctx, "ueure", minter.Address, One)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query mint allowances.
-	res, err := server.MintAllowances(goCtx, &types.QueryMintAllowances{
+	res, err := server.MintAllowances(ctx, &types.QueryMintAllowances{
 		Denom: "ueure",
 	})
 	// ASSERT: The query should've succeeded.
@@ -355,34 +359,34 @@ func TestMintAllowancesQuery(t *testing.T) {
 
 func TestMintAllowanceQuery(t *testing.T) {
 	k, ctx := mocks.FlorinKeeper()
-	goCtx := sdk.WrapSDKContext(ctx)
 	server := keeper.NewQueryServer(k)
 
 	// ACT: Attempt to query mint allowance with invalid request.
-	_, err := server.MintAllowance(goCtx, nil)
+	_, err := server.MintAllowance(ctx, nil)
 	// ASSERT: The query should've failed due to invalid request.
 	require.ErrorContains(t, err, errors.ErrInvalidRequest.Error())
 
 	// ACT: Attempt to query mint allowance with not allowed denom.
-	_, err = server.MintAllowance(goCtx, &types.QueryMintAllowance{Denom: "uusde"})
+	_, err = server.MintAllowance(ctx, &types.QueryMintAllowance{Denom: "uusde"})
 	// ASSERT: The query should've failed due to not allowed denom.
 	require.ErrorContains(t, err, "uusde is not an allowed denom")
 
 	// ACT: Attempt to query mint allowance of random account.
-	res, err := server.MintAllowance(goCtx, &types.QueryMintAllowance{
+	res, err := server.MintAllowance(ctx, &types.QueryMintAllowance{
 		Denom:   "ueure",
 		Account: utils.TestAccount().Address,
 	})
-	// ASSERT: The query should've succeeded, returns zero.
+	// ASSERT: The query should've failed, returns err.
 	require.NoError(t, err)
 	require.True(t, res.Allowance.IsZero())
 
 	// ARRANGE: Set mint allowance in state.
 	minter := utils.TestAccount()
-	k.SetMintAllowance(ctx, "ueure", minter.Address, One)
+	err = k.SetMintAllowance(ctx, "ueure", minter.Address, One)
+	require.NoError(t, err)
 
 	// ACT: Attempt to query mint allowance.
-	res, err = server.MintAllowance(goCtx, &types.QueryMintAllowance{
+	res, err = server.MintAllowance(ctx, &types.QueryMintAllowance{
 		Denom:   "ueure",
 		Account: minter.Address,
 	})

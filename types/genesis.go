@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"slices"
 
+	"cosmossdk.io/core/address"
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/types/blacklist"
 )
 
@@ -33,8 +33,8 @@ func DefaultGenesisState() *GenesisState {
 	}
 }
 
-func (gs *GenesisState) Validate() error {
-	if err := gs.BlacklistState.Validate(); err != nil {
+func (gs *GenesisState) Validate(cdc address.Codec) error {
+	if err := gs.BlacklistState.Validate(cdc); err != nil {
 		return err
 	}
 
@@ -43,7 +43,7 @@ func (gs *GenesisState) Validate() error {
 			return fmt.Errorf("found an owner (%s) for a not allowed denom %s", owner, denom)
 		}
 
-		if _, err := sdk.AccAddressFromBech32(owner); err != nil {
+		if _, err := cdc.StringToBytes(owner); err != nil {
 			return fmt.Errorf("invalid owner address (%s) for denom %s: %s", owner, denom, err)
 		}
 	}
@@ -53,7 +53,7 @@ func (gs *GenesisState) Validate() error {
 			return fmt.Errorf("found a pending owner (%s) for a not allowed denom %s", pendingOwner, denom)
 		}
 
-		if _, err := sdk.AccAddressFromBech32(pendingOwner); err != nil {
+		if _, err := cdc.StringToBytes(pendingOwner); err != nil {
 			return fmt.Errorf("invalid pending owner address (%s) for denom %s: %s", pendingOwner, denom, err)
 		}
 	}
@@ -63,7 +63,7 @@ func (gs *GenesisState) Validate() error {
 			return fmt.Errorf("found a system account (%s) for a not allowed denom %s", system.Address, system.Denom)
 		}
 
-		if _, err := sdk.AccAddressFromBech32(system.Address); err != nil {
+		if _, err := cdc.StringToBytes(system.Address); err != nil {
 			return fmt.Errorf("invalid system address (%s) for denom %s: %s", system.Address, system.Denom, err)
 		}
 	}
@@ -73,7 +73,7 @@ func (gs *GenesisState) Validate() error {
 			return fmt.Errorf("found an admin account (%s) for a not allowed denom %s", admin.Address, admin.Denom)
 		}
 
-		if _, err := sdk.AccAddressFromBech32(admin.Address); err != nil {
+		if _, err := cdc.StringToBytes(admin.Address); err != nil {
 			return fmt.Errorf("invalid admin address (%s) for denom %s: %s", admin.Address, admin.Denom, err)
 		}
 	}
@@ -83,7 +83,7 @@ func (gs *GenesisState) Validate() error {
 			return fmt.Errorf("found a minter allowance (%s) for a not allowed denom %s", entry.Address, entry.Denom)
 		}
 
-		if _, err := sdk.AccAddressFromBech32(entry.Address); err != nil {
+		if _, err := cdc.StringToBytes(entry.Address); err != nil {
 			return fmt.Errorf("invalid minter address (%s) for denom %s: %s", entry.Address, entry.Denom, err)
 		}
 	}

@@ -17,6 +17,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/collections"
 	"github.com/monerium/module-noble/v2/types"
 	"github.com/monerium/module-noble/v2/utils"
 	"github.com/monerium/module-noble/v2/utils/mocks"
@@ -24,21 +25,24 @@ import (
 )
 
 func TestGetMintAllowances(t *testing.T) {
-	keeper, ctx := mocks.FlorinKeeper()
+	k, ctx := mocks.FlorinKeeper()
 
 	// ACT: Attempt to get mint allowances with no state.
-	res := keeper.GetMintAllowances(ctx)
+	res := k.GetMintAllowances(ctx)
 	// ASSERT: The action should've succeeded, returns empty.
 	require.Empty(t, res)
 
 	// ARRANGE: Set mint allowances in state.
 	minter1, minter2 := utils.TestAccount(), utils.TestAccount()
-	keeper.SetMintAllowance(ctx, "ueure", minter1.Address, One)
-	keeper.SetMintAllowance(ctx, "ueure", minter2.Address, One.MulRaw(2))
+	err := k.SetMintAllowance(ctx, "ueure", minter1.Address, One)
+	require.NoError(t, err)
+	err = k.SetMintAllowance(ctx, "ueure", minter2.Address, One.MulRaw(2))
+	require.NoError(t, err)
 
 	// ACT: Attempt to get mint allowances.
-	res = keeper.GetMintAllowances(ctx)
+	res = k.GetMintAllowances(ctx)
 	// ASSERT: The action should've succeeded.
+	require.NoError(t, err)
 	require.Len(t, res, 2)
 	require.Contains(t, res, types.Allowance{
 		Denom:     "ueure",
@@ -50,4 +54,13 @@ func TestGetMintAllowances(t *testing.T) {
 		Address:   minter2.Address,
 		Allowance: One.MulRaw(2),
 	})
+
+	// ARRANGE: Set invalid mint allowance
+	key := collections.Join("ueure", "address")
+	_ = k.MintAllowance.Set(ctx, key, []byte("panic"))
+
+	// ACT: Attempt to get mint allowances.
+	allowances := k.GetMintAllowancesByDenom(ctx, "ueure")
+	// ASSERT: The action should've succeeded, returns empty.
+	require.Empty(t, allowances)
 }

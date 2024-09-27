@@ -18,7 +18,9 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
+	"cosmossdk.io/core/event"
 	"cosmossdk.io/core/store"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -27,8 +29,24 @@ import (
 )
 
 type Keeper struct {
-	authority    string
+	authority string
+
+	schema       collections.Schema
 	storeService store.KVStoreService
+	eventService event.Service
+
+	AllowedDenoms    collections.KeySet[string]
+	Owner            collections.Map[string, string]
+	PendingOwner     collections.Map[string, string]
+	Admins           collections.KeySet[collections.Pair[string, string]]
+	Systems          collections.KeySet[collections.Pair[string, string]]
+	MintAllowance    collections.Map[collections.Pair[string, string], []byte]
+	MaxMintAllowance collections.Map[string, []byte]
+
+	BlacklistOwner        collections.Item[string]
+	BlacklistPendingOwner collections.Item[string]
+	BlacklistAdmins       collections.KeySet[string]
+	Adversaries           collections.KeySet[string]
 
 	cdc          codec.Codec
 	addressCodec address.Codec
@@ -38,18 +56,44 @@ type Keeper struct {
 func NewKeeper(
 	authority string,
 	storeService store.KVStoreService,
+	eventService event.Service,
 	cdc codec.Codec,
 	addressCodec address.Codec,
 	bankKeeper types.BankKeeper,
 ) *Keeper {
-	return &Keeper{
-		authority:    authority,
+	builder := collections.NewSchemaBuilder(storeService)
+
+	keeper := &Keeper{
+		authority: authority,
+
 		storeService: storeService,
+		eventService: eventService,
+
+		AllowedDenoms:    collections.NewKeySet(builder, types.AllowedDenomPrefix, "allowedDenoms", collections.StringKey),
+		Owner:            collections.NewMap(builder, types.OwnerPrefix, "owner", collections.StringKey, collections.StringValue),
+		PendingOwner:     collections.NewMap(builder, types.PendingOwnerPrefix, "pendingOwner", collections.StringKey, collections.StringValue),
+		Systems:          collections.NewKeySet(builder, types.SystemPrefix, "systems", collections.PairKeyCodec(collections.StringKey, collections.StringKey)),
+		Admins:           collections.NewKeySet(builder, types.AdminPrefix, "admins", collections.PairKeyCodec(collections.StringKey, collections.StringKey)),
+		MintAllowance:    collections.NewMap(builder, types.MintAllowancePrefix, "mintAllowance", collections.PairKeyCodec(collections.StringKey, collections.StringKey), collections.BytesValue),
+		MaxMintAllowance: collections.NewMap(builder, types.MaxMintAllowancePrefix, "maxMintAllowance", collections.StringKey, collections.BytesValue),
+
+		BlacklistOwner:        collections.NewItem(builder, blacklist.OwnerKey, "blacklistOwner", collections.StringValue),
+		BlacklistPendingOwner: collections.NewItem(builder, blacklist.PendingOwnerKey, "blacklistPendingOwner", collections.StringValue),
+		BlacklistAdmins:       collections.NewKeySet(builder, blacklist.AdminPrefix, "blacklistAdmins", collections.StringKey),
+		Adversaries:           collections.NewKeySet(builder, blacklist.AdversaryPrefix, "adversaries", collections.StringKey),
 
 		cdc:          cdc,
 		addressCodec: addressCodec,
 		bankKeeper:   bankKeeper,
 	}
+
+	schema, err := builder.Build()
+	if err != nil {
+		panic(err)
+	}
+
+	keeper.schema = schema
+	return keeper
 }
 
 // SetBankKeeper overwrites the bank keeper used in this module.
@@ -58,20 +102,18 @@ func (k *Keeper) SetBankKeeper(bankKeeper types.BankKeeper) {
 }
 
 // SendRestrictionFn executes necessary checks against all EURe, GBPe, ISKe, USDe transfers.
-func (k *Keeper) SendRestrictionFn(goCtx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) (newToAddr sdk.AccAddress, err error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k *Keeper) SendRestrictionFn(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) (newToAddr sdk.AccAddress, err error) {
 	for _, allowedDenom := range k.GetAllowedDenoms(ctx) {
 		if amount := amt.AmountOf(allowedDenom); !amount.IsZero() {
-			valid := !k.IsAdversary(ctx, fromAddr.String())
-			_ = ctx.EventManager().EmitTypedEvent(&blacklist.Decision{
+			isAdversary := k.IsAdversary(ctx, fromAddr.String())
+			_ = k.eventService.EventManager(ctx).Emit(ctx, &blacklist.Decision{
 				From:   fromAddr.String(),
 				To:     toAddr.String(),
 				Amount: amount,
-				Valid:  valid,
+				Valid:  !isAdversary,
 			})
 
-			if !valid {
+			if isAdversary {
 				return toAddr, fmt.Errorf("%s is blocked from sending %s", fromAddr, allowedDenom)
 			}
 		}

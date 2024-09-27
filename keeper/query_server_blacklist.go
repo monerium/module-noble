@@ -17,7 +17,6 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/monerium/module-noble/v2/types/blacklist"
 )
@@ -32,12 +31,10 @@ func NewBlacklistQueryServer(keeper *Keeper) blacklist.QueryServer {
 	return &blacklistQueryServer{Keeper: keeper}
 }
 
-func (k blacklistQueryServer) Owner(goCtx context.Context, req *blacklist.QueryOwner) (*blacklist.QueryOwnerResponse, error) {
+func (k blacklistQueryServer) Owner(ctx context.Context, req *blacklist.QueryOwner) (*blacklist.QueryOwnerResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	return &blacklist.QueryOwnerResponse{
 		Owner:        k.GetBlacklistOwner(ctx),
@@ -45,24 +42,20 @@ func (k blacklistQueryServer) Owner(goCtx context.Context, req *blacklist.QueryO
 	}, nil
 }
 
-func (k blacklistQueryServer) Admins(goCtx context.Context, req *blacklist.QueryAdmins) (*blacklist.QueryAdminsResponse, error) {
+func (k blacklistQueryServer) Admins(ctx context.Context, req *blacklist.QueryAdmins) (*blacklist.QueryAdminsResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	return &blacklist.QueryAdminsResponse{
 		Admins: k.GetBlacklistAdmins(ctx),
 	}, nil
 }
 
-func (k blacklistQueryServer) Adversaries(goCtx context.Context, req *blacklist.QueryAdversaries) (*blacklist.QueryAdversariesResponse, error) {
+func (k blacklistQueryServer) Adversaries(ctx context.Context, req *blacklist.QueryAdversaries) (*blacklist.QueryAdversariesResponse, error) {
 	if req == nil {
 		return nil, errors.ErrInvalidRequest
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	return &blacklist.QueryAdversariesResponse{
 		Adversaries: k.GetAdversaries(ctx),

@@ -18,7 +18,6 @@ import (
 	"context"
 
 	"cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/monerium/module-noble/v2/types/blacklist"
 )
 
@@ -32,9 +31,7 @@ func NewBlacklistMsgServer(keeper *Keeper) blacklist.MsgServer {
 	return &blacklistMsgServer{Keeper: keeper}
 }
 
-func (k blacklistMsgServer) AcceptOwnership(goCtx context.Context, msg *blacklist.MsgAcceptOwnership) (*blacklist.MsgAcceptOwnershipResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k blacklistMsgServer) AcceptOwnership(ctx context.Context, msg *blacklist.MsgAcceptOwnership) (*blacklist.MsgAcceptOwnershipResponse, error) {
 	pendingOwner := k.GetBlacklistPendingOwner(ctx)
 	if pendingOwner == "" {
 		return nil, blacklist.ErrNoPendingOwner
@@ -44,58 +41,64 @@ func (k blacklistMsgServer) AcceptOwnership(goCtx context.Context, msg *blacklis
 	}
 
 	owner := k.GetBlacklistOwner(ctx)
-	k.SetBlacklistOwner(ctx, msg.Signer)
-	k.DeleteBlacklistPendingOwner(ctx)
+	if err := k.SetBlacklistOwner(ctx, msg.Signer); err != nil {
+		return nil, errors.Wrap(err, "failed to set blacklist owner")
+	}
+	if err := k.DeleteBlacklistPendingOwner(ctx); err != nil {
+		return nil, errors.Wrap(err, "failed to delete blacklist pending owner")
+	}
 
-	return &blacklist.MsgAcceptOwnershipResponse{}, ctx.EventManager().EmitTypedEvent(&blacklist.OwnershipTransferred{
+	return &blacklist.MsgAcceptOwnershipResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &blacklist.OwnershipTransferred{
 		PreviousOwner: owner,
 		NewOwner:      msg.Signer,
 	})
 }
 
-func (k blacklistMsgServer) AddAdminAccount(goCtx context.Context, msg *blacklist.MsgAddAdminAccount) (*blacklist.MsgAddAdminAccountResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k blacklistMsgServer) AddAdminAccount(ctx context.Context, msg *blacklist.MsgAddAdminAccount) (*blacklist.MsgAddAdminAccountResponse, error) {
 	_, err := k.EnsureOwner(ctx, msg.Signer)
 	if err != nil {
 		return nil, err
 	}
 
-	k.SetBlacklistAdmin(ctx, msg.Account)
+	if err := k.SetBlacklistAdmin(ctx, msg.Account); err != nil {
+		return nil, errors.Wrapf(err, "failed to set blacklist admin: %s", msg.Account)
+	}
 
-	return &blacklist.MsgAddAdminAccountResponse{}, ctx.EventManager().EmitTypedEvent(&blacklist.AdminAccountAdded{
+	return &blacklist.MsgAddAdminAccountResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &blacklist.AdminAccountAdded{
 		Account: msg.Account,
 	})
 }
 
-func (k blacklistMsgServer) Ban(goCtx context.Context, msg *blacklist.MsgBan) (*blacklist.MsgBanResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k blacklistMsgServer) Ban(ctx context.Context, msg *blacklist.MsgBan) (*blacklist.MsgBanResponse, error) {
 	if !k.IsBlacklistAdmin(ctx, msg.Signer) {
 		return nil, blacklist.ErrInvalidAdmin
 	}
 
-	k.SetAdversary(ctx, msg.Adversary)
+	if err := k.SetAdversary(ctx, msg.Adversary); err != nil {
+		return nil, errors.Wrapf(err, "failed to set blacklist adversary: %s", msg.Adversary)
+	}
 
-	return &blacklist.MsgBanResponse{}, ctx.EventManager().EmitTypedEvent(&blacklist.Ban{
+	return &blacklist.MsgBanResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &blacklist.Ban{
 		Adversary: msg.Adversary,
 	})
 }
 
-func (k blacklistMsgServer) RemoveAdminAccount(goCtx context.Context, msg *blacklist.MsgRemoveAdminAccount) (*blacklist.MsgRemoveAdminAccountResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k blacklistMsgServer) RemoveAdminAccount(ctx context.Context, msg *blacklist.MsgRemoveAdminAccount) (*blacklist.MsgRemoveAdminAccountResponse, error) {
 	_, err := k.EnsureOwner(ctx, msg.Signer)
 	if err != nil {
 		return nil, err
 	}
 
-	k.DeleteBlacklistAdmin(ctx, msg.Account)
+	if err := k.DeleteBlacklistAdmin(ctx, msg.Account); err != nil {
+		return nil, errors.Wrapf(err, "failed to delete blacklist admin: %s", msg.Account)
+	}
 
-	return &blacklist.MsgRemoveAdminAccountResponse{}, ctx.EventManager().EmitTypedEvent(&blacklist.AdminAccountRemoved{
+	return &blacklist.MsgRemoveAdminAccountResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &blacklist.AdminAccountRemoved{
 		Account: msg.Account,
 	})
 }
 
-func (k blacklistMsgServer) TransferOwnership(goCtx context.Context, msg *blacklist.MsgTransferOwnership) (*blacklist.MsgTransferOwnershipResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k blacklistMsgServer) TransferOwnership(ctx context.Context, msg *blacklist.MsgTransferOwnership) (*blacklist.MsgTransferOwnershipResponse, error) {
 	owner, err := k.EnsureOwner(ctx, msg.Signer)
 	if err != nil {
 		return nil, err
@@ -105,30 +108,33 @@ func (k blacklistMsgServer) TransferOwnership(goCtx context.Context, msg *blackl
 		return nil, blacklist.ErrSameOwner
 	}
 
-	k.SetBlacklistPendingOwner(ctx, msg.NewOwner)
+	if err := k.SetBlacklistPendingOwner(ctx, msg.NewOwner); err != nil {
+		return nil, errors.Wrapf(err, "failed to set blacklist pending owner: %s", msg.NewOwner)
+	}
 
-	return &blacklist.MsgTransferOwnershipResponse{}, ctx.EventManager().EmitTypedEvent(&blacklist.OwnershipTransferStarted{
+	return &blacklist.MsgTransferOwnershipResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &blacklist.OwnershipTransferStarted{
 		PreviousOwner: owner,
 		NewOwner:      msg.NewOwner,
 	})
 }
 
-func (k blacklistMsgServer) Unban(goCtx context.Context, msg *blacklist.MsgUnban) (*blacklist.MsgUnbanResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k blacklistMsgServer) Unban(ctx context.Context, msg *blacklist.MsgUnban) (*blacklist.MsgUnbanResponse, error) {
 	if !k.IsBlacklistAdmin(ctx, msg.Signer) {
 		return nil, blacklist.ErrInvalidAdmin
 	}
 
-	k.DeleteAdversary(ctx, msg.Friend)
+	if err := k.DeleteAdversary(ctx, msg.Friend); err != nil {
+		return nil, errors.Wrapf(err, "failed to delete blacklist adversary: %s", msg.Friend)
+	}
 
-	return &blacklist.MsgUnbanResponse{}, ctx.EventManager().EmitTypedEvent(&blacklist.Unban{
+	return &blacklist.MsgUnbanResponse{}, k.eventService.EventManager(ctx).Emit(ctx, &blacklist.Unban{
 		Friend: msg.Friend,
 	})
 }
 
 //
 
-func (k blacklistMsgServer) EnsureOwner(ctx sdk.Context, signer string) (string, error) {
+func (k blacklistMsgServer) EnsureOwner(ctx context.Context, signer string) (string, error) {
 	owner := k.GetBlacklistOwner(ctx)
 	if owner == "" {
 		return "", blacklist.ErrNoOwner

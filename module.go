@@ -21,6 +21,7 @@ import (
 
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
+	"cosmossdk.io/core/event"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -53,10 +54,12 @@ var (
 
 //
 
-type AppModuleBasic struct{}
+type AppModuleBasic struct {
+	addressCodec address.Codec
+}
 
-func NewAppModuleBasic() AppModuleBasic {
-	return AppModuleBasic{}
+func NewAppModuleBasic(addressCodec address.Codec) AppModuleBasic {
+	return AppModuleBasic{addressCodec: addressCodec}
 }
 
 func (AppModuleBasic) Name() string { return types.ModuleName }
@@ -83,13 +86,13 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.DefaultGenesisState())
 }
 
-func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
+func (b AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
 	var genesis types.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &genesis); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 
-	return genesis.Validate()
+	return genesis.Validate(b.addressCodec)
 }
 
 //
@@ -100,9 +103,9 @@ type AppModule struct {
 	keeper *keeper.Keeper
 }
 
-func NewAppModule(keeper *keeper.Keeper) AppModule {
+func NewAppModule(addressCodec address.Codec, keeper *keeper.Keeper) AppModule {
 	return AppModule{
-		AppModuleBasic: NewAppModuleBasic(),
+		AppModuleBasic: NewAppModuleBasic(addressCodec),
 		keeper:         keeper,
 	}
 }
@@ -156,6 +159,7 @@ type ModuleInputs struct {
 
 	Config       *modulev1.Module
 	StoreService store.KVStoreService
+	EventService event.Service
 
 	Cdc          codec.Codec
 	AddressCodec address.Codec
@@ -179,11 +183,12 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	k := keeper.NewKeeper(
 		authority.String(),
 		in.StoreService,
+		in.EventService,
 		in.Cdc,
 		in.AddressCodec,
 		in.BankKeeper,
 	)
-	m := NewAppModule(k)
+	m := NewAppModule(in.AddressCodec, k)
 
 	return ModuleOutputs{Keeper: k, Module: m, Restriction: k.SendRestrictionFn}
 }
