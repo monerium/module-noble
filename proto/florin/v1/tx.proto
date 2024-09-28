@@ -90,6 +90,26 @@ message MsgAllowDenom {
 // MsgAllowDenomResponse is the response of the AllowDenom action.
 message MsgAllowDenomResponse {}
 
+// MsgBurnV1 implements the burn (0x8d1247ba) method.
+message MsgBurnV1 {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/Burn";
+
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string denom = 1;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string from = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string amount = 4 [
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  bytes signature = 5;
+}
+
 // MsgBurn implements the burn (0x8d1247ba) method.
 message MsgBurn {
   option (cosmos.msg.v1.signer) = "signer";
