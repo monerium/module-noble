@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://json.schemastore.org/buf.gen.json
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: adr36.dev/api
+    override:
+      buf.build/cosmos/cosmos-sdk: cosmossdk.io/api
+plugins:
+  - name: go-pulsar
+    out: ./api
+    opt: paths=source_relative

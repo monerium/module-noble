@@ -23,6 +23,6 @@ ldflags := $(strip $(ldflags))
 BUILD_FLAGS := -ldflags '$(ldflags)' -tags 'ledger'
 
 build:
-	@go build -mod=readonly $(BUILD_FLAGS) -o $(PWD)/build/ ./...
+	@go build -mod=vendor $(BUILD_FLAGS) -o $(PWD)/build/ ./...
 
 .PHONY: build

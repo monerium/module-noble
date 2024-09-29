@@ -1,0 +1,8 @@
+{
+  "domain": "adr36.dev",
+  "repositories": [
+    {
+      "url": "https://github.com/noble-assets/adr36"
+    }
+  ]
+}

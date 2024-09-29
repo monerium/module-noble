@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://json.schemastore.org/buf.json
+version: v2
+modules:
+  - path: proto
+deps:
+  - buf.build/cosmos/cosmos-sdk:v0.50.0
+lint:
+  except:
+    - PACKAGE_VERSION_SUFFIX
