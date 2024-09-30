@@ -20,9 +20,9 @@ ldflags += -X github.com/cosmos/cosmos-sdk/version.Name=simapp \
 	-X github.com/cosmos/cosmos-sdk/version.BuildTags='ledger'
 ldflags := $(strip $(ldflags))
 
-BUILD_FLAGS := -ldflags '$(ldflags)' -tags 'ledger'
+BUILD_FLAGS := -ldflags '$(ldflags)'
 
 build:
-	@go build -mod=vendor $(BUILD_FLAGS) -o $(PWD)/build/ ./...
+	@CGO_ENABLED=false go build -mod=vendor $(BUILD_FLAGS) -o $(PWD)/build/ ./...
 
 .PHONY: build
