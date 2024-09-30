@@ -10,9 +10,32 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/monerium/module-noble/v2/types/v1";
 
 service Msg {
+  rpc Mint(MsgMint) returns (MsgMintResponse);
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
   rpc Recover(MsgRecover) returns (MsgRecoverResponse);
 }
+
+// MsgMint implements the mint (0x40c10f19) method.
+message MsgMint {
+  option (cosmos.msg.v1.signer) = "signer";
+  option (amino.name) = "florin/Mint";
+
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string denom = 1;
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string to = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string amount = 4 [
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgMintResponse is the response of the Mint action.
+message MsgMintResponse {}
 
 // MsgBurn implements the burn (0x8d1247ba) method.
 message MsgBurn {
