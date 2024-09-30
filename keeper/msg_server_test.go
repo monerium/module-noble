@@ -373,6 +373,15 @@ func TestBurn(t *testing.T) {
 	// ASSERT: The action should've failed due to invalid user address.
 	require.ErrorContains(t, err, "unable to decode user address")
 
+	// ACT: Attempt to burn with missing public key.
+	_, err = server.Burn(ctx, &types.MsgBurn{
+		Denom:  "ueure",
+		Signer: system.Address,
+		From:   utils.TestAccount().Address,
+	})
+	// ASSERT: The action should've failed due to invalid public key.
+	require.ErrorIs(t, err, types.ErrInvalidPubKey)
+
 	// ACT: Attempt to burn with invalid public key.
 	invalidPubKey, _ = codectypes.NewAnyWithValue(secp256k1.GenPrivKey().PubKey())
 	_, err = server.Burn(ctx, &types.MsgBurn{
@@ -593,6 +602,15 @@ func TestRecover(t *testing.T) {
 		Signer: system.Address,
 		From:   "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
 		PubKey: invalidPubKey,
+	})
+	// ASSERT: The action should've failed due to invalid public key.
+	require.ErrorIs(t, err, types.ErrInvalidPubKey)
+
+	// ACT: Attempt to recover with missing public key.
+	_, err = server.Recover(ctx, &types.MsgRecover{
+		Denom:  "ueure",
+		Signer: system.Address,
+		From:   "noble1rwvjzk28l38js7xx6mq23nrpghd8qqvxmj6ep2",
 	})
 	// ASSERT: The action should've failed due to invalid public key.
 	require.ErrorIs(t, err, types.ErrInvalidPubKey)

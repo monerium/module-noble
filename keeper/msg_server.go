@@ -131,6 +131,9 @@ func (k msgServer) Burn(ctx context.Context, msg *types.MsgBurn) (*types.MsgBurn
 	if !k.IsSystem(ctx, msg.Denom, msg.Signer) {
 		return nil, types.ErrInvalidSystem
 	}
+	if msg.PubKey == nil {
+		return nil, types.ErrInvalidPubKey
+	}
 
 	var pubKey cryptotypes.PubKey
 	if err := k.cdc.UnpackAny(msg.PubKey, &pubKey); err != nil {
@@ -210,6 +213,9 @@ func (k msgServer) Recover(ctx context.Context, msg *types.MsgRecover) (*types.M
 	}
 	if !k.IsSystem(ctx, msg.Denom, msg.Signer) {
 		return nil, types.ErrInvalidSystem
+	}
+	if msg.PubKey == nil {
+		return nil, types.ErrInvalidPubKey
 	}
 
 	var pubKey cryptotypes.PubKey
