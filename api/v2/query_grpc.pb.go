@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: florin/v1/query.proto
+// source: florin/v2/query.proto
 
-package florinv1
+package florinv2
 
 import (
 	context "context"
@@ -19,18 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Authority_FullMethodName         = "/florin.v1.Query/Authority"
-	Query_AllowedDenoms_FullMethodName     = "/florin.v1.Query/AllowedDenoms"
-	Query_Owners_FullMethodName            = "/florin.v1.Query/Owners"
-	Query_Owner_FullMethodName             = "/florin.v1.Query/Owner"
-	Query_Systems_FullMethodName           = "/florin.v1.Query/Systems"
-	Query_SystemsByDenom_FullMethodName    = "/florin.v1.Query/SystemsByDenom"
-	Query_Admins_FullMethodName            = "/florin.v1.Query/Admins"
-	Query_AdminsByDenom_FullMethodName     = "/florin.v1.Query/AdminsByDenom"
-	Query_MaxMintAllowances_FullMethodName = "/florin.v1.Query/MaxMintAllowances"
-	Query_MaxMintAllowance_FullMethodName  = "/florin.v1.Query/MaxMintAllowance"
-	Query_MintAllowances_FullMethodName    = "/florin.v1.Query/MintAllowances"
-	Query_MintAllowance_FullMethodName     = "/florin.v1.Query/MintAllowance"
+	Query_Authority_FullMethodName         = "/florin.v2.Query/Authority"
+	Query_AllowedDenoms_FullMethodName     = "/florin.v2.Query/AllowedDenoms"
+	Query_Owners_FullMethodName            = "/florin.v2.Query/Owners"
+	Query_Owner_FullMethodName             = "/florin.v2.Query/Owner"
+	Query_Systems_FullMethodName           = "/florin.v2.Query/Systems"
+	Query_SystemsByDenom_FullMethodName    = "/florin.v2.Query/SystemsByDenom"
+	Query_Admins_FullMethodName            = "/florin.v2.Query/Admins"
+	Query_AdminsByDenom_FullMethodName     = "/florin.v2.Query/AdminsByDenom"
+	Query_MaxMintAllowances_FullMethodName = "/florin.v2.Query/MaxMintAllowances"
+	Query_MaxMintAllowance_FullMethodName  = "/florin.v2.Query/MaxMintAllowance"
+	Query_MintAllowances_FullMethodName    = "/florin.v2.Query/MintAllowances"
+	Query_MintAllowance_FullMethodName     = "/florin.v2.Query/MintAllowance"
 )
 
 // QueryClient is the client API for Query service.
@@ -482,7 +482,7 @@ func _Query_MintAllowance_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "florin.v1.Query",
+	ServiceName: "florin.v2.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -535,5 +535,5 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "florin/v1/query.proto",
+	Metadata: "florin/v2/query.proto",
 }
