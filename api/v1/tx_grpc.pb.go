@@ -19,36 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_AcceptOwnership_FullMethodName     = "/florin.v1.Msg/AcceptOwnership"
-	Msg_AddAdminAccount_FullMethodName     = "/florin.v1.Msg/AddAdminAccount"
-	Msg_AddSystemAccount_FullMethodName    = "/florin.v1.Msg/AddSystemAccount"
-	Msg_AllowDenom_FullMethodName          = "/florin.v1.Msg/AllowDenom"
-	Msg_Burn_FullMethodName                = "/florin.v1.Msg/Burn"
-	Msg_Mint_FullMethodName                = "/florin.v1.Msg/Mint"
-	Msg_Recover_FullMethodName             = "/florin.v1.Msg/Recover"
-	Msg_RemoveAdminAccount_FullMethodName  = "/florin.v1.Msg/RemoveAdminAccount"
-	Msg_RemoveSystemAccount_FullMethodName = "/florin.v1.Msg/RemoveSystemAccount"
-	Msg_SetMaxMintAllowance_FullMethodName = "/florin.v1.Msg/SetMaxMintAllowance"
-	Msg_SetMintAllowance_FullMethodName    = "/florin.v1.Msg/SetMintAllowance"
-	Msg_TransferOwnership_FullMethodName   = "/florin.v1.Msg/TransferOwnership"
+	Msg_Burn_FullMethodName    = "/florin.v1.Msg/Burn"
+	Msg_Mint_FullMethodName    = "/florin.v1.Msg/Mint"
+	Msg_Recover_FullMethodName = "/florin.v1.Msg/Recover"
 )
 
 // MsgClient is the client API for Msg service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
-	AcceptOwnership(ctx context.Context, in *MsgAcceptOwnership, opts ...grpc.CallOption) (*MsgAcceptOwnershipResponse, error)
-	AddAdminAccount(ctx context.Context, in *MsgAddAdminAccount, opts ...grpc.CallOption) (*MsgAddAdminAccountResponse, error)
-	AddSystemAccount(ctx context.Context, in *MsgAddSystemAccount, opts ...grpc.CallOption) (*MsgAddSystemAccountResponse, error)
-	AllowDenom(ctx context.Context, in *MsgAllowDenom, opts ...grpc.CallOption) (*MsgAllowDenomResponse, error)
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error)
 	Mint(ctx context.Context, in *MsgMint, opts ...grpc.CallOption) (*MsgMintResponse, error)
 	Recover(ctx context.Context, in *MsgRecover, opts ...grpc.CallOption) (*MsgRecoverResponse, error)
-	RemoveAdminAccount(ctx context.Context, in *MsgRemoveAdminAccount, opts ...grpc.CallOption) (*MsgRemoveAdminAccountResponse, error)
-	RemoveSystemAccount(ctx context.Context, in *MsgRemoveSystemAccount, opts ...grpc.CallOption) (*MsgRemoveSystemAccountResponse, error)
-	SetMaxMintAllowance(ctx context.Context, in *MsgSetMaxMintAllowance, opts ...grpc.CallOption) (*MsgSetMaxMintAllowanceResponse, error)
-	SetMintAllowance(ctx context.Context, in *MsgSetMintAllowance, opts ...grpc.CallOption) (*MsgSetMintAllowanceResponse, error)
-	TransferOwnership(ctx context.Context, in *MsgTransferOwnership, opts ...grpc.CallOption) (*MsgTransferOwnershipResponse, error)
 }
 
 type msgClient struct {
@@ -57,46 +39,6 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
-}
-
-func (c *msgClient) AcceptOwnership(ctx context.Context, in *MsgAcceptOwnership, opts ...grpc.CallOption) (*MsgAcceptOwnershipResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgAcceptOwnershipResponse)
-	err := c.cc.Invoke(ctx, Msg_AcceptOwnership_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) AddAdminAccount(ctx context.Context, in *MsgAddAdminAccount, opts ...grpc.CallOption) (*MsgAddAdminAccountResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgAddAdminAccountResponse)
-	err := c.cc.Invoke(ctx, Msg_AddAdminAccount_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) AddSystemAccount(ctx context.Context, in *MsgAddSystemAccount, opts ...grpc.CallOption) (*MsgAddSystemAccountResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgAddSystemAccountResponse)
-	err := c.cc.Invoke(ctx, Msg_AddSystemAccount_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) AllowDenom(ctx context.Context, in *MsgAllowDenom, opts ...grpc.CallOption) (*MsgAllowDenomResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgAllowDenomResponse)
-	err := c.cc.Invoke(ctx, Msg_AllowDenom_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *msgClient) Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error) {
@@ -129,72 +71,13 @@ func (c *msgClient) Recover(ctx context.Context, in *MsgRecover, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *msgClient) RemoveAdminAccount(ctx context.Context, in *MsgRemoveAdminAccount, opts ...grpc.CallOption) (*MsgRemoveAdminAccountResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgRemoveAdminAccountResponse)
-	err := c.cc.Invoke(ctx, Msg_RemoveAdminAccount_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) RemoveSystemAccount(ctx context.Context, in *MsgRemoveSystemAccount, opts ...grpc.CallOption) (*MsgRemoveSystemAccountResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgRemoveSystemAccountResponse)
-	err := c.cc.Invoke(ctx, Msg_RemoveSystemAccount_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) SetMaxMintAllowance(ctx context.Context, in *MsgSetMaxMintAllowance, opts ...grpc.CallOption) (*MsgSetMaxMintAllowanceResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgSetMaxMintAllowanceResponse)
-	err := c.cc.Invoke(ctx, Msg_SetMaxMintAllowance_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) SetMintAllowance(ctx context.Context, in *MsgSetMintAllowance, opts ...grpc.CallOption) (*MsgSetMintAllowanceResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgSetMintAllowanceResponse)
-	err := c.cc.Invoke(ctx, Msg_SetMintAllowance_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) TransferOwnership(ctx context.Context, in *MsgTransferOwnership, opts ...grpc.CallOption) (*MsgTransferOwnershipResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgTransferOwnershipResponse)
-	err := c.cc.Invoke(ctx, Msg_TransferOwnership_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility.
 type MsgServer interface {
-	AcceptOwnership(context.Context, *MsgAcceptOwnership) (*MsgAcceptOwnershipResponse, error)
-	AddAdminAccount(context.Context, *MsgAddAdminAccount) (*MsgAddAdminAccountResponse, error)
-	AddSystemAccount(context.Context, *MsgAddSystemAccount) (*MsgAddSystemAccountResponse, error)
-	AllowDenom(context.Context, *MsgAllowDenom) (*MsgAllowDenomResponse, error)
 	Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error)
 	Mint(context.Context, *MsgMint) (*MsgMintResponse, error)
 	Recover(context.Context, *MsgRecover) (*MsgRecoverResponse, error)
-	RemoveAdminAccount(context.Context, *MsgRemoveAdminAccount) (*MsgRemoveAdminAccountResponse, error)
-	RemoveSystemAccount(context.Context, *MsgRemoveSystemAccount) (*MsgRemoveSystemAccountResponse, error)
-	SetMaxMintAllowance(context.Context, *MsgSetMaxMintAllowance) (*MsgSetMaxMintAllowanceResponse, error)
-	SetMintAllowance(context.Context, *MsgSetMintAllowance) (*MsgSetMintAllowanceResponse, error)
-	TransferOwnership(context.Context, *MsgTransferOwnership) (*MsgTransferOwnershipResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -205,18 +88,6 @@ type MsgServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMsgServer struct{}
 
-func (UnimplementedMsgServer) AcceptOwnership(context.Context, *MsgAcceptOwnership) (*MsgAcceptOwnershipResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AcceptOwnership not implemented")
-}
-func (UnimplementedMsgServer) AddAdminAccount(context.Context, *MsgAddAdminAccount) (*MsgAddAdminAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddAdminAccount not implemented")
-}
-func (UnimplementedMsgServer) AddSystemAccount(context.Context, *MsgAddSystemAccount) (*MsgAddSystemAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddSystemAccount not implemented")
-}
-func (UnimplementedMsgServer) AllowDenom(context.Context, *MsgAllowDenom) (*MsgAllowDenomResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AllowDenom not implemented")
-}
 func (UnimplementedMsgServer) Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Burn not implemented")
 }
@@ -225,21 +96,6 @@ func (UnimplementedMsgServer) Mint(context.Context, *MsgMint) (*MsgMintResponse,
 }
 func (UnimplementedMsgServer) Recover(context.Context, *MsgRecover) (*MsgRecoverResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Recover not implemented")
-}
-func (UnimplementedMsgServer) RemoveAdminAccount(context.Context, *MsgRemoveAdminAccount) (*MsgRemoveAdminAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveAdminAccount not implemented")
-}
-func (UnimplementedMsgServer) RemoveSystemAccount(context.Context, *MsgRemoveSystemAccount) (*MsgRemoveSystemAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveSystemAccount not implemented")
-}
-func (UnimplementedMsgServer) SetMaxMintAllowance(context.Context, *MsgSetMaxMintAllowance) (*MsgSetMaxMintAllowanceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetMaxMintAllowance not implemented")
-}
-func (UnimplementedMsgServer) SetMintAllowance(context.Context, *MsgSetMintAllowance) (*MsgSetMintAllowanceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetMintAllowance not implemented")
-}
-func (UnimplementedMsgServer) TransferOwnership(context.Context, *MsgTransferOwnership) (*MsgTransferOwnershipResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TransferOwnership not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 func (UnimplementedMsgServer) testEmbeddedByValue()             {}
@@ -260,78 +116,6 @@ func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&Msg_ServiceDesc, srv)
-}
-
-func _Msg_AcceptOwnership_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAcceptOwnership)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).AcceptOwnership(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_AcceptOwnership_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AcceptOwnership(ctx, req.(*MsgAcceptOwnership))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_AddAdminAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddAdminAccount)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).AddAdminAccount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_AddAdminAccount_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddAdminAccount(ctx, req.(*MsgAddAdminAccount))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_AddSystemAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddSystemAccount)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).AddSystemAccount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_AddSystemAccount_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddSystemAccount(ctx, req.(*MsgAddSystemAccount))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_AllowDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAllowDenom)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).AllowDenom(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_AllowDenom_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AllowDenom(ctx, req.(*MsgAllowDenom))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_Burn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -388,96 +172,6 @@ func _Msg_Recover_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RemoveAdminAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRemoveAdminAccount)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RemoveAdminAccount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_RemoveAdminAccount_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveAdminAccount(ctx, req.(*MsgRemoveAdminAccount))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_RemoveSystemAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRemoveSystemAccount)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RemoveSystemAccount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_RemoveSystemAccount_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveSystemAccount(ctx, req.(*MsgRemoveSystemAccount))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_SetMaxMintAllowance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSetMaxMintAllowance)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).SetMaxMintAllowance(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_SetMaxMintAllowance_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetMaxMintAllowance(ctx, req.(*MsgSetMaxMintAllowance))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_SetMintAllowance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSetMintAllowance)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).SetMintAllowance(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_SetMintAllowance_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetMintAllowance(ctx, req.(*MsgSetMintAllowance))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_TransferOwnership_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgTransferOwnership)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).TransferOwnership(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_TransferOwnership_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).TransferOwnership(ctx, req.(*MsgTransferOwnership))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -485,22 +179,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "florin.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "AcceptOwnership",
-			Handler:    _Msg_AcceptOwnership_Handler,
-		},
-		{
-			MethodName: "AddAdminAccount",
-			Handler:    _Msg_AddAdminAccount_Handler,
-		},
-		{
-			MethodName: "AddSystemAccount",
-			Handler:    _Msg_AddSystemAccount_Handler,
-		},
-		{
-			MethodName: "AllowDenom",
-			Handler:    _Msg_AllowDenom_Handler,
-		},
 		{
 			MethodName: "Burn",
 			Handler:    _Msg_Burn_Handler,
@@ -512,26 +190,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Recover",
 			Handler:    _Msg_Recover_Handler,
-		},
-		{
-			MethodName: "RemoveAdminAccount",
-			Handler:    _Msg_RemoveAdminAccount_Handler,
-		},
-		{
-			MethodName: "RemoveSystemAccount",
-			Handler:    _Msg_RemoveSystemAccount_Handler,
-		},
-		{
-			MethodName: "SetMaxMintAllowance",
-			Handler:    _Msg_SetMaxMintAllowance_Handler,
-		},
-		{
-			MethodName: "SetMintAllowance",
-			Handler:    _Msg_SetMintAllowance_Handler,
-		},
-		{
-			MethodName: "TransferOwnership",
-			Handler:    _Msg_TransferOwnership_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

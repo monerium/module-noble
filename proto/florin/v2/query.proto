@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package florin.v2;
+
+import "amino/amino.proto";
+import "cosmos/query/v1/query.proto";
+import "cosmos_proto/cosmos.proto";
+import "florin/v2/genesis.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/monerium/module-noble/v2/types";
+
+service Query {
+  rpc Authority(QueryAuthority) returns (QueryAuthorityResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/authority";
+  }
+  rpc AllowedDenoms(QueryAllowedDenoms) returns (QueryAllowedDenomsResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/allowed_denoms";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/allowed_denoms"};
+  }
+
+  rpc Owners(QueryOwners) returns (QueryOwnersResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/owners";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/owners"};
+  }
+  rpc Owner(QueryOwner) returns (QueryOwnerResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/owner/{denom}";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/owner/{denom}"};
+  }
+
+  rpc Systems(QuerySystems) returns (QuerySystemsResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/systems";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/systems"};
+  }
+  rpc SystemsByDenom(QuerySystemsByDenom) returns (QuerySystemsByDenomResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/systems/{denom}";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/systems/{denom}"};
+  }
+
+  rpc Admins(QueryAdmins) returns (QueryAdminsResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/admins";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/admins"};
+  }
+  rpc AdminsByDenom(QueryAdminsByDenom) returns (QueryAdminsByDenomResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/admins/{denom}";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/admins/{denom}"};
+  }
+
+  rpc MaxMintAllowances(QueryMaxMintAllowances) returns (QueryMaxMintAllowancesResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/max_mint_allowances";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/max_mint_allowances"};
+  }
+  rpc MaxMintAllowance(QueryMaxMintAllowance) returns (QueryMaxMintAllowanceResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/max_mint_allowance/{denom}";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/max_mint_allowance/{denom}"};
+  }
+
+  rpc MintAllowances(QueryMintAllowances) returns (QueryMintAllowancesResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/mint_allowances/{denom}";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/mint_allowances/{denom}"};
+  }
+  rpc MintAllowance(QueryMintAllowance) returns (QueryMintAllowanceResponse) {
+    option (cosmos.query.v1.module_query_safe) = true;
+    option (google.api.http).get = "/florin/v2/mint_allowance/{denom}/{account}";
+    option (google.api.http).additional_bindings = {get: "/florin/v1/mint_allowance/{denom}/{account}"};
+  }
+}
+
+//
+
+message QueryAuthority {}
+
+message QueryAuthorityResponse {
+  string authority = 1;
+}
+
+message QueryAllowedDenoms {}
+
+message QueryAllowedDenomsResponse {
+  repeated string allowed_denoms = 1;
+}
+
+message QueryOwners {}
+
+message QueryOwnersResponse {
+  map<string, string> owners = 1;
+  map<string, string> pending_owners = 2;
+}
+
+message QueryOwner {
+  string denom = 1;
+}
+
+message QueryOwnerResponse {
+  string owner = 1;
+  string pending_owner = 2;
+}
+
+message QuerySystems {}
+
+message QuerySystemsResponse {
+  repeated Account systems = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySystemsByDenom {
+  string denom = 1;
+}
+
+message QuerySystemsByDenomResponse {
+  repeated string systems = 1;
+}
+
+message QueryAdmins {}
+
+message QueryAdminsResponse {
+  repeated Account admins = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAdminsByDenom {
+  string denom = 1;
+}
+
+message QueryAdminsByDenomResponse {
+  repeated string admins = 1;
+}
+
+message QueryMaxMintAllowances {}
+
+message QueryMaxMintAllowancesResponse {
+  map<string, string> max_mint_allowances = 1;
+}
+
+message QueryMaxMintAllowance {
+  string denom = 1;
+}
+
+message QueryMaxMintAllowanceResponse {
+  string max_mint_allowance = 1 [
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryMintAllowances {
+  string denom = 1;
+}
+
+message QueryMintAllowancesResponse {
+  map<string, string> allowances = 1;
+}
+
+message QueryMintAllowance {
+  string denom = 1;
+  string account = 2;
+}
+
+message QueryMintAllowanceResponse {
+  string allowance = 1 [
+    (amino.dont_omitempty) = true,
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}

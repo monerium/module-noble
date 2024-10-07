@@ -109,7 +109,7 @@ func TestAcceptOwnership(t *testing.T) {
 	require.Empty(t, k.GetPendingOwner(ctx, "ueure"))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.OwnershipTransferred", events[0].Type)
+	require.Equal(t, "florin.v2.OwnershipTransferred", events[0].Type)
 }
 
 func TestAddAdminAccount(t *testing.T) {
@@ -174,7 +174,7 @@ func TestAddAdminAccount(t *testing.T) {
 	require.True(t, k.IsAdmin(ctx, "ueure", admin.Address))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.AdminAccountAdded", events[0].Type)
+	require.Equal(t, "florin.v2.AdminAccountAdded", events[0].Type)
 }
 
 func TestAddSystemAccount(t *testing.T) {
@@ -239,7 +239,7 @@ func TestAddSystemAccount(t *testing.T) {
 	require.True(t, k.IsSystem(ctx, "ueure", system.Address))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.SystemAccountAdded", events[0].Type)
+	require.Equal(t, "florin.v2.SystemAccountAdded", events[0].Type)
 }
 
 func TestAllowDenom(t *testing.T) {
@@ -310,7 +310,7 @@ func TestAllowDenom(t *testing.T) {
 	require.Equal(t, owner.Address, k.GetOwner(ctx, "uusde"))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.DenomAllowed", events[0].Type)
+	require.Equal(t, "florin.v2.DenomAllowed", events[0].Type)
 }
 
 func TestBurn(t *testing.T) {
@@ -532,7 +532,7 @@ func TestMint(t *testing.T) {
 	require.True(t, k.GetMintAllowance(ctx, "ueure", system.Address).IsZero())
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 2)
-	require.Equal(t, "florin.v1.MintAllowance", events[1].Type)
+	require.Equal(t, "florin.v2.MintAllowance", events[1].Type)
 }
 
 func TestRecover(t *testing.T) {
@@ -673,7 +673,7 @@ func TestRecover(t *testing.T) {
 	require.Equal(t, One, bank.Balances[recipient.Address].AmountOf("ueure"))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 2)
-	require.Equal(t, "florin.v1.Recovered", events[1].Type)
+	require.Equal(t, "florin.v2.Recovered", events[1].Type)
 }
 
 func TestRemoveAdminAccount(t *testing.T) {
@@ -741,7 +741,7 @@ func TestRemoveAdminAccount(t *testing.T) {
 	require.False(t, k.IsAdmin(ctx, "ueure", admin.Address))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.AdminAccountRemoved", events[0].Type)
+	require.Equal(t, "florin.v2.AdminAccountRemoved", events[0].Type)
 }
 
 func TestRemoveSystemAccount(t *testing.T) {
@@ -809,7 +809,7 @@ func TestRemoveSystemAccount(t *testing.T) {
 	require.False(t, k.IsSystem(ctx, "ueure", system.Address))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.SystemAccountRemoved", events[0].Type)
+	require.Equal(t, "florin.v2.SystemAccountRemoved", events[0].Type)
 }
 
 func TestSetMaxMintAllowance(t *testing.T) {
@@ -872,7 +872,7 @@ func TestSetMaxMintAllowance(t *testing.T) {
 	require.Equal(t, MaxMintAllowance, k.GetMaxMintAllowance(ctx, "ueure"))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.MaxMintAllowance", events[0].Type)
+	require.Equal(t, "florin.v2.MaxMintAllowance", events[0].Type)
 }
 
 func TestSetMintAllowance(t *testing.T) {
@@ -954,7 +954,7 @@ func TestSetMintAllowance(t *testing.T) {
 	require.Equal(t, One, k.GetMintAllowance(ctx, "ueure", minter.Address))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.MintAllowance", events[0].Type)
+	require.Equal(t, "florin.v2.MintAllowance", events[0].Type)
 }
 
 func TestTransferOwnership(t *testing.T) {
@@ -1029,5 +1029,5 @@ func TestTransferOwnership(t *testing.T) {
 	require.Equal(t, pendingOwner.Address, k.GetPendingOwner(ctx, "ueure"))
 	events := ctx.EventManager().Events()
 	require.Len(t, events, 1)
-	require.Equal(t, "florin.v1.OwnershipTransferStarted", events[0].Type)
+	require.Equal(t, "florin.v2.OwnershipTransferStarted", events[0].Type)
 }

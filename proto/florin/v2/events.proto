@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package florin.v1;
+package florin.v2;
 
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";

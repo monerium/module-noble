@@ -6,7 +6,7 @@ import "cosmos/app/v1alpha1/module.proto";
 
 // Module is the config object of the Florin module.
 message Module {
-  option (cosmos.app.v1alpha1.module) = {go_import: "github.com/monerium/module-noble/v2/x/florin"};
+  option (cosmos.app.v1alpha1.module) = {go_import: "github.com/monerium/module-noble/v2"};
 
   // authority is the address that controls allowed denoms of this module.
   string authority = 1;
