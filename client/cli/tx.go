@@ -23,6 +23,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/monerium/module-noble/v2/types"
 	"github.com/spf13/cobra"
 )
@@ -160,9 +162,9 @@ func TxAllowDenom() *cobra.Command {
 
 func TxBurn() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [denom] [from] [amount] [signature]",
+		Use:   "burn [denom] [from] [amount] [signature] [pub_key]",
 		Short: "Transaction that burns a specific denom",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -179,12 +181,22 @@ func TxBurn() *cobra.Command {
 				return err
 			}
 
+			var pubKey cryptotypes.PubKey
+			if err = clientCtx.Codec.UnmarshalInterfaceJSON([]byte(args[4]), &pubKey); err != nil {
+				return err
+			}
+			anyPubKey, err := codectypes.NewAnyWithValue(pubKey)
+			if err != nil {
+				return err
+			}
+
 			msg := &types.MsgBurn{
 				Denom:     args[0],
 				Signer:    clientCtx.GetFromAddress().String(),
 				From:      args[1],
 				Amount:    amount,
 				Signature: signature,
+				PubKey:    anyPubKey,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -230,9 +242,9 @@ func TxMint() *cobra.Command {
 
 func TxRecover() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "recover [denom] [from] [to] [signature]",
+		Use:   "recover [denom] [from] [to] [signature] [pub_key]",
 		Short: "Recover balance of a specific denom from an account",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -244,12 +256,22 @@ func TxRecover() *cobra.Command {
 				return err
 			}
 
+			var pubKey cryptotypes.PubKey
+			if err = clientCtx.Codec.UnmarshalInterfaceJSON([]byte(args[4]), &pubKey); err != nil {
+				return err
+			}
+			anyPubKey, err := codectypes.NewAnyWithValue(pubKey)
+			if err != nil {
+				return err
+			}
+
 			msg := &types.MsgRecover{
 				Denom:     args[0],
 				Signer:    clientCtx.GetFromAddress().String(),
 				From:      args[1],
 				To:        args[2],
 				Signature: signature,
+				PubKey:    anyPubKey,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
