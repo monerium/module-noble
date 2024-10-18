@@ -88,15 +88,20 @@ func (k *Keeper) SetPendingOwner(ctx context.Context, denom string, pendingOwner
 //
 
 func (k *Keeper) DeleteSystem(ctx context.Context, denom string, address string) error {
-	return k.Systems.Remove(ctx, collections.Join(denom, address))
+	return k.Systems.Remove(ctx, types.SystemKey(denom, address))
 }
 
 func (k *Keeper) GetSystemsByDenom(ctx context.Context, denom string) (systems []string) {
-	rng := collections.NewPrefixedPairRange[string, string](denom)
-	_ = k.Systems.Walk(ctx, rng, func(key collections.Pair[string, string]) (stop bool, err error) {
-		systems = append(systems, key.K2())
-		return false, nil
-	})
+	prefix := []byte(denom)
+	itr, _ := k.Systems.Iterate(ctx, new(collections.Range[[]byte]).Prefix(prefix))
+
+	defer itr.Close()
+
+	for ; itr.Valid(); itr.Next() {
+		key, _ := itr.Key()
+		systems = append(systems, string(key[len(prefix):]))
+	}
+
 	return
 }
 
@@ -114,26 +119,31 @@ func (k *Keeper) GetSystems(ctx context.Context) (systems []types.Account) {
 }
 
 func (k *Keeper) IsSystem(ctx context.Context, denom string, address string) bool {
-	system, _ := k.Systems.Has(ctx, collections.Join(denom, address))
+	system, _ := k.Systems.Has(ctx, types.SystemKey(denom, address))
 	return system
 }
 
 func (k *Keeper) SetSystem(ctx context.Context, denom string, address string) error {
-	return k.Systems.Set(ctx, collections.Join(denom, address))
+	return k.Systems.Set(ctx, types.SystemKey(denom, address))
 }
 
 //
 
 func (k *Keeper) DeleteAdmin(ctx context.Context, denom string, admin string) error {
-	return k.Admins.Remove(ctx, collections.Join(denom, admin))
+	return k.Admins.Remove(ctx, types.AdminKey(denom, admin))
 }
 
 func (k *Keeper) GetAdminsByDenom(ctx context.Context, denom string) (admins []string) {
-	rng := collections.NewPrefixedPairRange[string, string](denom)
-	_ = k.Admins.Walk(ctx, rng, func(key collections.Pair[string, string]) (stop bool, err error) {
-		admins = append(admins, key.K2())
-		return false, nil
-	})
+	prefix := []byte(denom)
+	itr, _ := k.Admins.Iterate(ctx, new(collections.Range[[]byte]).Prefix(prefix))
+
+	defer itr.Close()
+
+	for ; itr.Valid(); itr.Next() {
+		key, _ := itr.Key()
+		admins = append(admins, string(key[len(prefix):]))
+	}
+
 	return
 }
 
@@ -151,19 +161,19 @@ func (k *Keeper) GetAdmins(ctx context.Context) (admins []types.Account) {
 }
 
 func (k *Keeper) IsAdmin(ctx context.Context, denom string, admin string) bool {
-	isAdmin, _ := k.Admins.Has(ctx, collections.Join(denom, admin))
+	isAdmin, _ := k.Admins.Has(ctx, types.AdminKey(denom, admin))
 	return isAdmin
 }
 
 func (k *Keeper) SetAdmin(ctx context.Context, denom string, admin string) error {
-	return k.Admins.Set(ctx, collections.Join(denom, admin))
+	return k.Admins.Set(ctx, types.AdminKey(denom, admin))
 }
 
 //
 
 func (k *Keeper) GetMintAllowance(ctx context.Context, denom string, address string) (allowance math.Int) {
 	allowance = math.ZeroInt()
-	bz, err := k.MintAllowance.Get(ctx, collections.Join(denom, address))
+	bz, err := k.MintAllowance.Get(ctx, types.MintAllowanceKey(denom, address))
 	if err != nil {
 		return
 	}
@@ -173,20 +183,28 @@ func (k *Keeper) GetMintAllowance(ctx context.Context, denom string, address str
 }
 
 func (k *Keeper) GetMintAllowancesByDenom(ctx context.Context, denom string) (allowances []types.Allowance) {
-	rng := collections.NewPrefixedPairRange[string, string](denom)
-	_ = k.MintAllowance.Walk(ctx, rng, func(key collections.Pair[string, string], value []byte) (stop bool, err error) {
+	prefix := []byte(denom)
+	itr, _ := k.MintAllowance.Iterate(ctx, new(collections.Range[[]byte]).Prefix(prefix))
+
+	defer itr.Close()
+
+	for ; itr.Valid(); itr.Next() {
+		key, _ := itr.Key()
+		value, _ := itr.Value()
+
 		var allowance math.Int
-		err = allowance.Unmarshal(value)
+		err := allowance.Unmarshal(value)
 		if err != nil {
-			return true, err
+			continue
 		}
+
 		allowances = append(allowances, types.Allowance{
-			Denom:     key.K1(),
-			Address:   key.K2(),
+			Denom:     denom,
+			Address:   string(key[len(prefix):]),
 			Allowance: allowance,
 		})
-		return false, nil
-	})
+	}
+
 	return
 }
 
@@ -200,7 +218,7 @@ func (k *Keeper) GetMintAllowances(ctx context.Context) (allowances []types.Allo
 
 func (k *Keeper) SetMintAllowance(ctx context.Context, denom string, address string, allowance math.Int) error {
 	bz, _ := allowance.Marshal()
-	return k.MintAllowance.Set(ctx, collections.Join(denom, address), bz)
+	return k.MintAllowance.Set(ctx, types.MintAllowanceKey(denom, address), bz)
 }
 
 //

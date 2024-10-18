@@ -25,3 +25,15 @@ var (
 	MintAllowancePrefix    = []byte("mint_allowance/")
 	MaxMintAllowancePrefix = []byte("max_mint_allowance/")
 )
+
+func SystemKey(denom string, address string) []byte {
+	return append([]byte(denom), []byte(address)...)
+}
+
+func AdminKey(denom string, address string) []byte {
+	return append([]byte(denom), []byte(address)...)
+}
+
+func MintAllowanceKey(denom string, address string) []byte {
+	return append([]byte(denom), []byte(address)...)
+}

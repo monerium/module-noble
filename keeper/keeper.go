@@ -38,9 +38,9 @@ type Keeper struct {
 	AllowedDenoms    collections.KeySet[string]
 	Owner            collections.Map[string, string]
 	PendingOwner     collections.Map[string, string]
-	Admins           collections.KeySet[collections.Pair[string, string]]
-	Systems          collections.KeySet[collections.Pair[string, string]]
-	MintAllowance    collections.Map[collections.Pair[string, string], []byte]
+	Systems          collections.KeySet[[]byte]
+	Admins           collections.KeySet[[]byte]
+	MintAllowance    collections.Map[[]byte, []byte]
 	MaxMintAllowance collections.Map[string, []byte]
 
 	BlacklistOwner        collections.Item[string]
@@ -72,9 +72,9 @@ func NewKeeper(
 		AllowedDenoms:    collections.NewKeySet(builder, types.AllowedDenomPrefix, "allowedDenoms", collections.StringKey),
 		Owner:            collections.NewMap(builder, types.OwnerPrefix, "owner", collections.StringKey, collections.StringValue),
 		PendingOwner:     collections.NewMap(builder, types.PendingOwnerPrefix, "pendingOwner", collections.StringKey, collections.StringValue),
-		Systems:          collections.NewKeySet(builder, types.SystemPrefix, "systems", collections.PairKeyCodec(collections.StringKey, collections.StringKey)),
-		Admins:           collections.NewKeySet(builder, types.AdminPrefix, "admins", collections.PairKeyCodec(collections.StringKey, collections.StringKey)),
-		MintAllowance:    collections.NewMap(builder, types.MintAllowancePrefix, "mintAllowance", collections.PairKeyCodec(collections.StringKey, collections.StringKey), collections.BytesValue),
+		Systems:          collections.NewKeySet(builder, types.SystemPrefix, "systems", collections.BytesKey),
+		Admins:           collections.NewKeySet(builder, types.AdminPrefix, "admins", collections.BytesKey),
+		MintAllowance:    collections.NewMap(builder, types.MintAllowancePrefix, "mintAllowance", collections.BytesKey, collections.BytesValue),
 		MaxMintAllowance: collections.NewMap(builder, types.MaxMintAllowancePrefix, "maxMintAllowance", collections.StringKey, collections.BytesValue),
 
 		BlacklistOwner:        collections.NewItem(builder, blacklist.OwnerKey, "blacklistOwner", collections.StringValue),

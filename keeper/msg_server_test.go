@@ -150,7 +150,7 @@ func TestAddAdminAccount(t *testing.T) {
 	tmp := k.Admins
 	k.Admins = collections.NewKeySet(
 		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Set, utils.GetKVStore(ctx, types.ModuleName))),
-		types.AdminPrefix, "admins", collections.PairKeyCodec(collections.StringKey, collections.StringKey),
+		types.AdminPrefix, "admins", collections.BytesKey,
 	)
 
 	// ACT: Attempt to add admin account with failing Admins collection store.
@@ -215,7 +215,7 @@ func TestAddSystemAccount(t *testing.T) {
 	tmp := k.Systems
 	k.Systems = collections.NewKeySet(
 		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Set, utils.GetKVStore(ctx, types.ModuleName))),
-		types.SystemPrefix, "systems", collections.PairKeyCodec(collections.StringKey, collections.StringKey),
+		types.SystemPrefix, "systems", collections.BytesKey,
 	)
 
 	// ACT: Attempt to add system account with failing Systems collection store.
@@ -490,7 +490,7 @@ func TestMint(t *testing.T) {
 	tmp := k.MintAllowance
 	k.MintAllowance = collections.NewMap(
 		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Set, utils.GetKVStore(ctx, types.ModuleName))),
-		types.MintAllowancePrefix, "mintAllowance", collections.PairKeyCodec(collections.StringKey, collections.StringKey), collections.BytesValue,
+		types.MintAllowancePrefix, "mintAllowance", collections.BytesKey, collections.BytesValue,
 	)
 
 	// ACT: Attempt to mint with failing MintAllowance collection store.
@@ -717,7 +717,7 @@ func TestRemoveAdminAccount(t *testing.T) {
 	tmp := k.Admins
 	k.Admins = collections.NewKeySet(
 		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Delete, utils.GetKVStore(ctx, types.ModuleName))),
-		types.AdminPrefix, "admins", collections.PairKeyCodec(collections.StringKey, collections.StringKey),
+		types.AdminPrefix, "admins", collections.BytesKey,
 	)
 
 	// ACT: Attempt to remove admin account with failing Admins collection store.
@@ -785,7 +785,7 @@ func TestRemoveSystemAccount(t *testing.T) {
 	tmp := k.Systems
 	k.Systems = collections.NewKeySet(
 		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Delete, utils.GetKVStore(ctx, types.ModuleName))),
-		types.SystemPrefix, "systems", collections.PairKeyCodec(collections.StringKey, collections.StringKey),
+		types.SystemPrefix, "systems", collections.BytesKey,
 	)
 
 	// ACT: Attempt to remove system account with failing Systems collection store.
@@ -927,7 +927,7 @@ func TestSetMintAllowance(t *testing.T) {
 	tmp := k.MintAllowance
 	k.MintAllowance = collections.NewMap(
 		collections.NewSchemaBuilder(mocks.FailingStore(mocks.Set, utils.GetKVStore(ctx, types.ModuleName))),
-		types.MintAllowancePrefix, "mintAllowance", collections.PairKeyCodec(collections.StringKey, collections.StringKey), collections.BytesValue,
+		types.MintAllowancePrefix, "mintAllowance", collections.BytesKey, collections.BytesValue,
 	)
 
 	// ACT: Attempt to set mint allowance with failing MintAllowance collection store.
