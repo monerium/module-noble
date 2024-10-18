@@ -17,7 +17,6 @@ package keeper_test
 import (
 	"testing"
 
-	"cosmossdk.io/collections"
 	"github.com/monerium/module-noble/v2/types"
 	"github.com/monerium/module-noble/v2/utils"
 	"github.com/monerium/module-noble/v2/utils/mocks"
@@ -56,11 +55,22 @@ func TestGetMintAllowances(t *testing.T) {
 	})
 
 	// ARRANGE: Set invalid mint allowance
-	key := collections.Join("ueure", "address")
+	key := types.MintAllowanceKey("ueure", "address")
 	_ = k.MintAllowance.Set(ctx, key, []byte("panic"))
 
 	// ACT: Attempt to get mint allowances.
 	allowances := k.GetMintAllowancesByDenom(ctx, "ueure")
-	// ASSERT: The action should've succeeded, returns empty.
-	require.Empty(t, allowances)
+	// ASSERT: The action should've succeeded, skipping the invalid entry.
+	require.NoError(t, err)
+	require.Len(t, allowances, 2)
+	require.Contains(t, allowances, types.Allowance{
+		Denom:     "ueure",
+		Address:   minter1.Address,
+		Allowance: One,
+	})
+	require.Contains(t, allowances, types.Allowance{
+		Denom:     "ueure",
+		Address:   minter2.Address,
+		Allowance: One.MulRaw(2),
+	})
 }
