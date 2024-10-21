@@ -19,7 +19,9 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
+	"github.com/cosmos/cosmos-sdk/store/rootmulti"
 	"github.com/cosmos/cosmos-sdk/store/streaming"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -40,6 +42,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
@@ -60,6 +63,7 @@ var (
 		params.AppModuleBasic{},
 		staking.AppModuleBasic{},
 		florin.AppModuleBasic{},
+		UpgradeAppModuleBasic{},
 	)
 
 	permissions = map[string][]string{
@@ -128,7 +132,7 @@ func NewSimApp(
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, paramstypes.StoreKey, stakingtypes.StoreKey,
-		florintypes.ModuleName,
+		florintypes.ModuleName, upgradetypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -165,6 +169,7 @@ func NewSimApp(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
 	)
 
+	upgradeAppModule := NewUpgradeAppModule(app.appCodec, keys[upgradetypes.StoreKey], nil)
 	app.mm = module.NewManager(
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil),
 		bank.NewAppModule(appCodec, app.BankKeeper.(bankkeeper.BaseKeeper), app.AccountKeeper),
@@ -175,19 +180,21 @@ func NewSimApp(
 		params.NewAppModule(app.ParamsKeeper),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		florin.NewAppModule(app.FlorinKeeper),
+		upgradeAppModule,
 	)
+	upgradeAppModule.SetManager(app.mm)
 
 	app.mm.SetOrderBeginBlockers(
 		stakingtypes.ModuleName, authtypes.ModuleName, banktypes.ModuleName, genutiltypes.ModuleName, paramstypes.ModuleName,
-		florintypes.ModuleName,
+		florintypes.ModuleName, upgradetypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		stakingtypes.ModuleName, authtypes.ModuleName, banktypes.ModuleName, genutiltypes.ModuleName, paramstypes.ModuleName,
-		florintypes.ModuleName,
+		florintypes.ModuleName, upgradetypes.ModuleName,
 	)
 	app.mm.SetOrderInitGenesis(
 		authtypes.ModuleName, banktypes.ModuleName, stakingtypes.ModuleName, genutiltypes.ModuleName, paramstypes.ModuleName,
-		florintypes.ModuleName,
+		florintypes.ModuleName, upgradetypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -214,6 +221,19 @@ func NewSimApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
+	app.SetStoreLoader(func(ms sdk.CommitMultiStore) (err error) {
+		tmp := ms.(*rootmulti.Store)
+		_ = tmp.LoadLatestVersion()
+
+		store := tmp.GetStoreByName(upgradetypes.ModuleName)
+		if store != nil {
+			return baseapp.DefaultStoreLoader(ms)
+		}
+
+		return ms.LoadLatestVersionAndUpgrade(&storetypes.StoreUpgrades{
+			Added: []string{upgradetypes.StoreKey},
+		})
+	})
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
