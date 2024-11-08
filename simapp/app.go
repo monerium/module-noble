@@ -33,19 +33,23 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
+	_ "cosmossdk.io/x/upgrade"
 	_ "github.com/cosmos/cosmos-sdk/x/auth"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	_ "github.com/cosmos/cosmos-sdk/x/bank"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus"
+	_ "github.com/cosmos/cosmos-sdk/x/params"
 	_ "github.com/cosmos/cosmos-sdk/x/staking"
 	_ "github.com/monerium/module-noble/v2"
 
 	// Cosmos Modules
+	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	consensuskeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	// Custom Modules
 	florinkeeper "github.com/monerium/module-noble/v2/keeper"
@@ -75,7 +79,9 @@ type SimApp struct {
 	AccountKeeper   authkeeper.AccountKeeper
 	BankKeeper      bankkeeper.Keeper
 	ConsensusKeeper consensuskeeper.Keeper
+	ParamsKeeper    paramskeeper.Keeper
 	StakingKeeper   *stakingkeeper.Keeper
+	UpgradeKeeper   *upgradekeeper.Keeper
 	// Custom Modules
 	FlorinKeeper *florinkeeper.Keeper
 }
@@ -133,7 +139,9 @@ func NewSimApp(
 		&app.AccountKeeper,
 		&app.BankKeeper,
 		&app.ConsensusKeeper,
+		&app.ParamsKeeper,
 		&app.StakingKeeper,
+		&app.UpgradeKeeper,
 		// Custom Modules
 		&app.FlorinKeeper,
 	); err != nil {
@@ -141,6 +149,8 @@ func NewSimApp(
 	}
 
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
+
+	app.RegisterUpgradeHandler()
 
 	if err := app.RegisterStreamingServices(appOpts, app.kvStoreKeys()); err != nil {
 		return nil, err

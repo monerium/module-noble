@@ -3,9 +3,10 @@ modules:
     config:
       "@type": cosmos.app.runtime.v1alpha1.Module
       app_name: SimApp
+      pre_blockers: [ upgrade ]
       begin_blockers: [ staking ]
       end_blockers: [ staking ]
-      init_genesis: [ auth, bank, staking, genutil, florin ]
+      init_genesis: [ auth, bank, staking, genutil, params, upgrade, florin ]
       override_store_keys:
         - module_name: auth
           kv_store_key: acc
@@ -32,12 +33,21 @@ modules:
   - name: genutil
     config:
       "@type": cosmos.genutil.module.v1.Module
+  - name: params
+    config:
+      "@type": cosmos.params.module.v1.Module
   - name: staking
     config:
       "@type": cosmos.staking.module.v1.Module
   - name: tx
     config:
       "@type": cosmos.tx.config.v1.Config
+  - name: upgrade
+    config:
+      "@type": cosmos.upgrade.module.v1.Module
+      # NOTE: This is a dummy account used for local testing.
+      # market ready pilot lunch host cancel drive script remove brief lunch entry worth giant unknown grain romance gym tide perfect short because envelope sentence
+      authority: noble1u8mhfyh8a753twmwnsl9ce77cfuuez47sahdnw
 
   - name: florin
     config:
